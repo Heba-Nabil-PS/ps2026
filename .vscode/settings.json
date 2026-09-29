@@ -1,0 +1,25 @@
+{
+  // Console Ninja's Next.js hook rewrites dev-server chunks and truncates them,
+  // which stops React hydrating (all GSAP/Framer Motion/Lenis animation dies).
+  "console-ninja.toolsToEnableSupportAutomaticallyFor": {
+    "vite": true,
+    "angular": true,
+    "jest": true,
+    "webpack": true,
+    "next.js": false,
+    "nest.js": true,
+    "cypress": true,
+    "http-server": true,
+    "serve": true,
+    "live-server": true,
+    "nuxt": true,
+    "remix": true,
+    "qwik": true,
+    "hydrogen": true,
+    "serverless": true,
+    "astro": true,
+    "react-native": true,
+    "live-server-extension": false,
+    "live-preview-extension": false
+  }
+}
