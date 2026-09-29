@@ -24,6 +24,8 @@ export const siteConfig = {
     { label: "Careers", href: "/careers" },
     { label: "Contact", href: "/contact" },
   ],
+  /** The `nav` entries important enough for the header bar; the rest live in the burger menu. */
+  headerNav: ["/services", "/case-studies", "/about", "/contact"],
   /** Secondary destinations listed in the menu and footer after the primary nav. */
   moreNav: [
     { label: "Work", href: "/projects" },
@@ -87,6 +89,36 @@ export const siteConfig = {
     { value: "80+", label: "In-house specialists across strategy, design, motion, content, development, UI/UX & performance." },
     { value: "6", label: "Core disciplines delivered end to end, without subcontracting." },
     { value: "2023", label: "Digital Agency of the Year, Corporate LiveWire Innovation & Excellence Awards." },
+  ],
+  /**
+   * Awards and platform partnerships. `file` sits in /public/images/awards; `surface` is the
+   * badge's own background, so the card around it reads as one piece.
+   */
+  awards: [
+    {
+      file: "corporate-livewire-innovation",
+      surface: "#1e676d",
+      kind: "Award · 2023",
+      title: "Digital Agency of the Year",
+      issuer: "Corporate LiveWire Innovation & Excellence Awards",
+      body: "An independent jury recognized the way we work: strategy first, then brand, digital and performance built by one in-house team.",
+    },
+    {
+      file: "middle-east-prestige-awards",
+      surface: "#f3f6f9",
+      kind: "Award",
+      title: "CEO of the Year",
+      issuer: "The Middle East Prestige Awards",
+      body: "Awarded to Seif El Sawaf, our Chief Executive Officer, for building PSdigital into one team of 80+ specialists across Alexandria and Dubai.",
+    },
+    {
+      file: "meta-business-partner",
+      surface: "#ffffff",
+      kind: "Partnership",
+      title: "Meta Business Partner",
+      issuer: "Meta",
+      body: "Vetted by Meta for advertising on Facebook and Instagram, the platforms behind our performance work, including Physiowell's up to 10x ROAS.",
+    },
   ],
   team: {
     lead: { name: "Seif El Sawaf", role: "Chief Executive Officer", image: "/images/site/ceo.webp" },

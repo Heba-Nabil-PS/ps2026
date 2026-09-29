@@ -1,6 +1,7 @@
 import { ImageReveal } from "@/versions/option-2/components/animations/ImageReveal";
 import { RevealText } from "@/versions/option-2/components/animations/RevealText";
 import { ScrollHighlightText } from "@/versions/option-2/components/animations/ScrollHighlightText";
+import { Awards } from "@/versions/option-2/components/about/Awards";
 import { Clients } from "@/versions/option-2/components/home/Clients";
 import { Reasons } from "@/versions/option-2/components/home/Reasons";
 import { Services } from "@/versions/option-2/components/home/Services";
@@ -41,7 +42,7 @@ export async function AboutView() {
           className="aspect-[4/5] md:col-span-5"
         />
         <div className="flex flex-col justify-end gap-10 md:col-span-6 md:col-start-7">
-          <SectionLabel index="01">{t.site.whoWeAre}</SectionLabel>
+          <SectionLabel>{t.site.whoWeAre}</SectionLabel>
           <ScrollHighlightText className="text-lead font-medium">{copy.who}</ScrollHighlightText>
           <p className="max-w-md leading-relaxed text-muted">{copy.noHandoffs}</p>
         </div>
@@ -49,10 +50,10 @@ export async function AboutView() {
 
       <ImageReveal src="/images/site/sky.webp" alt={copy.skyAlt} sizes="100vw" parallax={0.12} className="h-[46svh] md:h-[80svh]" />
 
-      <Reasons index="02" />
+      <Reasons />
 
       <section aria-labelledby="process-title" className="gutter py-28 md:py-28">
-        <SectionLabel index="03" className="mb-6">
+        <SectionLabel className="mb-6">
           {copy.howWeWork}
         </SectionLabel>
         <RevealText id="process-title" as="h2" className="text-display mb-6 font-extrabold uppercase">
@@ -75,8 +76,10 @@ export async function AboutView() {
         </ScrollReveal>
       </section>
 
+      <Awards />
+
       <section aria-labelledby="team-title" className="gutter border-t border-line py-28 md:py-28">
-        <SectionLabel index="04" className="mb-6">
+        <SectionLabel className="mb-6">
           {copy.teamLabel}
         </SectionLabel>
         <RevealText id="team-title" as="h2" className="text-display font-extrabold uppercase">
@@ -108,8 +111,8 @@ export async function AboutView() {
         </div>
       </section>
 
-      <Services index="05" />
-      <Clients index="06" />
+      <Services />
+      <Clients />
       <CallToAction eyebrow={copy.ctaEyebrow} title={t.site.ctaTitle} />
     </>
   );

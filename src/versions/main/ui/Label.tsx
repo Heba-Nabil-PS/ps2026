@@ -12,13 +12,12 @@ export function Asterisk({ className }: { className?: string }) {
   );
 }
 
-/** Section label: ✳ + small caps in steel. Optional index ("01") after the text. */
-export function Label({ children, index, className, as: Component = "p" }: { children: ReactNode; index?: string; className?: string; as?: "p" | "span" | "h2" }) {
+/** Section label: ✳ + small caps in steel. */
+export function Label({ children, className, as: Component = "p" }: { children: ReactNode; className?: string; as?: "p" | "span" | "h2" }) {
   return (
     <Component className={cn("text-label flex items-center gap-3 text-muted", className)}>
       <Asterisk className="text-sky" />
       <span>{children}</span>
-      {index ? <span className="text-subtle tabular-nums">/{index}</span> : null}
     </Component>
   );
 }

@@ -59,7 +59,7 @@ export function ServiceStack() {
               className="grid origin-top border border-line bg-[linear-gradient(160deg,#13304f_0%,#0c1d31_45%,#08131f_100%)] shadow-[inset_0_1px_0_rgb(255_255_255/0.07),0_-30px_60px_-20px_rgb(0_0_0/0.55)] gap-8 overflow-hidden rounded-frame p-5 will-change-transform md:min-h-[72svh] md:grid-cols-12 md:gap-10 md:p-6 lg:p-8">
               <div className="flex flex-col md:col-span-6 md:p-3">
                 <div className="flex items-center justify-between">
-                  <Label index={String(index + 1).padStart(2, "0")}>{labels.index}</Label>
+                  <Label>{labels.index}</Label>
                 </div>
                 <h2 className="text-title mt-8 font-medium md:mt-8">{service.title}</h2>
                 <StretchHeading as="p" lines={service.headline} className="mt-3 text-[clamp(2.2rem,min(4.6vw,9svh),4.8rem)] leading-[0.88] text-sky" />

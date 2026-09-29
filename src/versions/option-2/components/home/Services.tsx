@@ -3,7 +3,7 @@ import { ScrollMarquee } from "@/versions/option-2/components/ui/ScrollMarquee";
 import { SectionLabel } from "@/versions/option-2/components/ui/SectionLabel";
 import { getServerContent } from "@/versions/option-2/i18n/server";
 
-export async function Services({ index = "02" }: { index?: string }) {
+export async function Services() {
   const { site: siteConfig, t } = await getServerContent();
   return (
     <section aria-labelledby="services-title" className="py-28 md:py-28">
@@ -14,7 +14,7 @@ export async function Services({ index = "02" }: { index?: string }) {
 
       <div className="gutter grid grid-cols-1 gap-12 md:grid-cols-12">
         <div className="md:col-span-4">
-          <SectionLabel index={index} className="mb-6">
+          <SectionLabel className="mb-6">
             {t.site.capabilitiesLabel}
           </SectionLabel>
           <RevealText id="services-title" as="h2" className="text-headline font-extrabold uppercase">

@@ -11,14 +11,12 @@ import type { ReactNode } from "react";
  */
 export function SectionHead({
   label,
-  index,
   title,
   intro,
   action,
   className,
 }: {
   label: string;
-  index?: string;
   title: readonly string[];
   intro?: string;
   action?: ReactNode;
@@ -27,7 +25,7 @@ export function SectionHead({
   return (
     <header className={cn("grid gap-8 md:grid-cols-12 md:items-end", className)}>
       <div className="md:col-span-8">
-        <Label index={index} className="mb-6">
+        <Label className="mb-6">
           {label}
         </Label>
         <StretchHeading lines={title} className="text-headline" />

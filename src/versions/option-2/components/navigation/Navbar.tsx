@@ -6,7 +6,6 @@ import { LanguageSwitch } from "@/versions/option-2/components/navigation/Langua
 import { MenuOverlay } from "@/versions/option-2/components/navigation/MenuOverlay";
 import { TransitionLink } from "@/versions/option-2/components/navigation/TransitionLink";
 import { useSound } from "@/versions/option-2/components/sound/SoundProvider";
-import { LocalTime } from "@/versions/option-2/components/ui/LocalTime";
 import { SoundToggle } from "@/versions/option-2/components/ui/SoundToggle";
 import { ease } from "@/lib/motion";
 import { parseRoute } from "@/versions/registry";
@@ -54,6 +53,8 @@ export function Navbar() {
   }, [menuOpen, lenis]);
 
   const closeMenu = () => setMenuOpen(false);
+  // Only the priority links sit in the bar; everything else is one tap away in the menu.
+  const headerLinks = siteConfig.nav.filter((item) => siteConfig.headerNav.includes(item.href));
 
   // Studio routes render their own header (components/studio/StudioHeader).
   if (isStudioRoute(pathname)) return null;
@@ -66,54 +67,50 @@ export function Navbar() {
         animate={{ y: hidden && !menuOpen ? "-100%" : "0%" }}
         transition={{ duration: 0.6, ease: ease.expo }}
       >
-        <nav aria-label={t.common.main} className="flex items-center justify-between gap-6 py-5 md:py-6">
-          <Magnetic strength={0.2} className="shrink-0">
+        {/* Logo at the start, primary links centred, controls at the end (mirrored in Arabic). */}
+        <nav aria-label={t.common.main} className="grid grid-cols-[1fr_auto_1fr] items-center gap-6 py-5 md:py-6">
+          <Magnetic strength={0.2} className="col-start-1 row-start-1 shrink-0 justify-self-start">
             <TransitionLink
               href="/"
               transitionLabel={t.common.home}
               onClick={closeMenu}
-              className="flex items-center gap-3"
+              className="flex items-center"
               aria-label={`${siteConfig.name} — ${t.common.homeLabel}`}
             >
               {/* Single-colour inside the navbar: it sits in a mix-blend-difference layer */}
-              <DrawLogo accent={false} title="" delay={0.6} className="h-16 w-auto md:h-20" />
-              <span className="text-label hidden whitespace-nowrap font-normal text-muted sm:inline">{t.common.digitalAgency}</span>
+              <DrawLogo accent={false} title="" delay={0.6} redrawEvery={20} className="h-16 w-auto md:h-20" />
             </TransitionLink>
           </Magnetic>
 
-          <p className="text-label hidden min-w-0 whitespace-nowrap text-muted 2xl:flex 2xl:gap-2">
-            <span>{siteConfig.location}</span>
-            <LocalTime />
-          </p>
+          <ul className="col-start-2 row-start-1 hidden items-center gap-7 lg:flex xl:gap-9">
+            {headerLinks.map((item) => {
+              const active = isActive(pathname, item.href);
+              return (
+                <li key={item.href}>
+                  <Magnetic>
+                    <TransitionLink
+                      href={item.href}
+                      transitionLabel={item.label}
+                      aria-current={active ? "page" : undefined}
+                      onPointerEnter={() => play("hover")}
+                      className="text-label group relative block whitespace-nowrap py-2"
+                    >
+                      {item.label}
+                      <span
+                        aria-hidden
+                        className={cn(
+                          "absolute inset-x-0 bottom-0 h-px origin-left rtl:origin-right bg-current transition-transform duration-500 ease-[var(--ease-expo)]",
+                          active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
+                        )}
+                      />
+                    </TransitionLink>
+                  </Magnetic>
+                </li>
+              );
+            })}
+          </ul>
 
-          <div className="flex shrink-0 items-center gap-6 md:gap-8">
-            <ul className="hidden items-center gap-6 lg:flex xl:gap-7">
-              {siteConfig.nav.map((item) => {
-                const active = isActive(pathname, item.href);
-                return (
-                  <li key={item.href}>
-                    <Magnetic>
-                      <TransitionLink
-                        href={item.href}
-                        transitionLabel={item.label}
-                        aria-current={active ? "page" : undefined}
-                        onPointerEnter={() => play("hover")}
-                        className="text-label group relative block whitespace-nowrap py-2"
-                      >
-                        {item.label}
-                        <span
-                          aria-hidden
-                          className={cn(
-                            "absolute inset-x-0 bottom-0 h-px origin-left rtl:origin-right bg-current transition-transform duration-500 ease-[var(--ease-expo)]",
-                            active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
-                          )}
-                        />
-                      </TransitionLink>
-                    </Magnetic>
-                  </li>
-                );
-              })}
-            </ul>
+          <div className="col-start-3 row-start-1 flex shrink-0 items-center gap-6 justify-self-end md:gap-8">
             <LanguageSwitch onNavigate={closeMenu} />
             <SoundToggle className="hidden md:flex" />
             <Magnetic>

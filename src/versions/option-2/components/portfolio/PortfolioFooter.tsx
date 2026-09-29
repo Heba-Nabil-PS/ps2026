@@ -2,8 +2,8 @@ import { Magnetic } from "@/versions/option-2/components/animations/Magnetic";
 import { RevealText } from "@/versions/option-2/components/animations/RevealText";
 import { TransitionLink } from "@/versions/option-2/components/navigation/TransitionLink";
 import { ScrollReveal } from "@/versions/option-2/components/portfolio/ScrollReveal";
+import { AwardBadges } from "@/versions/option-2/components/ui/AwardBadges";
 import { BackToTop } from "@/versions/option-2/components/ui/BackToTop";
-import { LocalTime } from "@/versions/option-2/components/ui/LocalTime";
 import { getServerContent } from "@/versions/option-2/i18n/server";
 import { ArrowUpRight } from "lucide-react";
 
@@ -63,14 +63,9 @@ export async function PortfolioFooter() {
             ))}
           </ul>
         </div>
-        <div data-col className="col-span-2 md:col-span-2">
-          <p className="text-label mb-4 text-muted">{t.common.localTime}</p>
-          <p className="flex flex-col gap-2">
-            <span>{siteConfig.location}</span>
-            <LocalTime className="tabular-nums text-muted" />
-          </p>
-        </div>
       </ScrollReveal>
+
+      <AwardBadges label={t.common.awards} awards={siteConfig.awards} className="relative mt-12" />
 
       {/* Sits at the end edge so the fixed version pill (bottom start corner) never covers it. */}
       <div className="text-label relative mt-12 flex flex-wrap items-center justify-end gap-x-10 gap-y-3 border-t border-line py-6 text-muted">

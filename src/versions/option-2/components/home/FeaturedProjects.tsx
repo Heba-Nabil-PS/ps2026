@@ -12,7 +12,7 @@ export async function FeaturedProjects() {
     <section aria-labelledby="featured-title" className="gutter py-28 md:py-28">
       <div className="mb-16 flex flex-col gap-10 md:mb-24 md:flex-row md:items-end md:justify-between">
         <div>
-          <SectionLabel index="01" className="mb-6">
+          <SectionLabel className="mb-6">
             {t.site.flagshipLabel}
           </SectionLabel>
           <RevealText id="featured-title" as="h2" className="text-display font-extrabold uppercase" lineClassName="md:nth-2:ps-[8vw]">

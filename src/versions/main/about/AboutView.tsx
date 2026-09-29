@@ -4,6 +4,7 @@ import { Counter } from "@/versions/main/motion/Counter";
 import { MotionBlurReveal } from "@/versions/main/motion/MotionBlurReveal";
 import { Reveal } from "@/versions/main/motion/Reveal";
 import { ScrollHighlight } from "@/versions/main/motion/ScrollHighlight";
+import { Awards } from "@/versions/main/sections/Awards";
 import { DisciplineLeads } from "@/versions/main/sections/DisciplineLeads";
 import { Leadership } from "@/versions/main/sections/Leadership";
 import { Offices } from "@/versions/main/sections/Offices";
@@ -15,7 +16,7 @@ import { SectionHead } from "@/versions/main/ui/SectionHead";
 import Image from "next/image";
 
 /**
- * About — the positioning in full: our story, the numbers, who leads it, what we believe,
+ * About — the positioning in full: our story, the numbers, awards, who leads it, what we believe,
  * how we work and where. Ends on one call to action.
  */
 export async function AboutView() {
@@ -52,6 +53,7 @@ export async function AboutView() {
         </Reveal>
       </section>
 
+      <Awards label={page.awards.label} title={page.awards.title} intro={page.awards.intro} awards={site.awards} />
       <Leadership />
       <DisciplineLeads />
 

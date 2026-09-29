@@ -97,11 +97,15 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
             app has not started within 5 s (a script failed to load), drop the flag so every
             section shows as plain content instead of staying hidden.
             It has already run by the time React hydrates, and browser extensions or the dev
-            overlay can empty inline scripts in the DOM, so React must not compare its contents. */}
+            overlay can empty inline scripts in the DOM, so React must not compare its contents.
+            It also decides, before first paint, whether the home intro plays: on every full load
+            of the home page, never with reduced motion (the "intro-play" class is named in
+            versions/main/intro/intro-signal.ts). */}
         <script
           suppressHydrationWarning
           dangerouslySetInnerHTML={{
-            __html: "document.documentElement.classList.add('js');setTimeout(function(){if(!window.__psReady)document.documentElement.classList.remove('js')},5000)",
+            __html:
+              "var d=document.documentElement;d.classList.add('js');try{var p=location.pathname.replace(/\\/+$/,'');if((p===''||p==='/ar')&&!matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('intro-play')}catch(e){}setTimeout(function(){if(!window.__psReady)d.classList.remove('js','intro-play')},5000)",
           }}
         />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organization) }} />

@@ -8,13 +8,13 @@ import Image from "next/image";
  * A light page, like the client wall in the company profile: the logos are
  * printed artwork on white, so the section carries its own light theme.
  */
-export async function Clients({ index = "04" }: { index?: string }) {
+export async function Clients() {
   const { site: siteConfig, t } = await getServerContent();
   return (
     <section aria-labelledby="clients-title" className="theme-light gutter py-28 md:py-28">
       <div className="mb-14 flex flex-col justify-between gap-6 md:mb-20 md:flex-row md:items-end">
         <div>
-          <SectionLabel index={index} className="mb-6">
+          <SectionLabel className="mb-6">
             {t.site.clientsLabel}
           </SectionLabel>
           <RevealText id="clients-title" as="h2" className="text-headline font-extrabold uppercase">

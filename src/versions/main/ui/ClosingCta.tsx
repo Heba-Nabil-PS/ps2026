@@ -11,7 +11,7 @@ type Action = { label: string; href: string };
 /**
  * The conversion moment at the end of each page ("Let's build your brand
  * together"). A light sits behind reeded glass and follows the pointer, the
- * moodboard's hand-behind-glass tile made interactive. One metal action,
+ * moodboard's hand-behind-glass tile made interactive. One primary action,
  * one glass action.
  */
 export function ClosingCta({ label, title, body, primary, secondary }: { label: string; title: readonly string[]; body: string; primary: Action; secondary?: Action }) {

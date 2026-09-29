@@ -27,12 +27,6 @@ export function CaseView({ lang, found }: CaseViewProps) {
   const disciplines = matched.map((service) => service.title);
   const disciplineLinks = matched.length ? matched.map(({ slug, title }) => ({ slug, title })) : project.services.map((title) => ({ title }));
 
-  // Chapters are numbered in the order they appear, skipping any a case doesn't have.
-  let chapter = 0;
-  const challengeIndex = project.challenge ? ++chapter : 0;
-  const approachIndex = project.approach?.length ? ++chapter : 0;
-  const resultsIndex = project.results ? ++chapter : 0;
-
   const industry = industryOf(project);
   const facts: { term: string; value: string; href?: string }[] = [
     { term: labels.client, value: project.client },
@@ -103,14 +97,14 @@ export function CaseView({ lang, found }: CaseViewProps) {
         </Reveal>
       </section>
 
-      {project.challenge ? <CaseChallenge label={labels.challenge} index={challengeIndex} text={project.challenge} /> : null}
+      {project.challenge ? <CaseChallenge label={labels.challenge} text={project.challenge} /> : null}
       {project.approach?.length ? (
-        <CaseApproach label={labels.approach} index={approachIndex} steps={project.approach} disciplines={disciplineLinks} disciplinesLabel={labels.services} />
+        <CaseApproach label={labels.approach} steps={project.approach} disciplines={disciplineLinks} disciplinesLabel={labels.services} />
       ) : null}
 
       <CaseBlocks blocks={project.content} />
 
-      {project.results ? <CaseResults label={labels.results} index={resultsIndex} results={project.results} /> : null}
+      {project.results ? <CaseResults label={labels.results} results={project.results} /> : null}
       {project.review ? <CaseReview label={labels.review} review={project.review} /> : null}
       {project.links?.length ? <CaseLinks label={labels.links} links={project.links} names={labels.linkNames} /> : null}
 

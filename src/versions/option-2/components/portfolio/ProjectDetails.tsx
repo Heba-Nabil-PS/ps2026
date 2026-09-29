@@ -33,7 +33,7 @@ export async function ProjectDetails({ project }: { project: PortfolioProject })
 
       <div className="mt-24 grid grid-cols-1 gap-8 md:mt-24 md:grid-cols-12">
         <div className="md:col-span-3">
-          <SectionLabel index="01">{t.common.introduction}</SectionLabel>
+          <SectionLabel>{t.common.introduction}</SectionLabel>
         </div>
         <div className="md:col-span-9">
           <h2 id="introduction" className="sr-only">

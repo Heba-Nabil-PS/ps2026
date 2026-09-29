@@ -1,5 +1,6 @@
 import { getServerCopy } from "@/versions/main/server";
 import { Hero } from "@/versions/main/home/Hero";
+import { IntroAnimation } from "@/versions/main/intro/IntroAnimation";
 import { IndustriesPreview } from "@/versions/main/home/IndustriesPreview";
 import { InsightsPreview } from "@/versions/main/home/InsightsPreview";
 import { Numbers } from "@/versions/main/home/Numbers";
@@ -12,7 +13,7 @@ import { ProcessCards } from "@/versions/main/sections/ProcessCards";
 import { ClosingCta } from "@/versions/main/ui/ClosingCta";
 
 /**
- * Home — first impression → positioning → proof (work, then the numbers it
+ * Home — the intro (every full load of the home page) → first impression → positioning → proof (work, then the numbers it
  * delivered) → capabilities → industries → trust (clients, then their words)
  * → how we work → insights → conversion.
  * See docs/website-direction.md §4.
@@ -23,6 +24,7 @@ export async function HomeView() {
 
   return (
     <>
+      <IntroAnimation />
       <Hero />
       <Positioning />
       <SelectedWork />

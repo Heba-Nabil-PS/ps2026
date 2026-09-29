@@ -5,7 +5,7 @@ import { getServerContent } from "@/versions/option-2/i18n/server";
 import Image from "next/image";
 
 /** Why PSdigital — the four reasons from the company profile, over the agency floor. */
-export async function Reasons({ index = "02" }: { index?: string }) {
+export async function Reasons() {
   const { site: siteConfig, t } = await getServerContent();
   return (
     <section aria-labelledby="reasons-title" className="relative overflow-hidden border-t border-line py-28 md:py-28">
@@ -15,7 +15,7 @@ export async function Reasons({ index = "02" }: { index?: string }) {
       </div>
 
       <div className="gutter relative">
-        <SectionLabel index={index} className="mb-6">
+        <SectionLabel className="mb-6">
           {t.site.reasonsLabel}
         </SectionLabel>
         <RevealText id="reasons-title" as="h2" className="text-display font-extrabold uppercase" lineClassName="md:nth-2:ps-[6vw]">

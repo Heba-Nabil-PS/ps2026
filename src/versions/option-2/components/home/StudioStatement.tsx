@@ -12,7 +12,7 @@ export async function StudioStatement() {
     <section aria-labelledby="studio-title" className="gutter border-t border-line py-28 md:py-28">
       <div className="grid grid-cols-1 gap-12 md:grid-cols-12">
         <div className="md:col-span-3">
-          <SectionLabel index="03">{t.site.whoWeAre}</SectionLabel>
+          <SectionLabel>{t.site.whoWeAre}</SectionLabel>
           <h2 id="studio-title" className="sr-only">
             {t.site.whoWeAre}
           </h2>

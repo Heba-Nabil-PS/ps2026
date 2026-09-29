@@ -79,17 +79,16 @@ export const en = {
     studios: "Studios",
     write: "Write to us",
     careers: "Join the team",
+    awards: "Awards & partnerships",
   },
 
   home: {
     hero: {
       eyebrow: "Creative & digital partner",
-      title: ["Endless", "possibilities"],
+      title: ["Connected flow,", "endless possibilities"],
       intro: "Strategy, creativity and innovation, working as one. We build brands and digital products that drive growth, across MENA and beyond.",
       primary: "See the work",
       secondary: "What we do",
-      location: "Alexandria — Dubai",
-      nowShowing: "Now showing",
     },
     numbers: {
       label: "Results we can show",
@@ -380,6 +379,11 @@ export const en = {
         { value: 16, suffix: "", label: "Markets on one brand system" },
         { value: 2023, suffix: "", label: "Digital Agency of the Year" },
       ],
+    },
+    awards: {
+      label: "Awards & partnerships",
+      title: ["Recognized", "for the work"],
+      intro: "Independent juries and the platforms we build on have backed the same thing our clients do: strategy first, everything made in-house.",
     },
     principles: { label: "What we believe", title: ["Why brands", "stay"] },
     process: { label: "How we work", title: ["Our", "process"] },

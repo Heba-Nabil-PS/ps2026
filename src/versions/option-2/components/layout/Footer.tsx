@@ -1,8 +1,7 @@
 import { Magnetic } from "@/versions/option-2/components/animations/Magnetic";
 import { TransitionLink } from "@/versions/option-2/components/navigation/TransitionLink";
-import { DrawLogo } from "@/shared/brand/DrawLogo";
+import { AwardBadges } from "@/versions/option-2/components/ui/AwardBadges";
 import { BackToTop } from "@/versions/option-2/components/ui/BackToTop";
-import { LocalTime } from "@/versions/option-2/components/ui/LocalTime";
 import { getServerContent } from "@/versions/option-2/i18n/server";
 import { ArrowUpRight } from "lucide-react";
 
@@ -11,7 +10,7 @@ export async function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer id="contact" className="gutter relative overflow-hidden border-t border-line pt-14 md:pt-16">
+    <footer id="contact" className="gutter relative overflow-hidden border-t border-line pt-12">
       <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-12">
         <div className="col-span-2 md:col-span-5">
           <p className="text-label mb-5 text-muted">{t.common.newBusiness}</p>
@@ -27,6 +26,7 @@ export async function Footer() {
               />
             </a>
           </Magnetic>
+          <AwardBadges label={t.common.awards} awards={siteConfig.awards} className="mt-10" />
         </div>
 
         <nav aria-label={t.common.footer} className="md:col-span-2 md:col-start-6">
@@ -53,22 +53,10 @@ export async function Footer() {
             ))}
           </ul>
         </div>
-
-        <div className="col-span-2 md:col-span-2">
-          <p className="text-label mb-5 text-muted">{t.common.localTime}</p>
-          <p className="flex flex-col gap-2">
-            <span>{siteConfig.location}</span>
-            <LocalTime className="tabular-nums text-muted" />
-          </p>
-        </div>
-      </div>
-
-      <div className="mt-12 md:mt-16">
-        <DrawLogo trigger="view" title={siteConfig.name} className="h-36 w-auto text-fg md:h-56" />
       </div>
 
       {/* Sits at the end edge so the fixed version pill (bottom start corner) never covers it. */}
-      <div className="text-label flex flex-wrap items-center justify-end gap-x-10 gap-y-3 border-t border-line py-6 text-muted">
+      <div className="text-label flex flex-wrap items-center justify-end gap-x-10 gap-y-3 mt-12 border-t border-line py-6 text-muted">
         <p>
           © {year} {siteConfig.name}. {t.common.rightsReserved}
         </p>

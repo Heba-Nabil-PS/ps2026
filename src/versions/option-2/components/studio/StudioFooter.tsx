@@ -3,7 +3,7 @@
 import { DrawLogo } from "@/shared/brand/DrawLogo";
 import { TransitionLink } from "@/versions/option-2/components/navigation/TransitionLink";
 import { useSectionTheme } from "@/versions/option-2/components/studio/useSectionTheme";
-import { LocalTime } from "@/versions/option-2/components/ui/LocalTime";
+import { AwardBadges } from "@/versions/option-2/components/ui/AwardBadges";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { useContent } from "@/versions/option-2/i18n/LocaleProvider";
 import { ArrowRight, ArrowUp } from "lucide-react";
@@ -137,12 +137,10 @@ export function StudioFooter() {
           <a href={`mailto:${siteConfig.email}`} className="text-sm transition-colors hover:text-[#88bbd8]">
             {siteConfig.email}
           </a>
-          <p className="mt-4 flex flex-col gap-1 text-sm text-white/50">
-            <span>{siteConfig.location}</span>
-            <LocalTime className="tabular-nums" />
-          </p>
         </div>
       </div>
+
+      <AwardBadges label={t.common.awards} awards={siteConfig.awards} labelClassName="text-white/45" className="mt-14" />
 
       <p
         ref={wordmark}

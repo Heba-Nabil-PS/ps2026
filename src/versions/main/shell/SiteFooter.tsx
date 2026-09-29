@@ -70,6 +70,17 @@ export function SiteFooter() {
               </AppLink>
             </p>
           </div>
+          <div>
+            <h2 className="text-label mb-5 text-subtle">{copy.footer.awards}</h2>
+            <ul className="flex flex-wrap items-center gap-3">
+              {site.awards.map((award) => (
+                <li key={award.file} className="flex h-14 items-center overflow-hidden rounded-md p-1" style={{ backgroundColor: award.surface }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element -- small static SVG badge, nothing to optimize */}
+                  <img src={`/images/awards/${award.file}.svg`} alt={`${award.title}, ${award.issuer}`} title={`${award.title}, ${award.issuer}`} className="h-full w-auto" loading="lazy" />
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
 

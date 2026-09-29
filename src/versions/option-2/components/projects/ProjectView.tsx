@@ -25,7 +25,7 @@ export async function ProjectView({ project, next, previous }: ProjectViewProps)
       {/* Introduction */}
       <section aria-labelledby="overview" className="gutter grid grid-cols-1 gap-10 py-24 md:grid-cols-12 md:py-28">
         <div className="md:col-span-3">
-          <SectionLabel index="01">{copy.overview}</SectionLabel>
+          <SectionLabel>{copy.overview}</SectionLabel>
           <h2 id="overview" className="sr-only">
             {copy.overview}
           </h2>
@@ -40,7 +40,7 @@ export async function ProjectView({ project, next, previous }: ProjectViewProps)
       {/* Services + details */}
       <section aria-labelledby="scope" className="gutter grid grid-cols-1 gap-12 border-t border-line py-16 md:grid-cols-12 md:py-24">
         <div className="md:col-span-3">
-          <SectionLabel index="02">{copy.scope}</SectionLabel>
+          <SectionLabel>{copy.scope}</SectionLabel>
           <h2 id="scope" className="sr-only">
             {copy.scopeTitle}
           </h2>
@@ -75,7 +75,7 @@ export async function ProjectView({ project, next, previous }: ProjectViewProps)
       {/* Text + image */}
       <section aria-labelledby="challenge" className="gutter grid grid-cols-1 items-center gap-14 py-24 md:grid-cols-12 md:py-28">
         <div className="md:col-span-5">
-          <SectionLabel index="03" className="mb-6">
+          <SectionLabel className="mb-6">
             {copy.challenge}
           </SectionLabel>
           <RevealText id="challenge" as="h2" mode="words" className="text-headline font-medium">
@@ -107,7 +107,7 @@ export async function ProjectView({ project, next, previous }: ProjectViewProps)
           className="h-[70svh] md:h-screen"
         >
           <div className="gutter absolute inset-x-0 bottom-0 bg-gradient-to-t from-bg/80 to-transparent pb-10 pt-40 md:pb-16">
-            <SectionLabel index="04" className="mb-6 text-fg">
+            <SectionLabel className="mb-6 text-fg">
               {copy.approach}
             </SectionLabel>
             <RevealText id="approach" as="h2" mode="words" className="text-headline max-w-4xl font-medium">
@@ -129,7 +129,7 @@ export async function ProjectView({ project, next, previous }: ProjectViewProps)
       <section aria-labelledby="results" className="gutter border-t border-line py-24 md:py-28">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12">
           <div className="md:col-span-3">
-            <SectionLabel index="05">{copy.results}</SectionLabel>
+            <SectionLabel>{copy.results}</SectionLabel>
             <h2 id="results" className="sr-only">
               {copy.results}
             </h2>

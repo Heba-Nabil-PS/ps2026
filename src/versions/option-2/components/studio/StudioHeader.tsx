@@ -16,7 +16,7 @@ import { useLenis } from "lenis/react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-/** Home-only header: logo, "Let's talk" and a menu pill that follow the section theme. */
+/** Studio header: priority links, "Let's talk" and a menu pill that follow the section theme. */
 export function StudioHeader() {
   const pathname = usePathname();
   const { introDone, headerTheme } = useStudio();
@@ -49,6 +49,8 @@ export function StudioHeader() {
   const dark = headerTheme === "dark" || menuOpen;
   const pill = dark ? "bg-[#f2f3f5] text-[#07121f]" : "bg-[#07121f] text-[#f2f3f5]";
   const closeMenu = () => setMenuOpen(false);
+  // Priority links in the bar; Contact is the "Let's talk" pill, the rest live in the menu.
+  const headerLinks = site.nav.filter((item) => site.headerNav.includes(item.href) && item.href !== "/contact");
 
   return (
     <>
@@ -61,16 +63,17 @@ export function StudioHeader() {
         animate={{ y: !introDone || (hidden && !menuOpen) ? "-110%" : "0%" }}
         transition={{ duration: 0.9, ease: ease.expo, delay: introDone && !hidden ? 0.15 : 0 }}
       >
-        <nav aria-label={t.common.main} className="flex items-center justify-between py-4 md:py-6">
-          <Magnetic strength={0.15}>
+        {/* Same layout as the site navbar: logo at the start, primary links centred, controls at the end. */}
+        <nav aria-label={t.common.main} className="grid grid-cols-[1fr_auto_1fr] items-center gap-6 py-4 md:py-6">
+          <Magnetic strength={0.15} className="col-start-1 row-start-1 justify-self-start">
             <TransitionLink href="/" onClick={closeMenu} aria-label={`${site.name} — ${t.common.homeLabel}`} className="flex items-center gap-3">
               {/* Drawn once the header has slid in after the intro. */}
-              {introDone ? <DrawLogo accent={false} title="" delay={0.4} className="h-14 w-auto md:h-[4.5rem]" /> : <span className="block h-14 md:h-[4.5rem]" />}
+              {introDone ? <DrawLogo accent={false} title="" delay={0.4} redrawEvery={20} className="h-14 w-auto md:h-[4.5rem]" /> : <span className="block h-14 md:h-[4.5rem]" />}
             </TransitionLink>
           </Magnetic>
 
-          <ul className="text-label hidden items-center gap-8 lg:flex">
-            {site.nav.slice(0, 3).map((item) => (
+          <ul className="text-label col-start-2 row-start-1 hidden items-center gap-8 lg:flex">
+            {headerLinks.map((item) => (
               <li key={item.href}>
                 <TransitionLink
                   href={item.href}
@@ -92,7 +95,7 @@ export function StudioHeader() {
             ))}
           </ul>
 
-          <div className="flex items-center gap-2 md:gap-3">
+          <div className="col-start-3 row-start-1 flex items-center gap-2 justify-self-end md:gap-3">
             <LanguageSwitch className="me-1 md:me-2" onNavigate={closeMenu} />
             <SoundToggle className="me-2 hidden md:flex" />
             <Magnetic strength={0.2} className="hidden sm:inline-block">

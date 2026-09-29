@@ -10,11 +10,11 @@ import type { ReactNode } from "react";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
-/** 01 — the problem, lit word by word as it is read. */
-export function CaseChallenge({ label, index, text }: { label: string; index: number; text: string }) {
+/** The problem, lit word by word as it is read. */
+export function CaseChallenge({ label, text }: { label: string; text: string }) {
   return (
     <section className="gutter section-y grid gap-8 md:grid-cols-12">
-      <Label index={pad(index)} className="self-start md:col-span-3 md:pt-3">
+      <Label className="self-start md:col-span-3 md:pt-3">
         {label}
       </Label>
       <ScrollHighlight text={text} className="text-[clamp(1.6rem,3vw,3rem)] font-medium leading-[1.15] tracking-[-0.025em] md:col-span-8 md:col-start-5" />
@@ -23,18 +23,16 @@ export function CaseChallenge({ label, index, text }: { label: string; index: nu
 }
 
 /**
- * 02 — what we did: the steps as numbered rows, with the disciplines that
+ * What we did: the steps as numbered rows, with the disciplines that
  * delivered them pinned alongside (each opens the work index filtered to it).
  */
 export function CaseApproach({
   label,
-  index,
   steps,
   disciplines,
   disciplinesLabel,
 }: {
   label: string;
-  index: number;
   steps: NonNullable<PortfolioProject["approach"]>;
   disciplines: { slug?: string; title: string }[];
   disciplinesLabel: string;
@@ -43,7 +41,7 @@ export function CaseApproach({
     <section className="gutter section-y grid gap-12 md:grid-cols-12">
       <div className="md:col-span-4">
         <div className="md:sticky md:top-32">
-          <Label index={pad(index)}>{label}</Label>
+          <Label>{label}</Label>
           {disciplines.length ? (
             <div className="mt-10">
               <p className="text-label text-subtle">{disciplinesLabel}</p>
@@ -83,12 +81,12 @@ export function CaseApproach({
   );
 }
 
-/** 03 — where it landed: the summary, then the numbers counting up. */
-export function CaseResults({ label, index, results }: { label: string; index: number; results: NonNullable<PortfolioProject["results"]> }) {
+/** Where it landed: the summary, then the numbers counting up. */
+export function CaseResults({ label, results }: { label: string; results: NonNullable<PortfolioProject["results"]> }) {
   return (
     <section className="gutter section-y">
       <div className="grid gap-8 md:grid-cols-12">
-        <Label index={pad(index)} className="self-start md:col-span-3 md:pt-3">
+        <Label className="self-start md:col-span-3 md:pt-3">
           {label}
         </Label>
         <Reveal className="md:col-span-8 md:col-start-5">

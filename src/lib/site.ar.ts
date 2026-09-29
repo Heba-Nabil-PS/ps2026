@@ -64,6 +64,29 @@ export const siteConfigAr: Localized<typeof siteConfig> = {
     { value: "6", label: "تخصصات أساسية ننفّذها من البداية إلى النهاية، دون أي تعاقد خارجي." },
     { value: "2023", label: "وكالة العام الرقمية، جوائز Corporate LiveWire للابتكار والتميّز." },
   ],
+  awards: [
+    {
+      ...siteConfig.awards[0],
+      kind: "جائزة · 2023",
+      title: "وكالة العام الرقمية",
+      issuer: "جوائز Corporate LiveWire للابتكار والتميّز",
+      body: "لجنة تحكيم مستقلة كرّمت طريقة عملنا: الاستراتيجية أولًا، ثم العلامة التجارية والحلول الرقمية والأداء، يبنيها فريق واحد داخل الوكالة.",
+    },
+    {
+      ...siteConfig.awards[1],
+      kind: "جائزة",
+      title: "الرئيس التنفيذي للعام",
+      issuer: "The Middle East Prestige Awards",
+      body: "مُنحت لسيف الصواف، رئيسنا التنفيذي، تقديرًا لبناء PSdigital فريقًا واحدًا يضم أكثر من 80 متخصصًا بين الإسكندرية ودبي.",
+    },
+    {
+      ...siteConfig.awards[2],
+      kind: "شراكة",
+      title: "شريك أعمال Meta",
+      issuer: "Meta",
+      body: "شريك معتمد من Meta للإعلان على فيسبوك وإنستغرام، المنصتين اللتين يقوم عليهما جزء كبير من عملنا في الأداء، ومنه عائد Physiowell الذي وصل إلى 10 أضعاف.",
+    },
+  ],
   team: {
     lead: { name: "سيف الصواف", role: "الرئيس التنفيذي", image: siteConfig.team.lead.image },
     members: [

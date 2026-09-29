@@ -17,19 +17,20 @@ const TIMING = {
 } as const;
 /** The wordmark letters rise in once the mark is mostly drawn. */
 const WORDMARK_DELAY = 1.5;
-/** After the first draw, the logo wipes and draws itself again this often (seconds). */
+/** After the first draw, the logo wipes and draws itself again this often (seconds), unless `redrawEvery` says otherwise. */
 const REDRAW_EVERY = 30 * 60;
 
 /**
  * The PSdigital logo drawing itself as if by one pen, shared by every design.
  * `trigger="load"` draws on mount (headers); `trigger="view"` waits until the
- * logo scrolls into view (footers). It then redraws every REDRAW_EVERY
- * seconds while the page stays open. With reduced motion it simply appears.
+ * logo scrolls into view (footers). It then redraws every `redrawEvery`
+ * seconds (REDRAW_EVERY by default) while the page stays open. With reduced motion it simply appears.
  */
 export function DrawLogo({
   variant = "full",
   trigger = "load",
   delay = 0,
+  redrawEvery = REDRAW_EVERY,
   accent = true,
   title = "PSdigital",
   className,
@@ -38,6 +39,8 @@ export function DrawLogo({
   trigger?: "load" | "view";
   /** Seconds before drawing starts. */
   delay?: number;
+  /** Seconds between redraws once drawn. */
+  redrawEvery?: number;
   accent?: boolean;
   title?: string;
   className?: string;
@@ -66,7 +69,7 @@ export function DrawLogo({
     };
     const play = () => {
       nextPaint(() => setDrawn(true));
-      timer = window.setInterval(redraw, REDRAW_EVERY * 1000);
+      timer = window.setInterval(redraw, redrawEvery * 1000);
     };
     const stop = () => {
       cancelAnimationFrame(frame);
@@ -98,7 +101,7 @@ export function DrawLogo({
       observer.disconnect();
       stop();
     };
-  }, [trigger]);
+  }, [trigger, redrawEvery]);
 
   const strokeStyle = (name: keyof typeof TIMING): CSSProperties => ({
     strokeDashoffset: drawn ? 0 : 1,
