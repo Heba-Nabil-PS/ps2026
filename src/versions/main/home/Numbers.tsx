@@ -18,7 +18,7 @@ export async function Numbers() {
   const section = copy.home.numbers;
 
   return (
-    <section className="gutter section-y">
+    <section data-thread-hidden className="gutter section-y">
       <SectionHead label={section.label} title={section.title} intro={section.intro} />
       <Reveal as="dl" className="mt-10 grid border-t border-line sm:grid-cols-2 md:mt-14 lg:grid-cols-4" stagger={0.1}>
         {section.items.map((item) => {

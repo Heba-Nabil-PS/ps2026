@@ -14,16 +14,25 @@ type Action = { label: string; href: string };
  * moodboard's hand-behind-glass tile made interactive. One primary action,
  * one glass action.
  */
-export function ClosingCta({ label, title, body, primary, secondary }: { label: string; title: readonly string[]; body: string; primary: Action; secondary?: Action }) {
+export function ClosingCta({ label, title, body, primary, secondary, bleed = false }: { label: string; title: readonly string[]; body: string; primary: Action; secondary?: Action; bleed?: boolean }) {
   return (
-    <section className="gutter section-y">
-      <div className="relative isolate overflow-hidden rounded-frame border border-line px-[clamp(1.25rem,5vw,5rem)] py-[clamp(3rem,6.5vw,6rem)]">
+    <section className={bleed ? "relative isolate overflow-hidden section-y" : "gutter section-y"}>
+      {bleed ? (
+        // Full-bleed ribbed light, the same backdrop as ProcessCards.
         <div aria-hidden className="absolute inset-0 -z-10">
-          <Image src="/images/site/cover.webp" alt="" fill sizes="100vw" quality={70} className="object-cover opacity-40" />
-          <PointerLight />
-          <FlutedGlass className="absolute inset-0" flute={26} />
-          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgb(3_7_13/0.85)_0%,rgb(3_7_13/0.35)_60%,transparent_100%)] rtl:bg-[linear-gradient(270deg,rgb(3_7_13/0.85)_0%,rgb(3_7_13/0.35)_60%,transparent_100%)]" />
+          <Image src="/images/site/cover.webp" alt="" fill sizes="100vw" quality={70} className="object-cover opacity-35 [mask-image:linear-gradient(180deg,transparent,black_25%,black_75%,transparent)]" />
+          <PointerLight className="opacity-60 [mask-image:linear-gradient(180deg,transparent,black_25%,black_75%,transparent)]" />
         </div>
+      ) : null}
+      <div className={bleed ? "gutter" : "theme-dark relative isolate overflow-hidden rounded-frame border border-line px-[clamp(1.25rem,5vw,5rem)] py-[clamp(3rem,6.5vw,6rem)]"}>
+        {bleed ? null : (
+          <div aria-hidden className="absolute inset-0 -z-10">
+            <Image src="/images/site/cover.webp" alt="" fill sizes="100vw" quality={70} className="object-cover opacity-40" />
+            <PointerLight />
+            <FlutedGlass className="absolute inset-0" flute={26} />
+            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgb(3_7_13/0.85)_0%,rgb(3_7_13/0.35)_60%,transparent_100%)] rtl:bg-[linear-gradient(270deg,rgb(3_7_13/0.85)_0%,rgb(3_7_13/0.35)_60%,transparent_100%)]" />
+          </div>
+        )}
 
         <Label className="mb-8">{label}</Label>
         <StretchHeading lines={title} className="text-display max-w-[14ch]" />

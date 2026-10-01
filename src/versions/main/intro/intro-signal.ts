@@ -31,3 +31,19 @@ export function onIntroReveal(callback: () => void) {
 
 /** The <html> class the head script sets when the intro should play (see the main layout). */
 export const INTRO_CLASS = "intro-play";
+
+/*
+ * The intro's logo flies into the hero and becomes its mark. While the intro plays it
+ * claims the mark (so the hero does not draw its own), and hands it over as it lands.
+ */
+let markCarried = false;
+
+/** Called by the intro, before the hero builds its entrance, when its logo will land on the hero mark (and with false once it is done). */
+export function carryIntroMark(carry = true) {
+  markCarried = carry;
+}
+
+/** Whether the hero mark arrives with the intro's logo rather than drawing itself. */
+export function introCarriesMark() {
+  return markCarried;
+}

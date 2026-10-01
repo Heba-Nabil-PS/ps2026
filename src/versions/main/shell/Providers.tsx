@@ -9,7 +9,7 @@ import { useEffect, type ReactNode } from "react";
 // Desktop-only enhancement; kept out of the initial bundle.
 const Cursor = dynamic(() => import("@/versions/main/shell/Cursor").then((m) => m.Cursor), { ssr: false });
 
-/** Smooth scrolling (Lenis), glass page transitions and the cursor. Framer Motion honours reduced motion. */
+/** Smooth scrolling (Lenis), page transitions and the cursor. Framer Motion honours reduced motion. */
 export function Providers({ children }: { children: ReactNode }) {
   // Tells the safety net in the root layout that the app started (see layout.tsx).
   useEffect(() => {

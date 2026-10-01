@@ -1,6 +1,6 @@
 import { alternatesFor, getLocale } from "@/i18n/server";
 import { getServerCopy } from "@/versions/main/server";
-import { CareersView } from "@/versions/main/careers/CareersView";
+import { CareersLanding } from "@/versions/main/careers/CareersLanding";
 import type { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -10,5 +10,5 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function CareersPage() {
-  return <CareersView />;
+  return <CareersLanding />;
 }

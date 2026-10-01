@@ -30,7 +30,7 @@ export const siteConfigAr: Localized<typeof siteConfig> = {
   ],
   moreNav: [
     { label: "أعمالنا", href: "/projects" },
-    { label: "معرض الأعمال", href: "/portfolio" },
+    { label: "المشاريع", href: "/portfolio" },
   ],
   services: [
     {
@@ -90,11 +90,13 @@ export const siteConfigAr: Localized<typeof siteConfig> = {
   team: {
     lead: { name: "سيف الصواف", role: "الرئيس التنفيذي", image: siteConfig.team.lead.image },
     members: [
-      { name: "بيري خليل", role: "مساعد المدير الإبداعي" },
-      { name: "ميرنا مجدي", role: "مديرة فنية" },
-      { name: "مصطفى عسكري", role: "قائد فريق الموشن" },
-      { name: "نوران أيمن", role: "قائدة فريق كتابة المحتوى" },
-      { name: "هشام زهران", role: "قائد فريق الأداء" },
+      { name: "لبنى البنان", role: "المديرة العامة", image: siteConfig.team.members[0].image },
+      { name: "أحمد خليل", role: "المدير الإبداعي", image: siteConfig.team.members[1].image },
+      { name: "بيري خليل", role: "مساعدة المدير الإبداعي", image: siteConfig.team.members[2].image },
+      { name: "محمد حطيبة", role: "مدير البرمجيات", image: siteConfig.team.members[3].image },
+      { name: "هشام زهران", role: "المدير الرقمي", image: siteConfig.team.members[4].image },
+      { name: "شاهيناز ماهر", role: "المديرة المالية", image: siteConfig.team.members[5].image },
+      { name: "هبة نبيل", role: "قائدة المنتجات الرقمية وتجربة المستخدم", image: siteConfig.team.members[6].image },
     ],
   },
   process: [

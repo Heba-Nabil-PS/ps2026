@@ -3,7 +3,7 @@ import { ScrollHighlight } from "@/versions/main/motion/ScrollHighlight";
 import { Reveal } from "@/versions/main/motion/Reveal";
 import { AppLink } from "@/versions/main/ui/AppLink";
 import { serviceHref } from "@/versions/main/data/routes";
-import { Asterisk, Label } from "@/versions/main/ui/Label";
+import { Label } from "@/versions/main/ui/Label";
 import { CaseStats } from "@/versions/main/work/CaseBlocks";
 import { ArrowUpRight, Globe, Quote, Smartphone } from "lucide-react";
 import type { ReactNode } from "react";
@@ -141,6 +141,8 @@ const brand = (path: string) => (
 const icons: Record<ProjectLinkKind, ReactNode> = {
   website: <Globe aria-hidden className="size-4" />,
   app: <Smartphone aria-hidden className="size-4" />,
+  appStore: brand("M16.4 12.6c0-2.5 2-3.7 2.1-3.8-1.2-1.7-3-1.9-3.6-2-1.5-.2-3 .9-3.8.9-.8 0-2-.9-3.3-.9-1.7 0-3.3 1-4.1 2.5-1.8 3.1-.5 7.6 1.3 10.1.8 1.2 1.8 2.6 3.1 2.5 1.3 0 1.7-.8 3.3-.8 1.5 0 1.9.8 3.3.8 1.4 0 2.2-1.2 3-2.4.9-1.4 1.3-2.7 1.3-2.8 0 0-2.6-1-2.6-4.1zM14 5.3c.7-.8 1.1-1.9 1-3-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.8-1 2.9 1.1.1 2.2-.6 2.9-1.4z"),
+  googlePlay: brand("M3.6 2.3 13.4 12l-9.8 9.7c-.4-.2-.6-.6-.6-1.1V3.4c0-.5.2-.9.6-1.1zm11 8.5 2.6-2.6L5.2 1.3zm0 2.4-9.4 9.5 12-6.9zm4-3.5 2.8 1.6c.8.5.8 1.3 0 1.8l-2.8 1.6-2.8-2.7z"),
   instagram: (
     <svg aria-hidden viewBox="0 0 24 24" className="size-4 fill-none stroke-current" strokeWidth={2}>
       <rect x="3" y="3" width="18" height="18" rx="5" />
@@ -156,13 +158,47 @@ const icons: Record<ProjectLinkKind, ReactNode> = {
   behance: brand("M8.2 11.3c1-.5 1.6-1.2 1.6-2.4C9.8 6.5 8 6 6 6H0v12h6.2c2.3 0 4.5-1.1 4.5-3.7 0-1.6-.8-2.8-2.5-3zM2.7 8h2.6c1 0 1.9.3 1.9 1.4 0 1.1-.7 1.5-1.7 1.5H2.7zm2.9 7.9H2.7v-3.3h3c1.2 0 2 .5 2 1.8 0 1.2-.9 1.5-2.1 1.5zM18 9c-3.2 0-5.3 2.3-5.3 5.2 0 3.1 2 5.2 5.3 5.2 2.5 0 4.1-1.1 4.9-3.5h-2.5c-.3.9-1.4 1.4-2.3 1.4-1.7 0-2.6-1-2.6-2.7h7.5C23.1 11.4 21.4 9 18 9zm-2.5 4.2c.1-1.4 1-2.2 2.4-2.2 1.4 0 2.2.8 2.3 2.2zM15.5 6.5h5.3v1.3h-5.3z"),
 };
 
+/** Kinds shown in the case study's facts row: where to visit the site or download the app. */
+const liveKinds: ProjectLinkKind[] = ["website", "app", "appStore", "googlePlay"];
+
+/** The project's site and app-store links, skipping any whose URL is still missing. */
+export const liveLinksOf = (links: ProjectLink[] = []) => links.filter((link) => link.href && liveKinds.includes(link.kind));
+
+/** Everything else — the brand's social accounts — for the strip at the end of the case. */
+export const socialLinksOf = (links: ProjectLink[] = []) => links.filter((link) => link.href && !liveKinds.includes(link.kind));
+
+/** A website reads as its domain; store links read as the store's name. */
+const linkText = (link: ProjectLink, names: Record<ProjectLinkKind, string>) =>
+  link.label ?? (link.kind === "website" ? new URL(link.href).hostname.replace(/^www\./, "") : names[link.kind]);
+
+/** Site and app-store links stacked as pills, sized to sit in the facts row. */
+export function LiveLinks({ links, names }: { links: ProjectLink[]; names: Record<ProjectLinkKind, string> }) {
+  return (
+    <ul className="flex flex-col items-start gap-2">
+      {links.map((link) => (
+        <li key={link.href}>
+          <a
+            href={link.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="glass group inline-flex items-center gap-2.5 rounded-full py-2 pe-3.5 ps-4 text-sm transition-colors duration-500 hover:bg-sky hover:text-ink-900"
+          >
+            {icons[link.kind]}
+            <span>{linkText(link, names)}</span>
+            <ArrowUpRight aria-hidden className="size-3.5 transition-transform duration-500 group-hover:rotate-45 rtl:-scale-x-100" />
+          </a>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 /** Where to see the work live — the site, the app and the brand's social accounts. */
 export function CaseLinks({ label, links, names }: { label: string; links: ProjectLink[]; names: Record<ProjectLinkKind, string> }) {
   return (
     <Reveal as="section" className="gutter pb-[clamp(5rem,11vw,10rem)]">
       <div data-reveal-item className="flex flex-col gap-8 border-t border-line pt-10 md:flex-row md:items-center md:justify-between">
         <p className="text-title flex items-center gap-4 font-medium">
-          <Asterisk className="text-sky" />
           {label}
         </p>
         <ul className="flex flex-wrap gap-3">

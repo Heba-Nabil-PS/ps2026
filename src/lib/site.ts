@@ -29,7 +29,7 @@ export const siteConfig = {
   /** Secondary destinations listed in the menu and footer after the primary nav. */
   moreNav: [
     { label: "Work", href: "/projects" },
-    { label: "Portfolio", href: "/portfolio" },
+    { label: "Projects", href: "/portfolio" },
   ],
   /** Routes rendered inside the immersive studio shell (own header, preloader and footer). */
   studioRoutes: ["/", "/services", "/case-studies", "/team", "/careers", "/contact"],
@@ -123,11 +123,13 @@ export const siteConfig = {
   team: {
     lead: { name: "Seif El Sawaf", role: "Chief Executive Officer", image: "/images/site/ceo.webp" },
     members: [
-      { name: "Pery Khalil", role: "Associate Creative Director" },
-      { name: "Mirna Magdy", role: "Art Director" },
-      { name: "Mostafa Askary", role: "Motion Team Lead" },
-      { name: "Nouran Ayman", role: "Copy Team Lead" },
-      { name: "Hesham Zahran", role: "Performance Lead" },
+      { name: "Lubna El Banan", role: "Managing Director", image: "/images/team/lubna-el-banan.webp" },
+      { name: "Ahmed Khalil", role: "Creative Director", image: "/images/team/ahmed-khalil.webp" },
+      { name: "Peri Khalil", role: "Associate Creative Director", image: "/images/team/peri-khalil.webp" },
+      { name: "Muhamed Hotyba", role: "Software Director", image: "/images/team/muhamed-hotyba.webp" },
+      { name: "Hesham Zahran", role: "Digital Director", image: "/images/team/hesham-zahran.webp" },
+      { name: "Shahinaz Maher", role: "Chief Financial Officer", image: "/images/team/shahinaz-maher.webp" },
+      { name: "Heba Nabil", role: "Digital Product & UX Lead", image: "/images/team/heba-nabil.webp" },
     ],
   },
   /** The four-step process from the company profile. */

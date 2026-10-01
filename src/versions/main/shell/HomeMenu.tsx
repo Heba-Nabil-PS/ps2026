@@ -3,8 +3,9 @@
 import { useLocale } from "@/i18n/locale-context";
 import { ease } from "@/lib/motion";
 import { cn } from "@/lib/utils";
+import { Magnetic } from "@/versions/main/motion/Magnetic";
+import { NavUnderline } from "@/versions/main/shell/NavMenu";
 import { AppLink } from "@/versions/main/ui/AppLink";
-import { Asterisk } from "@/versions/main/ui/Label";
 import { versionHref, versions } from "@/versions/registry";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
@@ -60,25 +61,25 @@ export function HomeMenu({ active, highlighted, onHover }: { active: boolean; hi
         if (!root.current?.contains(event.relatedTarget as Node)) setOpen(false);
       }}
     >
-      {highlighted ? (
-        <motion.span layoutId="nav-highlight" aria-hidden className="absolute inset-x-3 bottom-0 h-px rounded-full bg-sky" transition={{ type: "spring", stiffness: 380, damping: 34 }} />
-      ) : null}
-      <button
-        type="button"
-        aria-expanded={open}
-        aria-controls={menuId}
-        onPointerDown={(event) => (pointerType.current = event.pointerType)}
-        onClick={() => {
-          if (pointerType.current === "mouse") setOpen(true);
-          else setOpen((value) => !value);
-          pointerType.current = "";
-        }}
-        onFocus={() => onHover(true)}
-        className={cn("relative flex items-center gap-1.5 px-3 py-2.5 text-sm transition-colors duration-500", active || open ? "text-fg" : "text-muted hover:text-fg")}
-      >
-        {main.label[locale]}
-        <ChevronDown aria-hidden className={cn("size-3.5 transition-transform duration-500", open && "rotate-180")} />
-      </button>
+      <Magnetic>
+        <button
+          type="button"
+          aria-expanded={open}
+          aria-controls={menuId}
+          onPointerDown={(event) => (pointerType.current = event.pointerType)}
+          onClick={() => {
+            if (pointerType.current === "mouse") setOpen(true);
+            else setOpen((value) => !value);
+            pointerType.current = "";
+          }}
+          onFocus={() => onHover(true)}
+          className={cn("relative flex items-center gap-1.5 px-3 py-2.5 text-sm transition-colors duration-500", active || open ? "text-fg" : "text-muted hover:text-fg")}
+        >
+          {main.label[locale]}
+          <ChevronDown aria-hidden className={cn("size-3.5 transition-transform duration-500", open && "rotate-180")} />
+          <NavUnderline shown={highlighted} />
+        </button>
+      </Magnetic>
 
       <AnimatePresence>
         {open ? (
@@ -96,7 +97,6 @@ export function HomeMenu({ active, highlighted, onHover }: { active: boolean; hi
                 const current = version.id === "main";
                 const content = (
                   <>
-                    <Asterisk className={cn("mt-1 size-3", current ? "text-sky" : "text-subtle")} />
                     <span>
                       <span className="block text-sm text-fg">{version.label[locale]}</span>
                       <span className="block text-xs text-subtle">{version.description[locale]}</span>

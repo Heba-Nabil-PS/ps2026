@@ -2,13 +2,26 @@
 
 import { ease } from "@/lib/motion";
 import { cn } from "@/lib/utils";
+import { Magnetic } from "@/versions/main/motion/Magnetic";
 import { AppLink } from "@/versions/main/ui/AppLink";
-import { Asterisk } from "@/versions/main/ui/Label";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
 
 export type NavMenuItem = { href: string; label: string; description?: string; flag?: string };
+
+/** The thin line under a primary nav item: draws in from the start edge while the item is hovered or current. */
+export function NavUnderline({ shown }: { shown: boolean }) {
+  return (
+    <span
+      aria-hidden
+      className={cn(
+        "absolute inset-x-3 bottom-0 h-px origin-left bg-sky transition-transform duration-500 ease-expo rtl:origin-right",
+        shown ? "scale-x-100" : "scale-x-0",
+      )}
+    />
+  );
+}
 
 /**
  * A primary nav item with a menu of its pages underneath (Services,
@@ -74,22 +87,22 @@ export function NavMenu({
         onHover(false);
       }}
     >
-      {highlighted ? (
-        <motion.span layoutId="nav-highlight" aria-hidden className="absolute inset-x-3 bottom-0 h-px rounded-full bg-sky" transition={{ type: "spring", stiffness: 380, damping: 34 }} />
-      ) : null}
-      <AppLink
-        href={href}
-        transitionLabel={label}
-        aria-current={active ? "page" : undefined}
-        aria-haspopup="true"
-        aria-expanded={open}
-        aria-controls={menuId}
-        onClick={() => setOpen(false)}
-        className={cn("relative flex items-center gap-1.5 px-3 py-2.5 text-sm transition-colors duration-500", active || open ? "text-fg" : "text-muted hover:text-fg")}
-      >
-        {label}
-        <ChevronDown aria-hidden className={cn("size-3.5 transition-transform duration-500", open && "rotate-180")} />
-      </AppLink>
+      <Magnetic>
+        <AppLink
+          href={href}
+          transitionLabel={label}
+          aria-current={active ? "page" : undefined}
+          aria-haspopup="true"
+          aria-expanded={open}
+          aria-controls={menuId}
+          onClick={() => setOpen(false)}
+          className={cn("relative flex items-center gap-1.5 px-3 py-2.5 text-sm transition-colors duration-500", active || open ? "text-fg" : "text-muted hover:text-fg")}
+        >
+          {label}
+          <ChevronDown aria-hidden className={cn("size-3.5 transition-transform duration-500", open && "rotate-180")} />
+          <NavUnderline shown={highlighted} />
+        </AppLink>
+      </Magnetic>
 
       <AnimatePresence>
         {open ? (
@@ -111,7 +124,6 @@ export function NavMenu({
                     onClick={() => setOpen(false)}
                     className="group flex items-start gap-3 rounded-2xl px-4 py-3 transition-colors duration-300 hover:bg-paper/10 focus-visible:bg-paper/10"
                   >
-                    <Asterisk className="mt-1 size-3 text-subtle transition-colors duration-300 group-hover:text-sky group-focus-visible:text-sky" />
                     <span>
                       <span className="flex items-center gap-2 text-sm text-fg">
                         {item.label}

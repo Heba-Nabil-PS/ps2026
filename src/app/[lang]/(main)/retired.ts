@@ -2,8 +2,8 @@ import { hasLocale, localizeHref } from "@/i18n/config";
 import { permanentRedirect } from "next/navigation";
 
 /**
- * Routes from the previous site (case studies, portfolio, projects,
- * home-opt2) now live under /work. next.config.ts redirects them before they
+ * Routes from the previous site (case studies, projects, home-opt2) now
+ * live under /work. next.config.ts redirects them before they
  * render; these stubs keep the old files buildable as a safety net.
  * The original pages are preserved in archive/previous-site/.
  */

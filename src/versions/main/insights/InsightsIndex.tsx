@@ -1,6 +1,6 @@
 "use client";
 
-import { fill } from "@/versions/main/copy";
+import { formatDate } from "@/versions/main/copy";
 import { useCopy } from "@/versions/main/use-copy";
 import { ease } from "@/lib/motion";
 import { cn } from "@/lib/utils";
@@ -14,7 +14,7 @@ import { useMemo, useState } from "react";
  * index; the choice is kept in the URL (?topic=…) so a view can be shared.
  */
 export function InsightsIndex() {
-  const { copy, insights, topics } = useCopy();
+  const { copy, insights, topics, locale } = useCopy();
   const params = useSearchParams();
   const pathname = usePathname();
   const initial = params.get("topic");
@@ -69,7 +69,7 @@ export function InsightsIndex() {
                 exit={{ opacity: 0, scale: 0.96, filter: "blur(10px)" }}
                 transition={{ duration: 0.9, ease: ease.expo, delay: Math.min(index, 6) * 0.05 }}
               >
-                <InsightCard insight={insight} minutes={fill(copy.insights.minutes, { count: String(insight.read) })} viewLabel={copy.ui.readMore} />
+                <InsightCard insight={insight} date={formatDate(locale, insight.date)} viewLabel={copy.ui.readMore} />
               </motion.li>
             ))}
           </AnimatePresence>

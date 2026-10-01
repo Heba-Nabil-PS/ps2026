@@ -7,7 +7,7 @@ import { motionGate, showNow } from "./useMotionGate";
 
 /**
  * Calm entrance for blocks of content: children marked `data-reveal-item`
- * (or the wrapper itself) rise 40px and resolve from a soft blur, batched so
+ * (or the wrapper itself) rise 40px and fade in (transform and opacity only, so it stays on the GPU), batched so
  * rows that enter together stagger together.
  */
 export function Reveal({
@@ -37,17 +37,16 @@ export function Reveal({
       return motionGate(
         () => {
           gsap.set(el, { autoAlpha: 1 });
-          gsap.set(targets, { autoAlpha: 0, y: 40, filter: "blur(8px)" });
+          gsap.set(targets, { autoAlpha: 0, y: 40 });
           const play = (batch: Element[], extraDelay = 0) =>
             gsap.to(batch, {
               autoAlpha: 1,
               y: 0,
-              filter: "blur(0px)",
               duration: 1.3,
               ease: "expo.out",
               stagger,
               delay: extraDelay,
-              clearProps: "filter,transform",
+              clearProps: "transform",
             });
 
           if (immediate) {

@@ -32,7 +32,7 @@ The moodboard is 12 tiles plus 12 site references. What they share matters more 
 | P1 | **Light through reeded glass** | Tiles 1, 8 (hand), process ref 09, `cover.webp` | Fluted-glass panels (`FlutedGlass`) over imagery and 3D. Page transitions are glass flutes. |
 | P2 | **Depth from one sculptural 3D form** | Blue disc spiral (tile 3), Styleport ring, DNA (Garri Zmudze) | One WebGL object in the hero: a spiral of glass discs that twists with scroll and leans toward the pointer. No decorative 3D anywhere else. |
 | P3 | **Movement as motion blur** | Walking figures (tiles 4, 7), techredux streaks | Images enter with a horizontal motion-blur that resolves to sharp (`MotionBlurReveal`). |
-| P4 | **Stretched, heavy type as image** | Gero Bold, "ENDLESS POSSIBILITIES", techredux | Display type is a variable, extended grotesk (Anybody, standing in for Gero Bold). Headlines animate along the *width* axis: they stretch into place. |
+| P4 | **Stretched, heavy type as image** | Gero Bold, "ENDLESS POSSIBILITIES", techredux | Display type (banner titles and section headings) is a variable, extended grotesk (Anybody). Headlines animate along the *width* axis: they stretch into place. |
 | P5 | **Human, in black and white** | Tiles 2, 9, 10 | People and studio photos are graded navy-monochrome. Client work stays monochrome until hover or focus, then turns to colour: the work "comes alive". |
 | P6 | **Metallic calm** | Elevator doors (tiles 10, 11), phone still life | Brushed-metal sheen on primary buttons, and the steel `#A9BACB` as the secondary text colour. |
 | P7 | **Dark navy to black, one bold accent** | Deck palette | 90% ink/navy, sky `#8CC4E6` for accent only, and one full sky block per page at most (the "Endless possibilities" footer). |
@@ -79,12 +79,12 @@ Content: industries in `src/data/industries.ts` (+ `.ar.ts`), articles in `src/d
 2. **Positioning statement:** strategy · creativity · innovation, highlighted word by word as you scroll. *Goal: explain the partner idea.*
 3. **Selected Work³:** 4 flagship cases in large cards whose frames flatten as they rise. *Goal: objective 01.*
 4. **Services index:** numbered rows 01–06. Hovering a row opens an image. *Goal: understand capabilities fast.*
-5. **Clients:** a logo wall in glass cells. *Goal: trust.*
+5. **Clients:** white brand marks adrift on three depth lanes, no cells or frames. *Goal: trust.*
 6. **Process:** four ✳ glass cards over the fluted light. *Goal: show how we work.*
 7. **Closing:** "Let's build your brand together" → Contact / Careers. *Goal: conversion.*
 
 ### Work
-Filter bar (All + categories that actually have work) · a grid of large cards (monochrome, colour on hover, "View" cursor) · a clients wall. Case study: stretched title, facts row (client, market, services, deliverables), content blocks, next case.
+Filter bar (All + categories that actually have work) · a grid of large cards (monochrome, colour on hover, "View" cursor) · the floating client marks. Case study: stretched title, facts row (client, market, services, deliverables), content blocks, next case.
 
 ### Services
 A hero, then six sticky-stacking glass cards with bold imagery (Peachweb ref), each with deliverables and a proof case. Then the process, then the CTA.
@@ -100,7 +100,7 @@ src/versions/main/          (the main design; see docs/design-versions.md for ve
   motion/     StretchHeading · MotionBlurReveal · FrameRise · Reveal · ScrollHighlight · Magnetic · Counter
   ui/         AppLink · Button/ButtonLink · Label/Asterisk · FlutedGlass · PageHero · SectionHead · ClosingCta · Field
   three/      GlassSpiral (R3F, lazy-loaded, pauses off-screen, still frame for reduced motion)
-  sections/   WorkCard · ClientsWall · ProcessCards · Offices   (shared by several pages)
+  sections/   WorkCard · ClientLogoSection · ProcessCards · Offices   (shared by several pages)
   home/       Hero · Positioning · SelectedWork · ServicesIndex
   work/       WorkIndex · CaseBlocks · CompareSlider · NextCase
   services/   ServiceStack
@@ -134,6 +134,7 @@ src/versions/main/          (the main design; see docs/design-versions.md for ve
 | **Glass flutes** page transition (Framer Motion) | Route changes | P1 |
 | 3D spiral twist + pointer lean | Home hero | P2 |
 | Scroll-highlighted statement | Home, About | Reading pace |
+| **Floating client marks** (blur-in one by one, depth lanes drifting in opposite directions, scroll parallax, glow + shimmer on hover) | Clients on Home, Work, Industries | Trust, without a logo grid |
 | Monochrome → colour, magnetic buttons, sliding nav pill, ✳ spin, metallic sheen | Micro-interactions | P5, P6, P8, P9 |
 
 **Ownership:** GSAP owns scroll-linked and timeline motion. Framer Motion owns UI state (nav, menu, filters, forms, page transitions). The two never animate the same element.
@@ -151,7 +152,7 @@ src/versions/main/          (the main design; see docs/design-versions.md for ve
 
 ## 8. Open items for the team
 
-- **Gero Bold**: drop licensed `woff2` files into `public/fonts/gero/` and the display face switches automatically (see `layout.tsx`). Until then, Anybody (extended 125, weight 800–900) stands in. **Helvetica Neue** is used where installed. Inter Tight is the web fallback.
+- **Fonts**: banner titles and section headings use Anybody (extended 125, weight 800–900). **Helvetica Neue** (text) is used where installed; Inter Tight is the web fallback.
 - **Form delivery**: set `FORMS_WEBHOOK_URL` (any endpoint that accepts `multipart/form-data`: Zapier, Make, Formspree, an ATS). Without it, the forms fall back to a pre-filled email.
 - **Video**: the hero and case studies accept a `backgroundVideo`, but no footage exists yet.
 - **Team portraits**: the leads grid uses typographic cards until real black-and-white portraits are shot.

@@ -5,7 +5,7 @@ import { Label } from "@/versions/main/ui/Label";
 import type { ReactNode } from "react";
 
 /**
- * The standard section opening: ✳ label, stretched two-line title, and an
+ * The standard section opening: label, stretched two-line title, and an
  * optional intro and action aligned to the end column. Keeps every section
  * on every page starting the same way (P8: quiet, numbered structure).
  */
@@ -14,12 +14,15 @@ export function SectionHead({
   title,
   intro,
   action,
+  actionEnd,
   className,
 }: {
   label: string;
   title: readonly string[];
   intro?: string;
   action?: ReactNode;
+  /** Push the action to the far end of its column instead of the start. */
+  actionEnd?: boolean;
   className?: string;
 }) {
   return (
@@ -31,7 +34,7 @@ export function SectionHead({
         <StretchHeading lines={title} className="text-headline" />
       </div>
       {intro || action ? (
-        <Reveal className="flex flex-col items-start gap-6 md:col-span-4 md:pb-2">
+        <Reveal className={cn("flex flex-col items-start gap-6 md:col-span-4 md:pb-2", actionEnd && "md:items-end")}>
           {intro ? (
             <p data-reveal-item className="max-w-sm text-muted">
               {intro}

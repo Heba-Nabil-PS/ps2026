@@ -1,5 +1,5 @@
 /** Arabic copy of `portfolio` — same projects, order, slugs and media; only the words change. */
-import { assets, type PortfolioProject } from "@/data/portfolio";
+import { assets, projectLinks, type PortfolioProject } from "@/data/portfolio";
 
 const texas = assets("texas-chicken");
 const sinclair = assets("sinclair-aesthetics");
@@ -29,6 +29,7 @@ export const portfolioAr: PortfolioProject[] = [
     client: "Texas Chicken — الشرق الأوسط وأفريقيا",
     services: ["بناء العلامة التجارية", "تطوير المواقع والتطبيقات", "إدارة منصات التواصل", "تحسين محركات البحث", "الإنتاج"],
     deliverables: ["الهوية البصرية", "تطبيق طلبات إقليمي", "التجارة الإلكترونية وبرامج الولاء", "أكشاك الخدمة الذاتية في الفروع", "حضور دائم على منصات التواصل"],
+    links: projectLinks["texas-chicken"],
     tags: ["مطاعم الخدمة السريعة", "ثنائي اللغة", "مشروع رئيسي"],
     color: "#1a0f08",
     heroImage: texas.image("hero"),
@@ -48,19 +49,19 @@ export const portfolioAr: PortfolioProject[] = [
       ],
     },
     content: [
+      {
+        type: "fullWidthVideo",
+        src: "https://techredux.co/Assets/Works/Getswitches/Hero%20Video.mp4",
+        label: "تكساس تشيكن — فيلم الحملة",
+      },
       { type: "hero", eyebrow: "شراكة رئيسية", title: "ستة عشر سوقًا. منظومة واحدة. بلا وسطاء." },
       {
-        type: "text",
+        type: "twoColumn",
         eyebrow: "البناء",
         title: "تطبيق إقليمي واحد. 16 بلدًا. دفع واحد.",
         body: "صمّمنا وطوّرنا تطبيق طلبات إقليميًا واحدًا لأفريقيا والشرق الأوسط، ليحلّ محلّ 16 تجربة متفرقة لكل بلد على حدة، برحلة واحدة ثنائية اللغة تراعي خصوصية كل سوق، وتدفع إلى تكرار الطلب عبر قسائم إلكترونية قابلة للتخصيص.",
-      },
-      {
-        type: "image",
         image: texas.media("app", "تطبيق طلبات Texas Chicken — الشاشة الرئيسية مع التوصيل والاستلام وتناول الطعام في المطعم"),
-        aspect: "portrait",
-        align: "right",
-        caption: "رحلة طلب واحدة، تُقدَّم عبر منصة إقليمية موحّدة",
+        reverse: true,
       },
       {
         type: "posts",
@@ -169,6 +170,7 @@ export const portfolioAr: PortfolioProject[] = [
     client: "Shark Tank مصر",
     services: ["إدارة منصات التواصل", "تطوير المواقع والتطبيقات", "الإنتاج", "الحملات الرقمية"],
     deliverables: ["حضور دائم على منصات التواصل", "حملات الحلقات", "موقع ثنائي اللغة", "رحلة التقديم"],
+    links: projectLinks["shark-tank-egypt"],
     tags: ["ترفيه", "ثنائي اللغة", "بث تلفزيوني"],
     color: "#071426",
     heroImage: sharkTank.image("hero"),
@@ -194,13 +196,14 @@ export const portfolioAr: PortfolioProject[] = [
         title: "موجز يسير على توقيت البث",
         body: "إطلاق الحلقات، والحلقات الخاصة، وصيغ الشركاء مثل She’s Next — تُنشر في موعدها بالدقيقة، بالعربية والإنجليزية.",
         items: [
-          sharkTank.media("post-01", "«الصعود يبدأ» — إعلان تشويقي للموسم"),
-          sharkTank.media("post-02", "تعرّف إلى She's Next — 9 متأهلات للنهائي، بالشراكة مع Visa"),
+          sharkTank.media("post-02", "«الصعود يبدأ» — إعلان تشويقي للموسم"),
+          sharkTank.media("post-01", "تعرّف إلى She's Next — 9 متأهلات للنهائي، بالشراكة مع Visa"),
           sharkTank.media("post-03", "الحلقة الخاصة 2 — اليوم 9:00 مساءً"),
           sharkTank.media("post-04", "الحلقة 10 — اليوم الساعة 9 مساءً"),
           sharkTank.media("post-05", "«الابتكار في جيناتنا»"),
           sharkTank.media("post-06", "الأربعاء 9 مساءً — المستثمرون"),
         ],
+        emerge: 0,
       },
       {
         type: "text",
@@ -232,6 +235,7 @@ export const portfolioAr: PortfolioProject[] = [
     client: "Million Pound Menu",
     services: ["إدارة منصات التواصل", "تطوير المواقع والتطبيقات", "الإنتاج"],
     deliverables: ["حملات الحلقات", "موقع ثنائي اللغة", "رحلة التقديم", "إنتاج المحتوى"],
+    links: projectLinks["million-pound-menu"],
     tags: ["ترفيه", "طعام", "بث تلفزيوني"],
     color: "#120d0a",
     heroImage: poundMenu.image("hero"),
@@ -331,6 +335,7 @@ export const portfolioAr: PortfolioProject[] = [
     client: "Million Riyal Menu — MBC وموسم الرياض",
     services: ["إدارة منصات التواصل", "تطوير المواقع والتطبيقات", "الإنتاج"],
     deliverables: ["حملات حلقات بالعربية أولًا", "موقع محلي", "إنتاج المحتوى"],
+    links: projectLinks["million-riyal-menu"],
     tags: ["ترفيه", "عربي", "السعودية"],
     color: "#0b1a16",
     heroImage: riyalMenu.image("hero"),
@@ -669,6 +674,7 @@ export const portfolioAr: PortfolioProject[] = [
     client: "Moishi",
     services: ["تطوير المواقع والتطبيقات", "بناء العلامة التجارية"],
     deliverables: ["تجربة المستخدم وواجهات التطبيق", "رحلة الطلب", "إعادة الطلب والمفضلة"],
+    links: projectLinks["moishi"],
     tags: ["تطبيق", "UI/UX", "طعام"],
     color: "#1a1220",
     heroImage: moishi.image("hero"),

@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { useId, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
 
 const control =
-  "peer w-full border-0 border-b border-line-strong bg-transparent px-0 pb-3 pt-2 text-lg text-fg placeholder:text-subtle transition-colors duration-500 focus:border-sky focus:outline-none focus-visible:outline-none aria-[invalid=true]:border-[#f0a3a3]";
+  "peer w-full border-0 border-b border-line-strong bg-transparent px-0 pb-3 pt-2 text-lg text-fg placeholder:text-subtle transition-colors duration-500 focus:border-sky focus:outline-none focus-visible:outline-none aria-[invalid=true]:border-danger";
 
 type Shared = { label: string; hint?: string; error?: string; optionalLabel?: string; className?: string };
 
@@ -23,7 +23,7 @@ function Frame({ id, label, hint, error, optionalLabel, className, children }: S
         </p>
       ) : null}
       {error ? (
-        <p id={`${id}-error`} role="alert" className="mt-2 text-sm text-[#f0a3a3]">
+        <p id={`${id}-error`} role="alert" className="mt-2 text-sm text-danger">
           {error}
         </p>
       ) : null}

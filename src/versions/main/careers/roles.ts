@@ -11,7 +11,7 @@ export const roleSlugs = () => [...roles.map((role) => role.id), openApplication
 /** A listed role, or the open application when the slug is "open-application". */
 export function findRole(lang: Locale, slug: string) {
   const { copy, roles: list } = getCopy(lang);
-  if (slug === openApplicationId) return { ...copy.careers.role.open, responsibilities: [] as readonly string[], requirements: [] as readonly string[], open: true };
+  if (slug === openApplicationId) return { ...copy.careers.role.open, description: [] as readonly string[], responsibilities: [] as readonly string[], requirements: [] as readonly string[], open: true };
   const role = list.find((item) => item.id === slug);
   return role ? { ...role, open: false } : null;
 }

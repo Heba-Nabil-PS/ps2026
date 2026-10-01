@@ -14,7 +14,7 @@ export type MediaRef = { src: string; alt: string };
 
 export type StatItem = { value: number; prefix?: string; suffix?: string; decimals?: number; label: string };
 
-export type ProjectLinkKind = "website" | "app" | "instagram" | "facebook" | "linkedin" | "tiktok" | "youtube" | "x" | "behance";
+export type ProjectLinkKind = "website" | "app" | "appStore" | "googlePlay" | "instagram" | "facebook" | "linkedin" | "tiktok" | "youtube" | "x" | "behance";
 
 /** An outbound link to the live work — the site, the app or a social account. */
 export type ProjectLink = { kind: ProjectLinkKind; href: string; label?: string };
@@ -25,6 +25,7 @@ export type ContentBlock =
   | { type: "image"; image: MediaRef; caption?: string; aspect?: "landscape" | "portrait" | "square"; align?: "left" | "center" | "right" }
   | { type: "fullWidthImage"; image: MediaRef; caption?: string }
   | { type: "video"; src: string; poster: string; label: string; caption?: string }
+  | { type: "fullWidthVideo"; src: string; label: string; caption?: string }
   | { type: "gallery"; title?: string; images: MediaRef[] }
   /** Campaign work shown whole, never cropped — social posts, screens, key visuals. */
   | {
@@ -35,6 +36,8 @@ export type ContentBlock =
       items: MediaRef[];
       shape?: "portrait" | "square" | "story" | "phone" | "screen" | "wide";
       columns?: 2 | 3;
+      /** Index of the item the project's 3D companion leaves from (a `swim` companion; see portfolio/companion/registry). */
+      emerge?: number;
     }
   | { type: "twoColumn"; eyebrow?: string; title: string; body: string; image: MediaRef; reverse?: boolean }
   | { type: "text"; eyebrow?: string; title: string; body: string }
@@ -85,6 +88,28 @@ export const assets = (slug: string) => ({
   media: (name: string, alt: string): MediaRef => ({ src: `/images/projects/${slug}/${name}.webp`, alt }),
 });
 
+/**
+ * Live links per project, shared by the English and Arabic copies.
+ * A website gets `website`; an app gets `appStore` and/or `googlePlay`. These
+ * show in the case study's facts row, so a project with none simply hides it.
+ * An empty href is skipped.
+ */
+export const projectLinks: Record<string, ProjectLink[]> = {
+  "texas-chicken": [
+    { kind: "website", href: "https://texaschicken.com/" },
+    { kind: "appStore", href: "https://apps.apple.com/eg/app/texas-chicken/id1438764129" },
+    { kind: "googlePlay", href: "https://play.google.com/store/search?q=texas+chicken&c=apps&hl=en" },
+  ],
+  // TODO: placeholder links — replace with the real URLs before launch.
+  "shark-tank-egypt": [{ kind: "website", href: "https://example.com/" }],
+  "million-pound-menu": [{ kind: "website", href: "https://example.com/" }],
+  "million-riyal-menu": [{ kind: "website", href: "https://example.com/" }],
+  moishi: [
+    { kind: "appStore", href: "https://apps.apple.com/" },
+    { kind: "googlePlay", href: "https://play.google.com/store/apps" },
+  ],
+};
+
 const texas = assets("texas-chicken");
 const sinclair = assets("sinclair-aesthetics");
 const sharkTank = assets("shark-tank-egypt");
@@ -113,6 +138,7 @@ export const portfolio: PortfolioProject[] = [
     client: "Texas Chicken — Middle East & Africa",
     services: ["Branding", "Website & App Development", "Social Media Management", "SEO", "Production"],
     deliverables: ["Brand identity", "Regional ordering app", "E-commerce & loyalty", "In-store kiosks", "Always-on social"],
+    links: projectLinks["texas-chicken"],
     tags: ["QSR", "Bilingual", "Flagship"],
     color: "#1a0f08",
     heroImage: texas.image("hero"),
@@ -132,19 +158,19 @@ export const portfolio: PortfolioProject[] = [
       ],
     },
     content: [
+      {
+        type: "fullWidthVideo",
+        src: "https://techredux.co/Assets/Works/Getswitches/Hero%20Video.mp4",
+        label: "Texas Chicken — campaign film",
+      },
       { type: "hero", eyebrow: "Flagship partnership", title: "Sixteen markets. One brand system. No hand-offs." },
       {
-        type: "text",
+        type: "twoColumn",
         eyebrow: "The build",
         title: "One regional app. 16 countries. One checkout.",
         body: "We designed and built a single regional ordering app for Africa and the Middle East, replacing 16 fragmented, country-by-country experiences with one bilingual, market-aware journey built to drive repeat orders through customizable e-coupons.",
-      },
-      {
-        type: "image",
         image: texas.media("app", "Texas Chicken ordering app — home screen with delivery, pick-up and dine-in"),
-        aspect: "portrait",
-        align: "right",
-        caption: "One ordering journey, served through a single unified regional platform",
+        reverse: true,
       },
       {
         type: "posts",
@@ -253,6 +279,7 @@ export const portfolio: PortfolioProject[] = [
     client: "Shark Tank Egypt",
     services: ["Social Media Management", "Website & App Development", "Production", "Digital Campaigns"],
     deliverables: ["Always-on social", "Episode campaigns", "Bilingual website", "Applications journey"],
+    links: projectLinks["shark-tank-egypt"],
     tags: ["Entertainment", "Bilingual", "Broadcast"],
     color: "#071426",
     heroImage: sharkTank.image("hero"),
@@ -278,13 +305,14 @@ export const portfolio: PortfolioProject[] = [
         title: "A feed that runs on broadcast time",
         body: "Episode drops, special episodes and partner formats like She’s Next — published to the minute, in Arabic and English.",
         items: [
-          sharkTank.media("post-01", "The rise begins — season teaser"),
-          sharkTank.media("post-02", "Meet She's Next — 9 finalists, with Visa"),
+          sharkTank.media("post-02", "The rise begins — season teaser"),
+          sharkTank.media("post-01", "Meet She's Next — 9 finalists, with Visa"),
           sharkTank.media("post-03", "Special episode 2 — today 9:00 PM"),
           sharkTank.media("post-04", "Episode 10 — today at 9 PM"),
           sharkTank.media("post-05", "Innovation is in our DNA"),
           sharkTank.media("post-06", "Wednesday 9PM — the sharks"),
         ],
+        emerge: 0,
       },
       {
         type: "text",
@@ -316,6 +344,7 @@ export const portfolio: PortfolioProject[] = [
     client: "Million Pound Menu",
     services: ["Social Media Management", "Website & App Development", "Production"],
     deliverables: ["Episode campaigns", "Bilingual website", "Applications journey", "Content production"],
+    links: projectLinks["million-pound-menu"],
     tags: ["Entertainment", "Food", "Broadcast"],
     color: "#120d0a",
     heroImage: poundMenu.image("hero"),
@@ -415,6 +444,7 @@ export const portfolio: PortfolioProject[] = [
     client: "Million Riyal Menu — MBC & Riyadh Season",
     services: ["Social Media Management", "Website & App Development", "Production"],
     deliverables: ["Arabic-first episode campaigns", "Localized website", "Content production"],
+    links: projectLinks["million-riyal-menu"],
     tags: ["Entertainment", "Arabic", "KSA"],
     color: "#0b1a16",
     heroImage: riyalMenu.image("hero"),
@@ -753,6 +783,7 @@ export const portfolio: PortfolioProject[] = [
     client: "Moishi",
     services: ["Website & App Development", "Branding"],
     deliverables: ["App UI/UX", "Ordering journey", "Reorder & favourites"],
+    links: projectLinks["moishi"],
     tags: ["App", "UI/UX", "Food"],
     color: "#1a1220",
     heroImage: moishi.image("hero"),

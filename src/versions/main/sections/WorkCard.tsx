@@ -18,6 +18,9 @@ export function WorkCard({
   aspect = "landscape",
   sizes = "(min-width: 768px) 60vw, 100vw",
   priority,
+  image,
+  overlay = true,
+  mono = true,
   frame,
 }: {
   project: PortfolioProject;
@@ -26,6 +29,12 @@ export function WorkCard({
   aspect?: "landscape" | "portrait" | "wide";
   sizes?: string;
   priority?: boolean;
+  /** Card artwork, when it differs from the case-study hero. */
+  image?: string;
+  /** The gradient that darkens the foot of the image at rest. */
+  overlay?: boolean;
+  /** Monochrome at rest, colour on hover. Off shows the image in colour throughout. */
+  mono?: boolean;
   /** Wraps the media (e.g. FrameRise). */
   frame?: (media: ReactNode) => ReactNode;
 }) {
@@ -40,15 +49,18 @@ export function WorkCard({
       style={{ backgroundColor: project.color }}
     >
       <Image
-        src={project.heroImage}
+        src={image ?? project.heroImage}
         alt=""
         fill
         sizes={sizes}
         priority={priority}
         quality={75}
-        className="mono object-cover transition-transform duration-[1.4s] ease-expo group-hover:scale-[1.04] group-hover:[filter:none] group-focus-visible:[filter:none]"
+        className={cn(
+          "object-cover transition-transform duration-[1.4s] ease-expo group-hover:scale-[1.04]",
+          mono && "mono group-hover:[filter:none] group-focus-visible:[filter:none]",
+        )}
       />
-      <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,transparent_55%,rgb(3_7_13/0.55))] transition-opacity duration-700 group-hover:opacity-0" />
+      {overlay && <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,transparent_55%,rgb(3_7_13/0.55))] transition-opacity duration-700 group-hover:opacity-0" />}
       <span className="text-label absolute start-5 top-5 rounded-full bg-ink-950/60 px-3 py-2 text-paper backdrop-blur-md">{project.category}</span>
     </div>
   );

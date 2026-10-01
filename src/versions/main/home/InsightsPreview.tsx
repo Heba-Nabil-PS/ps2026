@@ -1,4 +1,4 @@
-import { fill } from "@/versions/main/copy";
+import { formatDate } from "@/versions/main/copy";
 import { getServerCopy } from "@/versions/main/server";
 import { Reveal } from "@/versions/main/motion/Reveal";
 import { InsightCard } from "@/versions/main/sections/InsightCard";
@@ -7,7 +7,7 @@ import { SectionHead } from "@/versions/main/ui/SectionHead";
 
 /** Home — the three latest insights, then the way into all of them. */
 export async function InsightsPreview() {
-  const { copy, insights } = await getServerCopy();
+  const { copy, insights, locale } = await getServerCopy();
   const section = copy.home.insights;
 
   return (
@@ -25,7 +25,7 @@ export async function InsightsPreview() {
       <Reveal as="ul" className="mt-10 grid gap-x-6 gap-y-12 md:mt-14 md:grid-cols-2 lg:grid-cols-3" stagger={0.1}>
         {insights.slice(0, 3).map((insight) => (
           <li key={insight.slug} data-reveal-item>
-            <InsightCard insight={insight} minutes={fill(copy.insights.minutes, { count: String(insight.read) })} viewLabel={copy.ui.readMore} />
+            <InsightCard insight={insight} date={formatDate(locale, insight.date)} viewLabel={copy.ui.readMore} />
           </li>
         ))}
       </Reveal>

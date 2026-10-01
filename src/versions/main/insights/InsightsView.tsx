@@ -12,7 +12,7 @@ export async function InsightsView() {
 
   return (
     <>
-      <PageHero label={page.hero.label} title={page.hero.title} intro={page.hero.intro} image="/images/site/why.webp" />
+      <PageHero title={page.hero.title} intro={page.hero.intro} image="/images/site/why.webp" />
       <Suspense fallback={null}>
         <InsightsIndex />
       </Suspense>

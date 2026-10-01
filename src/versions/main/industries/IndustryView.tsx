@@ -10,7 +10,6 @@ import { WorkCard } from "@/versions/main/sections/WorkCard";
 import { AppLink } from "@/versions/main/ui/AppLink";
 import { BackLink } from "@/versions/main/ui/BackLink";
 import { ClosingCta } from "@/versions/main/ui/ClosingCta";
-import { Asterisk } from "@/versions/main/ui/Label";
 import { PageHero } from "@/versions/main/ui/PageHero";
 import { SectionHead } from "@/versions/main/ui/SectionHead";
 import { ArrowUpRight } from "lucide-react";
@@ -32,7 +31,7 @@ export function IndustryView({ lang, industry, index }: IndustryViewProps) {
 
   return (
     <>
-      <PageHero label={industry.flagship ? `${industry.title} · ${copy.nav.menus.flagship}` : industry.title} title={industry.headline} intro={industry.intro} image={industry.image}>
+      <PageHero title={industry.headline} intro={industry.intro} image={industry.image}>
         <div className="flex flex-wrap items-center justify-between gap-4">
           <BackLink href="/industries" label={labels.back} transitionLabel={copy.meta.pages.industries.title} />
           <p className="text-label tabular-nums text-subtle">
@@ -46,7 +45,6 @@ export function IndustryView({ lang, industry, index }: IndustryViewProps) {
         <Reveal as="ul" className="mt-14 grid gap-4 sm:grid-cols-2 md:mt-20 lg:grid-cols-4" stagger={0.1}>
           {industry.challenges.map((challenge) => (
             <li key={challenge.title} data-reveal-item className="glass group flex min-h-64 flex-col rounded-card p-7">
-              <Asterisk className="size-5 text-sky" />
               <h3 className="text-title mt-auto pt-12 font-medium">{challenge.title}</h3>
               <p className="mt-3 text-sm text-muted">{challenge.body}</p>
             </li>
@@ -63,7 +61,6 @@ export function IndustryView({ lang, industry, index }: IndustryViewProps) {
               <li key={help.title} data-reveal-item className="border-t border-line">
                 <AppLink href={serviceHref(help.service)} transitionLabel={service?.title} className="group grid gap-4 py-8 md:grid-cols-12 md:gap-8 md:py-10">
                   <span className="text-label flex items-center gap-3 tabular-nums text-subtle md:col-span-2">
-                    <Asterisk className="text-sky" />
                     {String(helpIndex + 1).padStart(2, "0")}
                   </span>
                   <h3 className="text-title font-medium transition-colors duration-500 group-hover:text-sky md:col-span-4">{help.title}</h3>

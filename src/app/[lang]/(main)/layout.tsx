@@ -12,9 +12,8 @@ import { Anybody, IBM_Plex_Sans_Arabic, Inter_Tight } from "next/font/google";
 import { notFound } from "next/navigation";
 import "@/versions/main/styles.css";
 
-/* Display: Anybody's width axis (50–150) stands in for Gero Bold's stretched
-   cut and lets headlines animate from condensed to extended. Gero wins
-   automatically when installed (see globals.css). */
+/* Display: Anybody's width axis (50–150) lets headlines animate from
+   condensed to extended. */
 const stretch = Anybody({
   variable: "--font-stretch",
   subsets: ["latin"],
@@ -71,7 +70,7 @@ export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Prom
 
 export const viewport: Viewport = {
   themeColor: "#07121f",
-  colorScheme: "dark",
+  colorScheme: "dark light",
 };
 
 export default async function RootLayout({ children, params }: LayoutProps<"/[lang]">) {
@@ -98,14 +97,15 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
             section shows as plain content instead of staying hidden.
             It has already run by the time React hydrates, and browser extensions or the dev
             overlay can empty inline scripts in the DOM, so React must not compare its contents.
-            It also decides, before first paint, whether the home intro plays: on every full load
-            of the home page, never with reduced motion (the "intro-play" class is named in
-            versions/main/intro/intro-signal.ts). */}
+            It also decides, before first paint, whether the loading intro plays: on every full
+            load, never with reduced motion (the "intro-play" class is named in
+            versions/main/intro/intro-signal.ts). And it applies the saved light/dark choice
+            (key "ps-theme", see versions/main/shell/ThemeSwitch.tsx) so the page never flashes. */}
         <script
           suppressHydrationWarning
           dangerouslySetInnerHTML={{
             __html:
-              "var d=document.documentElement;d.classList.add('js');try{var p=location.pathname.replace(/\\/+$/,'');if((p===''||p==='/ar')&&!matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('intro-play')}catch(e){}setTimeout(function(){if(!window.__psReady)d.classList.remove('js','intro-play')},5000)",
+              "var d=document.documentElement;d.classList.add('js');try{if(localStorage.getItem('ps-theme')==='light')d.dataset.theme='light'}catch(e){}try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('intro-play')}catch(e){}setTimeout(function(){if(!window.__psReady)d.classList.remove('js','intro-play')},5000)",
           }}
         />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organization) }} />

@@ -8,12 +8,12 @@ import type { ComponentProps } from "react";
 
 type AppLinkProps = Omit<ComponentProps<typeof Link>, "href"> & {
   href: string;
-  /** Word shown on the glass while the page changes. */
+  /** Word shown on the cover while the page changes. */
   transitionLabel?: string;
 };
 
 /**
- * next/link with the locale prefix and the glass page transition. Modifier
+ * next/link with the locale prefix and the page transition. Modifier
  * clicks, new tabs and external URLs behave natively.
  */
 export function AppLink({ href: path, transitionLabel, onClick, target, ...props }: AppLinkProps) {

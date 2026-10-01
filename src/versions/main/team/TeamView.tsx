@@ -17,7 +17,7 @@ export async function TeamView() {
 
   return (
     <>
-      <PageHero label={page.hero.label} title={page.hero.title} intro={page.hero.intro} image="/images/site/who-we-are.webp" />
+      <PageHero title={page.hero.title} intro={page.hero.intro} image="/images/site/who-we-are.webp" />
 
       <Leadership />
       <DisciplineLeads />

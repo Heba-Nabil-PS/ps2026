@@ -1,67 +1,67 @@
-import { studioTimeZones } from "@/versions/main/data/studios";
 import { getServerCopy } from "@/versions/main/server";
 import { Reveal } from "@/versions/main/motion/Reveal";
 import { ContactForm } from "@/versions/main/contact/ContactForm";
-import { Offices } from "@/versions/main/sections/Offices";
+import { directionsHref } from "@/versions/main/sections/Offices";
 import { AppLink } from "@/versions/main/ui/AppLink";
-import { Label } from "@/versions/main/ui/Label";
 import { PageHero } from "@/versions/main/ui/PageHero";
-import { Suspense } from "react";
+import { ArrowUpRight, MapPin } from "lucide-react";
 
-/** Contact — one short form, direct lines, the way into a full project brief, what happens next, the studios. */
+/** Contact — a message form (questions, problems) beside the direct email and the office addresses. */
 export async function ContactView() {
   const { copy, site } = await getServerCopy();
   const page = copy.contact;
 
   return (
     <>
-      <PageHero label={page.hero.label} title={page.hero.title} intro={page.hero.intro} image="/images/site/contact.webp" />
+      <PageHero title={page.hero.title} intro={page.hero.intro} image="/images/site/contact.webp" />
 
-      <section className="gutter grid gap-12 pb-[clamp(5.5rem,12vw,11rem)] md:grid-cols-12">
-        <div className="md:col-span-8">
-          <Label className="mb-8">{page.form.label}</Label>
-          <Suspense fallback={null}>
-            <ContactForm />
-          </Suspense>
+      <section className="gutter grid gap-12 pb-[clamp(5.5rem,12vw,11rem)] pt-[clamp(3.5rem,8vw,7rem)] md:grid-cols-12 md:gap-8">
+        <div className="md:col-span-7 md:col-start-6 md:row-start-1">
+          <h2 className="mb-8 text-2xl font-medium md:text-3xl">{page.form.label}</h2>
+          <ContactForm />
         </div>
 
-        <Reveal className="flex flex-col gap-12 md:col-span-3 md:col-start-10 md:pt-16">
+        <Reveal className="flex flex-col gap-10 md:col-span-4 md:col-start-1 md:row-start-1" stagger={0.1}>
           <div data-reveal-item>
-            <p className="text-label mb-4 text-subtle">{page.direct.label}</p>
-            <p className="text-sm text-muted">{page.direct.email}</p>
+            <h2 className="mb-8 text-2xl font-medium md:text-3xl">{page.reach.label}</h2>
+            <p className="text-sm text-muted">{page.reach.email}</p>
             <a href={`mailto:${site.email}`} className="text-lg text-fg underline decoration-line-strong underline-offset-8 transition-colors hover:decoration-sky">
               {site.email}
             </a>
-            <p className="mt-6 text-sm text-muted">{page.direct.careers}</p>
-            <AppLink href="/careers" transitionLabel={copy.meta.pages.careers.title} className="text-fg underline decoration-line-strong underline-offset-8 transition-colors hover:decoration-sky">
-              {copy.footer.careers}
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <p data-reveal-item className="text-label text-subtle">
+              {page.offices.label}
+            </p>
+            {site.offices.map((office) => (
+              <address key={office.city} data-reveal-item className="glass flex flex-col gap-3 rounded-frame p-6 not-italic">
+                <p className="flex items-center gap-2 text-lg font-medium">
+                  <MapPin aria-hidden className="size-4 text-sky" />
+                  {office.city}
+                </p>
+                <p className="leading-[1.6] text-muted">{office.address}</p>
+                <a
+                  href={directionsHref(office.address)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group/link inline-flex w-fit items-center gap-2 text-sm text-fg transition-colors duration-500 hover:text-sky"
+                >
+                  {copy.ui.directions}
+                  <ArrowUpRight aria-hidden className="size-4 transition-transform duration-500 ease-expo group-hover/link:rotate-45 rtl:-scale-x-100" />
+                </a>
+              </address>
+            ))}
+          </div>
+
+          <p data-reveal-item className="text-sm text-muted">
+            {page.project.body}{" "}
+            <AppLink href={copy.nav.start.href} transitionLabel={copy.nav.start.label} className="text-fg underline decoration-line-strong underline-offset-8 transition-colors hover:decoration-sky">
+              {page.project.action}
             </AppLink>
-          </div>
-          <div data-reveal-item>
-            <p className="text-label mb-4 text-subtle">{page.brief.label}</p>
-            <p className="text-sm text-muted">{page.brief.body}</p>
-            <AppLink href={copy.nav.start.href} transitionLabel={copy.nav.start.label} className="mt-3 inline-block text-lg text-fg underline decoration-line-strong underline-offset-8 transition-colors hover:decoration-sky">
-              {page.brief.action}
-            </AppLink>
-          </div>
-          <div data-reveal-item>
-            <p className="text-label mb-6 text-subtle">{page.next.label}</p>
-            <ol className="flex flex-col gap-6">
-              {page.next.steps.map((step, index) => (
-                <li key={step.title} className="flex gap-4">
-                  <span className="text-label pt-1 tabular-nums text-sky">{String(index + 1).padStart(2, "0")}</span>
-                  <div>
-                    <p className="font-medium">{step.title}</p>
-                    <p className="mt-1 text-sm text-muted">{step.body}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
+          </p>
         </Reveal>
       </section>
-
-      <Offices label={page.offices.label} offices={site.offices} timeZones={studioTimeZones} directionsLabel={copy.ui.directions} />
     </>
   );
 }

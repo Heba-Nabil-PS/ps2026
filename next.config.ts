@@ -1,15 +1,13 @@
 import type { NextConfig } from "next";
 
 /**
- * Retired URLs from the previous site. The new sitemap folds case studies,
- * the portfolio and projects into /work, so each old address points at its
- * new home permanently, in both languages.
+ * Retired URLs from the previous site. The new sitemap folds case studies
+ * and projects into /work, so each old address points at its new home
+ * permanently, in both languages. (/portfolio is a live section again.)
  */
 const retired: { source: string; destination: string }[] = [
   { source: "/case-studies", destination: "/work" },
   { source: "/case-studies/:slug", destination: "/work/:slug" },
-  { source: "/portfolio", destination: "/work" },
-  { source: "/portfolio/:slug", destination: "/work/:slug" },
   { source: "/projects", destination: "/work" },
   { source: "/projects/:slug", destination: "/work/:slug" },
   { source: "/home-opt2", destination: "/" },
@@ -19,7 +17,7 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
     formats: ["image/avif", "image/webp"],
-    qualities: [70, 75, 85],
+    qualities: [60, 70, 75, 78, 80, 85],
   },
   // The one experimental key STACK-AND-STRUCTURE.md §0 tolerates: the body limit only exists here,
   // and without it the careers upload fails. Remove when Next promotes it to stable.

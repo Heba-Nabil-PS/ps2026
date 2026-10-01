@@ -8,9 +8,10 @@ import { cn } from "@/lib/utils";
 import { StretchHeading } from "@/versions/main/motion/StretchHeading";
 import { Button } from "@/versions/main/ui/Button";
 import { Honeypot, SelectField, TextArea, TextField } from "@/versions/main/ui/Field";
-import { Asterisk, Label } from "@/versions/main/ui/Label";
+import { Label } from "@/versions/main/ui/Label";
+import { PhoneField } from "@/versions/main/ui/PhoneField";
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, FileText, UploadCloud } from "lucide-react";
+import { Check, FileText, UploadCloud, Mail } from "lucide-react";
 import { startTransition, useActionState, useRef, useState, type FormEvent } from "react";
 
 const initial: FormState<ApplicationField> = { status: "idle", errors: {} };
@@ -34,7 +35,21 @@ function isHttpUrl(value: string) {
  * Three steps: You → Your work → Send. Each step is checked before moving on;
  * the server checks everything again. Uploads are PDF only, up to 8 MB.
  */
-export function ApplicationForm({ role, onRoleChange, subjectFor }: { role: string; onRoleChange: (id: string) => void; subjectFor: (title: string) => string }) {
+export function ApplicationForm({
+  role,
+  onRoleChange,
+  subjectFor,
+  heading,
+  lockRole = false,
+}: {
+  role: string;
+  onRoleChange: (id: string) => void;
+  subjectFor: (title: string) => string;
+  /** Replaces the default "Three steps" title, e.g. on a role's own page. */
+  heading?: readonly string[];
+  /** On a role's own page the role is fixed: it is named beside the form instead of chosen in it. */
+  lockRole?: boolean;
+}) {
   const { copy, roles, site } = useCopy();
   const locale = useLocale();
   const t = copy.careers.apply;
@@ -127,9 +142,10 @@ export function ApplicationForm({ role, onRoleChange, subjectFor }: { role: stri
         <div className="md:col-span-4">
           <Label className="mb-6">{t.label}</Label>
           <div id="apply-title">
-            <StretchHeading lines={t.title} className="text-headline" />
+            <StretchHeading lines={heading ?? t.title} className="text-headline" />
           </div>
-          <p className="mt-8 max-w-sm text-muted">{t.intro}</p>
+          {lockRole ? <p className="text-title mt-6 font-medium text-sky">{roleTitle}</p> : null}
+          <p className={cn("max-w-sm text-muted", lockRole ? "mt-4" : "mt-8")}>{t.intro}</p>
 
           {!done ? (
             <ol className="mt-12 flex flex-col gap-3" aria-label={t.label}>
@@ -153,12 +169,12 @@ export function ApplicationForm({ role, onRoleChange, subjectFor }: { role: stri
             {done ? (
               <motion.div key="done" role="status" initial={{ opacity: 0, y: 24, filter: "blur(8px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ duration: 0.9, ease: ease.expo }} className="flex min-h-96 flex-col items-start justify-center gap-6">
                 <span className="grid size-14 place-items-center rounded-full bg-sky text-ink-900">
-                  {state.status === "success" ? <Check aria-hidden className="size-6" /> : <Asterisk className="size-6" />}
+                  {state.status === "success" ? <Check aria-hidden className="size-6" /> : <Mail aria-hidden className="size-6" />}
                 </span>
                 <p className="text-title font-medium">{state.status === "success" ? t.success.title : t.fallback.title}</p>
                 <p className="max-w-lg text-muted">{state.status === "success" ? t.success.body : t.fallback.body}</p>
                 {state.status === "fallback" ? (
-                  <a href={mailto()} className="sheen inline-flex min-h-12 items-center rounded-full bg-[linear-gradient(180deg,#f7f9fb_0%,#c9d4df_55%,#a9bacb_100%)] px-6 font-medium text-ink-900">
+                  <a href={mailto()} className="sheen inline-flex min-h-12 items-center rounded-full bg-[linear-gradient(180deg,#f7f9fb_0%,#c9d4df_55%,#a9bacb_100%)] px-6 font-medium text-[#07121f]">
                     {t.fallback.action}
                   </a>
                 ) : null}
@@ -173,15 +189,19 @@ export function ApplicationForm({ role, onRoleChange, subjectFor }: { role: stri
                   <legend className="sr-only">{t.steps[0]}</legend>
                   <TextField name="name" label={t.fields.name.label} placeholder={t.fields.name.placeholder} autoComplete="name" error={message("name")} onInput={() => setClientErrors((e) => ({ ...e, name: undefined }))} />
                   <TextField name="email" type="email" label={t.fields.email.label} placeholder={t.fields.email.placeholder} autoComplete="email" error={message("email")} onInput={() => setClientErrors((e) => ({ ...e, email: undefined }))} />
-                  <TextField name="phone" type="tel" label={t.fields.phone.label} placeholder={t.fields.phone.placeholder} autoComplete="tel" optionalLabel={copy.ui.optional} />
-                  <SelectField name="role" label={t.fields.role.label} value={role} onChange={(event) => onRoleChange(event.target.value)}>
-                    <option value="">{t.fields.openApplication}</option>
-                    {roles.map((item) => (
-                      <option key={item.id} value={item.id}>
-                        {item.title} — {item.location}
-                      </option>
-                    ))}
-                  </SelectField>
+                  <PhoneField copy={t.fields.phone} optionalLabel={copy.ui.optional} />
+                  {lockRole ? (
+                    <input type="hidden" name="role" value={role} />
+                  ) : (
+                    <SelectField name="role" label={t.fields.role.label} value={role} onChange={(event) => onRoleChange(event.target.value)}>
+                      <option value="">{t.fields.openApplication}</option>
+                      {roles.map((item) => (
+                        <option key={item.id} value={item.id}>
+                          {item.title} — {item.location}
+                        </option>
+                      ))}
+                    </SelectField>
+                  )}
                 </fieldset>
 
                 {/* Step 2 — Your work */}
@@ -201,7 +221,7 @@ export function ApplicationForm({ role, onRoleChange, subjectFor }: { role: stri
                     <label
                       className={cn(
                         "group flex cursor-pointer items-center gap-5 rounded-card border border-dashed p-6 transition-colors duration-500 focus-within:border-sky hover:border-sky",
-                        errors.file ? "border-[#f0a3a3]" : "border-line-strong",
+                        errors.file ? "border-danger" : "border-line-strong",
                       )}
                     >
                       <span className="grid size-12 shrink-0 place-items-center rounded-full bg-paper/5 text-sky">
@@ -225,7 +245,7 @@ export function ApplicationForm({ role, onRoleChange, subjectFor }: { role: stri
                       />
                     </label>
                     {errors.file ? (
-                      <p role="alert" className="mt-2 text-sm text-[#f0a3a3]">
+                      <p role="alert" className="mt-2 text-sm text-danger">
                         {t.errors.file}
                       </p>
                     ) : null}
@@ -260,14 +280,14 @@ export function ApplicationForm({ role, onRoleChange, subjectFor }: { role: stri
                     {t.fields.consent}
                   </label>
                   {errors.consent ? (
-                    <p role="alert" className="-mt-4 text-sm text-[#f0a3a3]">
+                    <p role="alert" className="-mt-4 text-sm text-danger">
                       {t.errors.consent}
                     </p>
                   ) : null}
                 </fieldset>
 
                 {state.status === "error" ? (
-                  <p role="alert" className="text-sm text-[#f0a3a3]">
+                  <p role="alert" className="text-sm text-danger">
                     {t.errors.server}{" "}
                     <a href={`mailto:${site.email}`} className="underline underline-offset-4">
                       {site.email}

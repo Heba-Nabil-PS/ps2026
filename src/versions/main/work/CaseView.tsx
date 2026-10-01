@@ -106,7 +106,7 @@ export function CaseView({ lang, found }: CaseViewProps) {
 
       {project.results ? <CaseResults label={labels.results} results={project.results} /> : null}
       {project.review ? <CaseReview label={labels.review} review={project.review} /> : null}
-      {project.links?.length ? <CaseLinks label={labels.links} links={project.links} names={labels.linkNames} /> : null}
+      {project.links?.some((link) => link.href) ? <CaseLinks label={labels.links} links={project.links.filter((link) => link.href)} names={labels.linkNames} /> : null}
 
       <NextCase project={next} label={labels.next} viewLabel={copy.ui.view} />
     </article>

@@ -1,7 +1,7 @@
 import { fill } from "@/versions/main/copy";
 import { getServerCopy } from "@/versions/main/server";
 import { FrameRise } from "@/versions/main/motion/FrameRise";
-import { ClientsWall } from "@/versions/main/sections/ClientsWall";
+import { ClientLogoSection } from "@/versions/main/sections/ClientLogoSection";
 import { IndustryCard } from "@/versions/main/sections/IndustryCard";
 import { ClosingCta } from "@/versions/main/ui/ClosingCta";
 import { PageHero } from "@/versions/main/ui/PageHero";
@@ -14,7 +14,7 @@ export async function IndustriesView() {
 
   return (
     <>
-      <PageHero label={page.hero.label} title={page.hero.title} intro={page.hero.intro} image="/images/projects/texas-chicken/hero.webp">
+      <PageHero title={page.hero.title} intro={page.hero.intro} image="/images/projects/texas-chicken/hero.webp">
         <p className="text-label text-subtle">
           <span className="text-sky tabular-nums">{String(industries.length).padStart(2, "0")}</span> — {copy.meta.pages.industries.title}
         </p>
@@ -39,7 +39,7 @@ export async function IndustriesView() {
         </ul>
       </section>
 
-      <ClientsWall label={copy.work.clients.label} title={copy.work.clients.title} clients={site.clients} />
+      <ClientLogoSection label={copy.work.clients.label} title={copy.work.clients.title} clients={site.clients} />
 
       <ClosingCta
         label={page.closing.label}

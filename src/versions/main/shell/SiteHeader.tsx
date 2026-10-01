@@ -6,10 +6,10 @@ import { useCopy } from "@/versions/main/use-copy";
 import { ease } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import { LanguageSwitch } from "@/versions/main/shell/LanguageSwitch";
-import { HomeMenu } from "@/versions/main/shell/HomeMenu";
+import { Magnetic } from "@/versions/main/motion/Magnetic";
 import { MobileMenu } from "@/versions/main/shell/MobileMenu";
-import { NavMenu, type NavMenuItem } from "@/versions/main/shell/NavMenu";
-import { industryHref, serviceHref } from "@/versions/main/data/routes";
+import { NavUnderline } from "@/versions/main/shell/NavMenu";
+import { ThemeSwitch } from "@/versions/main/shell/ThemeSwitch";
 import { AppLink } from "@/versions/main/ui/AppLink";
 import { ButtonLink } from "@/versions/main/ui/Button";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
@@ -20,12 +20,12 @@ const isActive = (pathname: string, href: string) => pathname === href || pathna
 
 /**
  * Header (deck slide 8, "first scroll, first impression"). Logo, plain text
- * links with a thin underline that slides to the hovered item (Services and Industries
- * open a menu of their pages), the language switch and one filled action,
- * Start a project. Hides while reading down, returns on the way up.
+ * links that lean toward the pointer and draw a thin underline on hover,
+ * the language switch and one filled action, Start a project. Hides while
+ * reading down, returns on the way up.
  */
 export function SiteHeader() {
-  const { copy, industries } = useCopy();
+  const { copy } = useCopy();
   const { pathname } = stripLocale(usePathname() ?? "/");
   const { scrollY } = useScroll();
   const [hidden, setHidden] = useState(false);
@@ -41,24 +41,8 @@ export function SiteHeader() {
     if (nextScrolled !== scrolled) setScrolled(nextScrolled);
   });
 
-  // Pages under a hub, listed in its menu (sitemap: /services/[slug], /industries/[slug]).
-  const menus: Record<string, NavMenuItem[]> = {
-    "/services": [
-      { href: "/services", label: copy.nav.menus.services },
-      ...copy.services.list.map((service) => ({ href: serviceHref(service.slug), label: service.title, description: service.summary })),
-    ],
-    "/industries": [
-      { href: "/industries", label: copy.nav.menus.industries },
-      ...industries.map((industry) => ({
-        href: industryHref(industry.slug),
-        label: industry.title,
-        description: industry.short,
-        flag: industry.flagship ? copy.nav.menus.flagship : undefined,
-      })),
-    ],
-  };
-
-  const highlighted = hovered ?? (pathname === "/" ? "/" : (copy.nav.primary.find((item) => isActive(pathname, item.href))?.href ?? null));
+  const links = [...copy.nav.primary, copy.nav.contact];
+  const highlighted = hovered ?? links.find((item) => isActive(pathname, item.href))?.href ?? null;
 
   return (
     <>
@@ -69,65 +53,67 @@ export function SiteHeader() {
         animate={{ y: hidden && !menuOpen ? "-110%" : "0%" }}
         transition={{ duration: 0.8, ease: ease.expo, delay: 0 }}
       >
-        {/* Navy frosted bar once the page scrolls, so content never shows through the logo and actions. */}
+        {/* Once the page scrolls, the bar tightens into a slim frosted capsule: the logo and actions draw in toward the centre. */}
         <div
-          aria-hidden
           className={cn(
-            "pointer-events-none absolute inset-0 -z-10 border-b bg-[linear-gradient(180deg,rgb(7_18_31/0.92),rgb(7_18_31/0.78))] shadow-[0_20px_40px_-24px_rgb(0_0_0/0.7)] backdrop-blur-xl transition-[opacity,border-color] duration-700 ease-expo",
-            scrolled ? "border-line opacity-100" : "border-transparent opacity-0",
+            "relative mx-auto transition-[max-width,margin,padding] duration-700 ease-expo",
+            scrolled ? "mt-3 max-w-6xl px-4 md:mt-4 md:px-6" : "mt-0 max-w-full px-0",
           )}
-        />
-        <div className="relative flex items-center justify-between gap-6 py-4 md:py-5">
-          <AppLink href="/" transitionLabel={copy.ui.home} aria-label={copy.ui.homeLabel} className="relative z-10 shrink-0" onClick={() => setMenuOpen(false)}>
-            <DrawLogo title="" delay={0.3} className="h-14 w-auto md:h-[4.5rem]" />
-          </AppLink>
+        >
+          <div
+            aria-hidden
+            className={cn(
+              "pointer-events-none absolute inset-0 -z-10 rounded-full border bg-[linear-gradient(180deg,color-mix(in_srgb,var(--color-ink-900)_88%,transparent),color-mix(in_srgb,var(--color-ink-900)_72%,transparent))] shadow-[0_20px_40px_-24px_rgb(0_0_0/0.7)] light:shadow-[0_20px_40px_-24px_rgb(13_29_49/0.25)] backdrop-blur-xl transition-[opacity,transform,border-color] duration-700 ease-expo",
+              scrolled ? "scale-100 border-line opacity-100" : "scale-95 border-transparent opacity-0",
+            )}
+          />
+        <div
+          className={cn(
+            "relative flex items-center justify-between gap-6 transition-[padding] duration-700 ease-expo",
+            scrolled ? "py-1.5" : "py-4 md:py-5",
+          )}
+        >
+          <Magnetic strength={0.2} className="relative z-10 shrink-0">
+            <AppLink href="/" transitionLabel={copy.ui.home} aria-label={copy.ui.homeLabel} onClick={() => setMenuOpen(false)}>
+              <DrawLogo
+                title=""
+                delay={0.3}
+                redrawEvery={30}
+                className={cn(
+                  "w-auto transition-[height] duration-700 ease-expo",
+                  scrolled ? "h-10 md:h-12" : "h-14 md:h-18",
+                )}
+              />
+            </AppLink>
+          </Magnetic>
 
-          <nav aria-label={copy.ui.mainNav} className="hidden xl:block">
+          {/* Centred in the space between the logo and the actions, so the gap before the first link matches the gap after the last. */}
+          <nav aria-label={copy.ui.mainNav} className="hidden min-w-0 flex-1 justify-center xl:flex">
             <ul
-              className="flex items-center gap-2"
+              className="flex items-center gap-1 2xl:gap-3"
               onPointerLeave={() => setHovered(null)}
             >
-              <HomeMenu active={pathname === "/"} highlighted={highlighted === "/"} onHover={(hovering) => setHovered(hovering ? "/" : null)} />
-              {copy.nav.primary.map((item) => {
+              {links.map((item) => {
                 const active = isActive(pathname, item.href);
-                const menu = menus[item.href];
-                if (menu) {
-                  return (
-                    <NavMenu
-                      key={item.href}
-                      href={item.href}
-                      label={item.label}
-                      items={menu}
-                      active={active}
-                      highlighted={highlighted === item.href}
-                      onHover={(hovering) => setHovered(hovering ? item.href : null)}
-                    />
-                  );
-                }
                 return (
-                  <li key={item.href} className="relative">
-                    {highlighted === item.href ? (
-                      <motion.span
-                        layoutId="nav-highlight"
-                        aria-hidden
-                        className="absolute inset-x-3 bottom-0 h-px rounded-full bg-sky"
-                        transition={{ type: "spring", stiffness: 380, damping: 34 }}
-                      />
-                    ) : null}
-                    <AppLink
-                      href={item.href}
-                      transitionLabel={item.label}
-                      aria-current={active ? "page" : undefined}
-                      onPointerEnter={() => setHovered(item.href)}
-                      onFocus={() => setHovered(item.href)}
-                      onBlur={() => setHovered(null)}
-                      className={cn(
-                        "relative flex items-center gap-1.5 px-3 py-2.5 text-sm transition-colors duration-500",
-                        active ? "text-fg" : "text-muted hover:text-fg",
-                      )}
-                    >
-                      {item.label}
-                    </AppLink>
+                  <li key={item.href}>
+                    <Magnetic>
+                      <AppLink
+                        href={item.href}
+                        transitionLabel={item.label}
+                        aria-current={active ? "page" : undefined}
+                        onPointerEnter={() => setHovered(item.href)}
+                        onFocus={() => setHovered(item.href)}
+                        onBlur={() => setHovered(null)}
+                        className={cn(
+                          "relative flex items-center gap-1.5 whitespace-nowrap px-3 py-2.5 text-base font-medium tracking-[-0.005em] transition-colors duration-500 2xl:text-[1.0625rem]",
+                          active ? "text-fg" : "text-muted hover:text-fg",
+                        )}
+                      >
+                        {item.label}
+                        <NavUnderline shown={highlighted === item.href} />
+                      </AppLink>
+                    </Magnetic>
                   </li>
                 );
               })}
@@ -135,6 +121,7 @@ export function SiteHeader() {
           </nav>
 
           <div className="relative z-10 flex items-center gap-5">
+            <ThemeSwitch className="-me-3 hidden sm:grid" />
             <LanguageSwitch className="hidden min-h-11 items-center px-1 text-sm text-muted transition-colors hover:text-fg sm:inline-flex" />
             <ButtonLink href={copy.nav.start.href} transitionLabel={copy.nav.start.label} className="hidden min-h-11 text-sm md:inline-flex">
               {copy.nav.start.label}
@@ -153,6 +140,7 @@ export function SiteHeader() {
               {menuOpen ? copy.ui.close : copy.ui.menu}
             </button>
           </div>
+        </div>
         </div>
       </motion.header>
 

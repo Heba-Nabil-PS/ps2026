@@ -1,11 +1,11 @@
 import { LocalTime } from "@/versions/main/shell/LocalTime";
 import { Reveal } from "@/versions/main/motion/Reveal";
 import { StretchHeading } from "@/versions/main/motion/StretchHeading";
-import { Asterisk, Label } from "@/versions/main/ui/Label";
+import { Label } from "@/versions/main/ui/Label";
 import { ArrowUpRight } from "lucide-react";
 
 /** Google Maps directions to an address; opens in the visitor's maps app on phones. */
-const directionsHref = (address: string) => `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`;
+export const directionsHref = (address: string) => `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`;
 
 /**
  * The studios, each as a glass card with its city in the stretched face and its own
@@ -33,7 +33,6 @@ export function Offices({
         {offices.map((office, index) => (
           <address key={office.city} data-reveal-item className="glass group grid min-h-64 grid-rows-[auto_1fr_auto_auto] rounded-frame p-7 not-italic md:min-h-80 md:p-10">
             <div className="flex items-center justify-between text-subtle">
-              <Asterisk className="size-5 text-sky" />
               <LocalTime timeZone={timeZones[index] ?? timeZones[0]} className="text-label tabular-nums" />
             </div>
             <p className="stretch self-end pt-10 text-[clamp(2.2rem,4.4vw,4.2rem)] leading-none">

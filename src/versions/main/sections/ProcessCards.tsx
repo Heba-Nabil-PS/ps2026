@@ -1,11 +1,10 @@
 import { Reveal } from "@/versions/main/motion/Reveal";
-import { Asterisk } from "@/versions/main/ui/Label";
 import { PointerLight } from "@/versions/main/ui/PointerLight";
 import { SectionHead } from "@/versions/main/ui/SectionHead";
 import Image from "next/image";
 
 /**
- * "Our Process" (moodboard ref 09): numbered ✳ glass cards over ribbed light.
+ * "Our Process" (moodboard ref 09): numbered glass cards over ribbed light.
  * Used on Home, About and Services so the process always reads the same way.
  */
 export function ProcessCards({ label, title, steps }: { label: string; title: readonly string[]; steps: readonly { title: string; body: string }[] }) {
@@ -21,7 +20,6 @@ export function ProcessCards({ label, title, steps }: { label: string; title: re
           {steps.map((step, index) => (
             <li key={step.title} data-reveal-item className="glass group flex min-h-60 flex-col rounded-card p-7 md:p-8">
               <div className="flex items-center justify-between text-sky">
-                <Asterisk className="size-6" />
                 <span className="text-label tabular-nums text-subtle">{String(index + 1).padStart(2, "0")}</span>
               </div>
               <h3 className="text-title mt-auto pt-10 font-medium">{step.title}</h3>

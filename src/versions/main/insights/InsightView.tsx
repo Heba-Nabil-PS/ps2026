@@ -1,7 +1,7 @@
 import type { Insight } from "@/data/insights";
 import type { Locale } from "@/i18n/config";
 import { siteConfig } from "@/lib/site";
-import { fill, getCopy } from "@/versions/main/copy";
+import { fill, formatDate, getCopy } from "@/versions/main/copy";
 import { workHref } from "@/versions/main/data/work";
 import { FrameRise } from "@/versions/main/motion/FrameRise";
 import { Reveal } from "@/versions/main/motion/Reveal";
@@ -10,7 +10,7 @@ import { InsightCard } from "@/versions/main/sections/InsightCard";
 import { BackLink } from "@/versions/main/ui/BackLink";
 import { ButtonLink } from "@/versions/main/ui/Button";
 import { ClosingCta } from "@/versions/main/ui/ClosingCta";
-import { Asterisk, Label } from "@/versions/main/ui/Label";
+import { Label } from "@/versions/main/ui/Label";
 import { SectionHead } from "@/versions/main/ui/SectionHead";
 import Image from "next/image";
 
@@ -105,7 +105,6 @@ export function InsightView({ lang, insight }: { lang: Locale; insight: Insight 
                 <ul key={index} data-reveal-item className="flex flex-col gap-3">
                   {block.items.map((item) => (
                     <li key={item} className="flex items-start gap-3 text-lead text-muted">
-                      <Asterisk className="mt-2 size-3 text-sky" />
                       {item}
                     </li>
                   ))}
@@ -135,7 +134,7 @@ export function InsightView({ lang, insight }: { lang: Locale; insight: Insight 
           <ul className="mt-14 grid gap-x-6 gap-y-16 md:mt-20 md:grid-cols-2 lg:grid-cols-3">
             {more.map((item) => (
               <li key={item.slug}>
-                <InsightCard insight={item} minutes={fill(labels.minutes, { count: String(item.read) })} viewLabel={copy.ui.readMore} />
+                <InsightCard insight={item} date={formatDate(lang, item.date)} viewLabel={copy.ui.readMore} />
               </li>
             ))}
           </ul>

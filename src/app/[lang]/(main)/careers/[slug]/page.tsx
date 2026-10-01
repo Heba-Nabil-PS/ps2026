@@ -1,7 +1,7 @@
 import { hasLocale } from "@/i18n/config";
 import { alternatesFor } from "@/i18n/server";
 import { findRole, roleSlugs } from "@/versions/main/careers/roles";
-import { RoleView } from "@/versions/main/careers/RoleView";
+import { JobView } from "@/versions/main/careers/JobView";
 import { roleHref } from "@/versions/main/data/routes";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -24,5 +24,5 @@ export default async function RolePage({ params }: PageProps<"/[lang]/careers/[s
   const role = findRole(lang, slug);
   if (!role) notFound();
 
-  return <RoleView lang={lang} role={role} />;
+  return <JobView lang={lang} role={role} />;
 }

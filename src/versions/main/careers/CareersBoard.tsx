@@ -146,7 +146,7 @@ export function CareersBoard() {
                             <button
                               type="button"
                               onClick={() => apply(item)}
-                              className="sheen inline-flex min-h-12 items-center rounded-full bg-[linear-gradient(180deg,#f7f9fb_0%,#c9d4df_55%,#a9bacb_100%)] px-6 text-[0.95rem] font-medium text-ink-900"
+                              className="sheen inline-flex min-h-12 items-center rounded-full bg-[linear-gradient(180deg,#f7f9fb_0%,#c9d4df_55%,#a9bacb_100%)] px-6 text-[0.95rem] font-medium text-[#07121f]"
                             >
                               {labels.apply}
                             </button>

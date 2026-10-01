@@ -2,6 +2,7 @@ import { VersionProvider } from "@/versions/VersionProvider";
 import { LocaleProvider } from "@/i18n/locale-context";
 import type { Locale } from "@/i18n/config";
 import { getCopy } from "@/versions/main/copy";
+import { IntroAnimation } from "@/versions/main/intro/IntroAnimation";
 import { Providers } from "@/versions/main/shell/Providers";
 import { SiteFooter } from "@/versions/main/shell/SiteFooter";
 import { SiteHeader } from "@/versions/main/shell/SiteHeader";
@@ -19,6 +20,8 @@ export function AppShell({ locale, children }: { locale: Locale; children: React
       <LocaleProvider locale={locale}>
         <VersionProvider version="main">
           <Providers>
+            {/* First, so it claims the home hero's mark before the hero builds its entrance (see intro-signal). */}
+            <IntroAnimation />
             <SiteHeader />
             <main id="main">{children}</main>
             <SiteFooter />

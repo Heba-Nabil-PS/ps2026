@@ -10,6 +10,7 @@ import { ProjectStats } from "@/versions/option-2/components/portfolio/blocks/Pr
 import { ProjectText } from "@/versions/option-2/components/portfolio/blocks/ProjectText";
 import { ProjectTwoColumn } from "@/versions/option-2/components/portfolio/blocks/ProjectTwoColumn";
 import { ProjectVideo } from "@/versions/option-2/components/portfolio/blocks/ProjectVideo";
+import { ProjectFullWidthVideo } from "@/versions/main/portfolio/blocks/ProjectFullWidthVideo";
 import type { ContentBlock, PortfolioProject } from "@/data/portfolio";
 
 /** Maps each content block `type` to its component. Add a block type here and in the ContentBlock union. */
@@ -21,6 +22,8 @@ function Block({ block, project }: { block: ContentBlock; project: PortfolioProj
       return <ProjectImage image={block.image} caption={block.caption} aspect={block.aspect} align={block.align} />;
     case "fullWidthImage":
       return <ProjectFullWidthImage image={block.image} caption={block.caption} />;
+    case "fullWidthVideo":
+      return <ProjectFullWidthVideo src={block.src} label={block.label} caption={block.caption} />;
     case "video":
       return <ProjectVideo src={block.src} poster={block.poster} label={block.label} caption={block.caption} />;
     case "gallery":

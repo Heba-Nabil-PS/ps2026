@@ -1,21 +1,20 @@
 import { getServerCopy } from "@/versions/main/server";
-import { Hero } from "@/versions/main/home/Hero";
-import { IntroAnimation } from "@/versions/main/intro/IntroAnimation";
-import { IndustriesPreview } from "@/versions/main/home/IndustriesPreview";
+import { HeroSection } from "@/versions/main/home/HeroSection";
+import { LogoThread } from "@/versions/main/home/LogoThread";
+import { StretchSectionTitles } from "@/versions/main/motion/StretchHeading";
 import { InsightsPreview } from "@/versions/main/home/InsightsPreview";
 import { Numbers } from "@/versions/main/home/Numbers";
+import { ClosingCta } from "@/versions/main/ui/ClosingCta";
 import { Positioning } from "@/versions/main/home/Positioning";
 import { SelectedWork } from "@/versions/main/home/SelectedWork";
 import { ServicesIndex } from "@/versions/main/home/ServicesIndex";
+import { Showreel } from "@/versions/main/home/Showreel";
 import { Testimonials } from "@/versions/main/home/Testimonials";
-import { ClientsWall } from "@/versions/main/sections/ClientsWall";
-import { ProcessCards } from "@/versions/main/sections/ProcessCards";
-import { ClosingCta } from "@/versions/main/ui/ClosingCta";
+import { ClientLogoSection } from "@/versions/main/sections/ClientLogoSection";
 
 /**
- * Home — the intro (every full load of the home page) → first impression → positioning → proof (work, then the numbers it
- * delivered) → capabilities → industries → trust (clients, then their words)
- * → how we work → insights → conversion.
+ * Home — first impression (the loading intro, see AppShell, lands its logo on the hero's mark) → positioning → showreel → proof (work, then the numbers it
+ * delivered) → capabilities → trust (clients, then their words) → insights → conversion.
  * See docs/website-direction.md §4.
  */
 export async function HomeView() {
@@ -23,17 +22,16 @@ export async function HomeView() {
   const home = copy.home;
 
   return (
-    <>
-      <IntroAnimation />
-      <Hero />
+    <StretchSectionTitles>
+      <LogoThread />
+      <HeroSection />
       <Positioning />
+      <Showreel {...home.showreel} />
       <SelectedWork />
       <Numbers />
       <ServicesIndex />
-      <IndustriesPreview />
-      <ClientsWall label={home.clients.label} title={home.clients.title} intro={home.clients.intro} clients={site.clients} />
+      <ClientLogoSection label={home.clients.label} title={home.clients.title} intro={home.clients.intro} clients={site.clients} />
       <Testimonials />
-      <ProcessCards label={home.process.label} title={home.process.title} steps={site.process} />
       <InsightsPreview />
       <ClosingCta
         label={home.closing.label}
@@ -42,6 +40,6 @@ export async function HomeView() {
         primary={{ label: home.closing.primary, href: "/start" }}
         secondary={{ label: home.closing.secondary, href: "/careers" }}
       />
-    </>
+    </StretchSectionTitles>
   );
 }

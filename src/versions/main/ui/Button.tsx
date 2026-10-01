@@ -4,20 +4,28 @@ import { cn } from "@/lib/utils";
 import { Magnetic } from "@/versions/main/motion/Magnetic";
 import { AppLink } from "@/versions/main/ui/AppLink";
 import { ArrowUpRight } from "lucide-react";
-import type { ComponentProps, ReactNode } from "react";
+import type { ComponentProps, PointerEvent, ReactNode } from "react";
 
 type Variant = "primary" | "glass" | "line";
 
 const base =
-  "group sheen inline-flex min-h-12 items-center gap-4 rounded-full ps-6 pe-2 py-2 text-[0.95rem] font-medium tracking-[-0.01em] transition-[border-color,color] duration-500 ease-expo disabled:pointer-events-none disabled:opacity-50";
+  "group inline-flex min-h-12 items-center gap-3 rounded-full ps-6 pe-2 py-2 text-[0.95rem] font-medium tracking-[-0.01em] disabled:pointer-events-none disabled:opacity-50";
 
 const variants: Record<Variant, string> = {
-  // Sky-tinted glass (principle P6): the one primary action per view.
+  // Sky-whispered liquid glass (principle P6): the one primary action per view.
   primary: "glass-button glass-button-primary",
-  // Clear frosted glass for every other action.
+  // Clear liquid glass for every other action.
   glass: "glass-button",
-  line: "border border-line-strong text-fg hover:border-fg",
+  line: "sheen border border-line-strong text-fg transition-[border-color,color,transform] duration-300 hover:border-fg active:scale-[0.97]",
 };
+
+/** Feeds the pointer position to the glass so its light follows the cursor. */
+function trackLight(event: PointerEvent<HTMLElement>) {
+  const el = event.currentTarget;
+  const rect = el.getBoundingClientRect();
+  el.style.setProperty("--mx", `${event.clientX - rect.left}px`);
+  el.style.setProperty("--my", `${event.clientY - rect.top}px`);
+}
 
 function Content({ children, variant }: { children: ReactNode; variant: Variant }) {
   return (
@@ -26,40 +34,60 @@ function Content({ children, variant }: { children: ReactNode; variant: Variant 
       <span
         aria-hidden
         className={cn(
-          "grid size-8 place-items-center rounded-full transition-transform duration-700 ease-expo group-hover:rotate-45 rtl:-scale-x-100",
+          "grid size-8 place-items-center rounded-full transition-[background-color,color,box-shadow] duration-300 rtl:-scale-x-100",
           variant === "line"
             ? "bg-paper text-ink-900"
-            : "bg-white/12 text-paper ring-1 ring-inset ring-white/25 backdrop-blur-md transition-[background-color,color,transform] group-hover:bg-paper group-hover:text-ink-900",
+            : "bg-fg/10 text-paper shadow-[inset_0_1px_0_rgb(255_255_255/0.25)] ring-1 ring-inset ring-fg/15 group-hover:bg-paper group-hover:text-ink-900",
         )}
       >
-        <ArrowUpRight className="size-4" />
+        <span className="arrow-swap">
+          <ArrowUpRight className="size-4" />
+          <ArrowUpRight className="size-4" />
+        </span>
       </span>
     </>
   );
 }
 
-/** Internal or external link styled as a glass button, with magnetic pull and a light sheen. */
+/** Internal or external link styled as a liquid-glass button, with magnetic pull and a light that follows the pointer. */
 export function ButtonLink({
   href,
   variant = "primary",
   children,
   className,
   transitionLabel,
+  onPointerMove,
   ...props
 }: Omit<ComponentProps<typeof AppLink>, "children"> & { variant?: Variant; children: ReactNode }) {
   return (
     <Magnetic>
-      <AppLink href={href} transitionLabel={transitionLabel} className={cn(base, variants[variant], className)} {...props}>
+      <AppLink
+        href={href}
+        transitionLabel={transitionLabel}
+        className={cn(base, variants[variant], className)}
+        onPointerMove={(event) => {
+          if (variant !== "line") trackLight(event);
+          onPointerMove?.(event);
+        }}
+        {...props}
+      >
         <Content variant={variant}>{children}</Content>
       </AppLink>
     </Magnetic>
   );
 }
 
-export function Button({ variant = "primary", children, className, ...props }: ComponentProps<"button"> & { variant?: Variant; children: ReactNode }) {
+export function Button({ variant = "primary", children, className, onPointerMove, ...props }: ComponentProps<"button"> & { variant?: Variant; children: ReactNode }) {
   return (
     <Magnetic>
-      <button className={cn(base, variants[variant], className)} {...props}>
+      <button
+        className={cn(base, variants[variant], className)}
+        onPointerMove={(event) => {
+          if (variant !== "line") trackLight(event);
+          onPointerMove?.(event);
+        }}
+        {...props}
+      >
         <Content variant={variant}>{children}</Content>
       </button>
     </Magnetic>

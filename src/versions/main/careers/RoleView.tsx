@@ -6,7 +6,6 @@ import { getCopy } from "@/versions/main/copy";
 import { Reveal } from "@/versions/main/motion/Reveal";
 import { BackLink } from "@/versions/main/ui/BackLink";
 import { ButtonLink } from "@/versions/main/ui/Button";
-import { Asterisk } from "@/versions/main/ui/Label";
 import { PageHero } from "@/versions/main/ui/PageHero";
 
 /** A role: what it is, what you will do and bring, then the application with the role already chosen. */
@@ -30,7 +29,7 @@ export function RoleView({ lang, role }: { lang: Locale; role: RoleDetail }) {
     <>
       {jsonLd ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} /> : null}
 
-      <PageHero label={`${role.department} · ${role.location} · ${role.type}`} title={[role.title]} intro={role.summary} image="/images/site/who-we-are.webp">
+      <PageHero title={[role.title]} intro={role.summary} image="/images/site/who-we-are.webp">
         <div className="flex flex-wrap items-center gap-6">
           <ButtonLink href="#apply">{copy.careers.hero.cta}</ButtonLink>
           <BackLink href="/careers" label={copy.careers.role.back} transitionLabel={copy.meta.pages.careers.title} />
@@ -50,7 +49,6 @@ export function RoleView({ lang, role }: { lang: Locale; role: RoleDetail }) {
                   <ul className="border-b border-line">
                     {group.items.map((item) => (
                       <li key={item} className="flex items-start gap-4 border-t border-line py-5">
-                        <Asterisk className="mt-1.5 size-3 text-sky" />
                         <span>{item}</span>
                       </li>
                     ))}

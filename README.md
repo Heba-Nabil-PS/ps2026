@@ -23,7 +23,7 @@ npm run build && npm start   # production
 
 | Route | Purpose |
 | --- | --- |
-| `/` | Hero (3D glass spiral) → positioning → selected work → services index → industries → clients → process → insights → call to action |
+| `/` | Hero (floating discs that the scroll gathers into the logo) → positioning → selected work → services index → industries → clients → process → insights → call to action |
 | `/work`, `/work/[slug]` | 14 case studies, filterable by discipline (`?category=branding`) and industry (`?industry=restaurants`); case-study pages |
 | `/services`, `/services/[slug]` | The deck's six disciplines as stacking cards (`/services#branding` deep-links); a page per discipline with deliverables, work, industries and FAQ |
 | `/industries`, `/industries/[slug]` | Five sectors, each with the problems we solve, how we help and its case studies |
@@ -31,7 +31,7 @@ npm run build && npm start   # production
 | `/insights`, `/insights/[slug]` | Articles written from the work, filterable by topic |
 | `/careers`, `/careers/[slug]` | Roles plus a three-step application (`?role=motion-designer` preselects); a page per role, and `/careers/open-application` |
 | `/contact` | Enquiry form (`?service=branding` preselects), direct lines, link to the brief, studios |
-| `/start` | Start a project: a five-step brief (`?service=branding` preselects) |
+| `/start` | Start a project: a single-form brief (`?service=branding` preselects) |
 | `/team` | Leadership, discipline leads, crafts (linked from the footer) |
 
 Old URLs (`/case-studies`, `/portfolio`, `/projects`, `/home-opt2`) redirect permanently to `/work` or `/` (see `next.config.ts`).
@@ -54,14 +54,14 @@ Old URLs (`/case-studies`, `/portfolio`, `/projects`, `/home-opt2`) redirect per
 
 ## Brand notes
 
-- **Display face:** the deck specifies **Gero Bold**, which is licensed separately. Until it is installed, **Anybody** (a variable font with a width axis) stands in, and headlines animate along that axis. To switch, add `url()` sources for Gero woff2 files to the `@font-face` in `src/versions/main/styles.css`.
+- **Display face** (banner titles and section headings): **Anybody** (a variable font with a width axis); headlines animate along that axis.
 - **Text face:** Helvetica Neue where installed, Inter Tight otherwise. **Arabic:** IBM Plex Sans Arabic.
 - **Client logos** are PNGs on opaque white. The wall inverts and screen-blends them into white silhouettes, and they show in colour on hover.
 
 ## Accessibility and performance
 
 - Reduced motion switches off smooth scrolling, 3D motion (a single still frame is rendered), blur and stretch reveals, and parallax. Content still appears.
-- The WebGL scene is lazy-loaded, renders only while the hero is on screen, and falls back to an image without WebGL.
+- The home page's WebGL background is lazy-loaded, stops drawing while the tab is hidden, lowers its resolution if frames run long, and falls back to a sliced SVG logo without WebGL.
 - Fine-pointer-only effects: cursor lens, magnetic buttons.
 - Forms: labelled fields, inline errors announced with `role="alert"`, focus moved to the first error, a honeypot, and server-side validation.
 
