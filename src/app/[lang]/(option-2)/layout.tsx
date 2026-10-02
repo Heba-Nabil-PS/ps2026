@@ -104,7 +104,7 @@ export default async function OptionTwoRootLayout({ children, params }: LayoutPr
       dir={localeDirection(lang)}
       className={`${display.variable} ${accent.variable} ${arabic.variable} ${arabicAccent.variable} antialiased`}
     >
-      <body>
+      <body suppressHydrationWarning>
         <AppShell locale={lang}>{children}</AppShell>
       </body>
     </html>

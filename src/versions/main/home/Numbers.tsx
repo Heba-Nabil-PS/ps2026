@@ -1,3 +1,5 @@
+import Image from "next/image";
+import { clientMarks } from "@/data/client-marks";
 import { getServerCopy } from "@/versions/main/server";
 import { Counter } from "@/versions/main/motion/Counter";
 import { Reveal } from "@/versions/main/motion/Reveal";
@@ -23,6 +25,7 @@ export async function Numbers() {
       <Reveal as="dl" className="mt-10 grid border-t border-line sm:grid-cols-2 md:mt-14 lg:grid-cols-4" stagger={0.1}>
         {section.items.map((item) => {
           const figure = splitFigure(item.value);
+          const mark = clientMarks[item.mark];
           return (
             <div
               key={item.client}
@@ -30,7 +33,7 @@ export async function Numbers() {
               className="group flex flex-col gap-4 border-b border-line py-8 sm:even:border-s sm:even:ps-6 lg:border-b-0 lg:pe-6 lg:ps-6 lg:first:ps-0 lg:[&:not(:first-child)]:border-s"
             >
               <dt className="order-2 text-muted">{item.caption}</dt>
-              <dd className="stretch order-1 text-[clamp(2.6rem,4.6vw,4.4rem)] leading-none text-fg" style={{ ["--wdth" as string]: 112 }}>
+              <dd className="stretch text-grain order-1 text-[clamp(2.6rem,4.6vw,4.4rem)] leading-none text-sky" style={{ ["--wdth" as string]: 112 }}>
                 {figure ? (
                   <>
                     {figure.prefix}
@@ -40,7 +43,19 @@ export async function Numbers() {
                   item.value
                 )}
               </dd>
-              <dd className="order-3 mt-auto text-label text-sky">{item.client}</dd>
+              <dd className="order-3 mt-auto flex h-10 items-center">
+                {mark ? (
+                  <Image
+                    src={`/images/clients/marks/${item.mark}.webp`}
+                    alt={item.client}
+                    width={mark.width}
+                    height={mark.height}
+                    className="h-8 w-auto max-w-32 object-contain opacity-80 light:brightness-0"
+                  />
+                ) : (
+                  <span className="text-label text-sky">{item.client}</span>
+                )}
+              </dd>
             </div>
           );
         })}

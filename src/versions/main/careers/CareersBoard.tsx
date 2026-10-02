@@ -51,8 +51,9 @@ export function CareersBoard() {
           <div className="md:col-span-7">
             <p className="text-label mb-6 text-muted">{labels.label}</p>
             <h2 id="roles-title" className="stretch text-headline">
-              {labels.title.map((line) => (
-                <span key={line} data-line className="block">
+              {labels.title.map((line, index) => (
+                <span key={line} data-line className="block ar:inline">
+                  {index ? " " : null}
                   {line}
                 </span>
               ))}

@@ -46,7 +46,7 @@ export async function IndustriesView() {
         title={page.closing.title}
         body={page.closing.body}
         primary={{ label: page.closing.primary, href: "/start" }}
-        secondary={{ label: page.closing.secondary, href: "/work" }}
+        secondary={{ label: page.closing.secondary, href: "/portfolio" }}
       />
     </>
   );

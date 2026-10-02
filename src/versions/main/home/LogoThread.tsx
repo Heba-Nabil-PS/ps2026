@@ -42,7 +42,7 @@ const PART = { before: 10, after: 26 };
 /**
  * The journey's end, in the footer's room for it (SiteFooter `[data-footer-mark]`): how much of the room
  * must be in view before it plays, and how long it takes (s). It plays on its own: the line runs on over the
- * footer into the mark's stem and is wound in there, while the mark draws itself and the name writes in beside it.
+ * footer into the mark's stem and is wound in there, while the mark draws itself.
  */
 const FINALE = { reveal: 0.6, duration: 3 };
 /** When each part of the end plays, as fractions of FINALE.duration. */
@@ -50,7 +50,7 @@ const END = {
   head: [0, 0.3],
   tail: [0.15, 0.6],
   main: [0.3, 0.75],
-  stem: [0.62, 0.78],
+  stem: [0.48, 0.66],
   inner: [0.7, 1],
 } as const satisfies Record<string, readonly [number, number]>;
 
@@ -128,14 +128,104 @@ function walk(curves: Curve[], step: number) {
 }
 
 /**
- * The home page's thread: the hero mark's own line, pulled out of its stem by the
+ * The page the line's swings were tuned on, worked out from this one, and the way from it to this page.
+ * That page had no awards under the hero title, no client row under the hero, and work cards with their
+ * title on one line and a small "view" label where the tags are now. Each point of the line is carried
+ * over card by card (top, foot of the picture, foot of the text), so it crosses every card where it was
+ * tuned to, whatever has been added above it. `foot` is the hero mark's foot on this page.
+ */
+function tunedPage(hero: HTMLElement, box: DOMRect, foot: number) {
+  const section = hero.closest("section") ?? hero;
+  const top = section.getBoundingClientRect().top - box.top;
+  const height = section.getBoundingClientRect().height;
+
+  // The hero, without its awards: its content is centred in it, so the mark sits lower by half what they took.
+  const css = getComputedStyle(hero);
+  const padTop = parseFloat(css.paddingTop);
+  const padBottom = parseFloat(css.paddingBottom);
+  const flow = Array.from(hero.children).filter((child) => getComputedStyle(child).position !== "absolute") as HTMLElement[];
+  const awards = hero.querySelector<HTMLElement>("[data-hero-awards]");
+  const awardsTake = awards ? awards.offsetHeight + parseFloat(getComputedStyle(awards).marginTop) : 0;
+  const contentTop = flow.length ? flow[0].offsetTop - parseFloat(getComputedStyle(flow[0]).marginTop) : padTop;
+  const last = flow[flow.length - 1];
+  const content = last ? last.offsetTop + last.offsetHeight + parseFloat(getComputedStyle(last).marginBottom) - contentTop : 0;
+  const tunedContent = content - awardsTake;
+  const tunedHeight = Math.max(parseFloat(css.minHeight) || 0, padTop + tunedContent + padBottom);
+  const tunedContentTop = padTop + (tunedHeight - padTop - padBottom - tunedContent) / 2;
+  const tunedFoot = foot + (tunedContentTop - contentTop);
+
+  // What follows the hero there followed it straight away: the client row under it is new.
+  let next = section.nextElementSibling;
+  while (next?.querySelector(".client-field-row")) next = next.nextElementSibling;
+  const after = next ? next.getBoundingClientRect().top - box.top : top + height;
+
+  /** Pairs of heights, there and here, with straight runs between them. */
+  const marks: [number, number][] = [
+    [tunedFoot, foot],
+    [top + tunedHeight, after],
+  ];
+  let shift = after - (top + tunedHeight);
+
+  // The work cards: each was as tall as it is now, less what a second line of title and the tags add.
+  const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+  const ar = document.documentElement.lang === "ar";
+  const label = 12 + Math.max(14, rem * (ar ? 0.9 * 1.5 : 0.72 * 1.2));
+  const measure = document.createElement("canvas").getContext("2d");
+  for (const card of document.querySelectorAll<HTMLElement>("[data-journey-card]")) {
+    const cardTop = card.getBoundingClientRect().top - box.top;
+    const cardHeight = card.offsetHeight;
+    const media = card.querySelector<HTMLElement>("[data-card-media]")?.offsetHeight ?? 0;
+    const title = card.querySelector<HTMLElement>("[data-title]");
+    const heading = title?.querySelector<HTMLElement>("h3");
+    const tags = title?.querySelector<HTMLElement>("ul");
+    let less = tags ? tags.offsetHeight + parseFloat(getComputedStyle(tags).marginTop) - label : 0;
+    if (title && heading && measure) {
+      // The title then had the whole width to itself (the arrow beside it is new), so it might have fit on fewer lines.
+      const h = getComputedStyle(heading);
+      const size = parseFloat(h.fontSize);
+      const lineHeight = parseFloat(h.lineHeight) || size * 0.92;
+      measure.font = `${h.fontWeight} ${h.fontSize} ${h.fontFamily}`;
+      if ("letterSpacing" in measure) (measure as CanvasRenderingContext2D & { letterSpacing: string }).letterSpacing = h.letterSpacing === "normal" ? "0px" : h.letterSpacing;
+      const width = title.clientWidth;
+      let lines = 1;
+      let line = "";
+      for (const word of (heading.textContent ?? "").trim().toUpperCase().split(/\s+/)) {
+        const next = line ? `${line} ${word}` : word;
+        if (line && measure.measureText(next).width > width) {
+          lines++;
+          line = word;
+        } else line = next;
+      }
+      const now = Math.max(1, Math.round((heading.offsetHeight - size * 0.06) / lineHeight));
+      less += Math.max(0, now - lines) * lineHeight;
+    }
+    const was = cardTop - shift;
+    marks.push([was, cardTop], [was + media, cardTop + media], [was + cardHeight - less, cardTop + cardHeight]);
+    shift += less;
+  }
+
+  const toPage = (y: number) => {
+    if (y <= marks[0][0]) return y + marks[0][1] - marks[0][0];
+    for (let i = 1; i < marks.length; i++) {
+      const [a, la] = marks[i - 1];
+      const [b, lb] = marks[i];
+      if (y <= b) return b > a ? la + ((y - a) * (lb - la)) / (b - a) : lb;
+    }
+    const [end, page] = marks[marks.length - 1];
+    return y + page - end;
+  };
+  return { foot: tunedFoot, toPage };
+}
+
+/**
+ * The home page's thread:the hero mark's own line, pulled out of its stem by the
  * scroll (after lusion.co). The thick stem and the thin blue line beside it run on
  * together from the logo's feet and zigzag down the page; the hero's letters step
  * aside to let them through, and behind each later section the line all but fades,
  * as if passing under it, to come out again past its end.
  *
  * In the footer the journey ends: the line runs over it into the stem of the footer mark, is wound
- * in there, and the mark draws itself, whole, beside the name. Scrolling back up plays it all in
+ * in there, and the mark draws itself, whole. Scrolling back up plays it all in
  * reverse. Laid out in page coordinates from where the marks sit, and rebuilt whenever
  * the page changes height. With reduced motion the finished mark simply stands.
  */
@@ -146,14 +236,13 @@ export function LogoThread() {
   useEffect(() => {
     const el = root.current;
     const svg = el?.querySelector("svg");
-    const mask = el?.querySelector<SVGMaskElement>("[data-thread='sections']");
-    const shades = el?.querySelector<SVGGElement>("[data-thread='shades']");
+    const stemShade = el?.querySelector<SVGLinearGradientElement>("[data-thread='stem-shade']");
+    const innerShade = el?.querySelector<SVGLinearGradientElement>("[data-thread='inner-shade']");
     const stem = el?.querySelector<SVGPathElement>("[data-thread='stem']");
     const inner = el?.querySelector<SVGPathElement>("[data-thread='inner']");
     const tip = el?.querySelector<SVGCircleElement>("[data-thread='tip']");
     const logo = el?.querySelector<SVGGElement>("[data-thread='logo']");
-    const maskFill = mask?.querySelector("rect");
-    if (!el || !svg || !mask || !maskFill || !shades || !stem || !inner || !tip || !logo) return;
+    if (!el || !svg || !stemShade || !innerShade || !stem || !inner || !tip || !logo) return;
     const draws = Array.from(logo.ownerSVGElement!.querySelectorAll<SVGPathElement>("[data-draw]"));
     const still = window.matchMedia("(prefers-reduced-motion: reduce)");
 
@@ -168,19 +257,31 @@ export function LogoThread() {
     let footY = 0;
     let heroEnd = 0; // samples inside the hero, where letters step aside
     let heroOut = 0; // scroll past which the hero is out of sight
-    let parted = false; // whether any hero letter has stepped aside
     let laidOut = ""; // the page size the line was laid out for
     let finaleFrom = Infinity; // scroll at which the journey ends
     let chars: { node: HTMLElement; x: number; y: number }[] = [];
     const drawLength = new Map<SVGPathElement, number>();
     const widest = new WeakMap<Element, number>(); // the widest each `[data-thread-avoid]` has been
-    let room: HTMLElement | null = null; // the footer's room for the mark, where the name writes in
+    let room: HTMLElement | null = null; // the footer's room for the mark
 
     // What is drawn: the stem line from `tail` to `head`, and the footer mark on the end's own clock (0–1).
     let head = 0;
     let tail = 0;
     let logoDrawn = 0;
-    const shown = { head: -1, tail: -1, logo: -1 };
+    const shown = { head: -1, tail: -1, logo: -1, scale: -1 };
+    /** Along the stem line, where the line comes down from the hero mark's scale to the footer mark's (set by layout()). */
+    let twist = { from: 0, to: 0, hero: 1, foot: 1 };
+    const twistAt = (l: number) => (twist.to > twist.from ? smoothstep(clamp01((l - twist.from) / (twist.to - twist.from))) : l >= twist.to ? 1 : 0);
+    /** How much of the line shows down the page (set by layout(), see `band`). */
+    let shade: { y: number; v: number }[] = [];
+    const shadeAt = (y: number) => {
+      for (let i = 1; i < shade.length; i++) {
+        const a = shade[i - 1];
+        const b = shade[i];
+        if (y >= a.y && y <= b.y) return b.y > a.y ? a.v + ((b.v - a.v) * (y - a.y)) / (b.y - a.y) : b.v;
+      }
+      return 1;
+    };
 
     /*
      * The drawing is in page coordinates, but the SVG is only a window onto it, a few screens tall, kept
@@ -234,7 +335,7 @@ export function LogoThread() {
       const innerFoot = place(FOOT.inner);
       footY = foot.y;
 
-      // The footer mark: in its spot, beside the name.
+      // The footer mark: in its spot.
       const spotBox = spot.getBoundingClientRect();
       const ls = spotBox.height / LOGO_VIEWBOX.mark.height;
       const lx = spotBox.left - box.left - LOGO_VIEWBOX.mark.x * ls;
@@ -243,20 +344,27 @@ export function LogoThread() {
 
       // Out of the hero mark's stem along its slant (the first point only steers), side to side down the page,
       // on over the footer, and up into the footer mark's stem from below, where the journey ends (the last point
-      // only steers): the line is wound into the mark there as it draws itself beside the name.
+      // only steers): the line is wound into the mark there as it draws itself.
       const run = Math.min(vh * 0.3, 260);
       const points: Point[] = [along(foot, t, -run), along(foot, t, -6 * s), along(foot, t, run)];
-      let y = points[2].y;
+      // The swings are tuned to the page's layout (they run in the gaps beside the work cards); a right-to-left
+      // page mirrors that layout, so the swings mirror with it, or they would cut through the text.
+      const rtl = getComputedStyle(el).direction === "rtl";
+      // They are laid out on the page they were tuned on (see `tunedPage`) and carried over to this one.
+      const tuned = tunedPage(hero, box, foot.y);
+      let y = tuned.foot + (points[2].y - foot.y);
       for (let i = 0; ; i++) {
         y += STEPS[i % STEPS.length] * vh;
-        if (y > footerTop - vh * 0.35) break;
-        points.push({ x: SWINGS[i % SWINGS.length] * vw, y });
+        const at = tuned.toPage(y);
+        if (at > footerTop - vh * 0.35) break;
+        const swing = SWINGS[i % SWINGS.length];
+        points.push({ x: (rtl ? 1 - swing : swing) * vw, y: at });
       }
-      // Clear of `[data-thread-avoid]` (section headings): where the line would cut through one, the swing
-      // nearest it is moved out beside it, to whichever side has more room, a little further on each try.
-      // A heading stretches as it comes into view, so it is kept clear at the widest it has been. Narrow
-      // screens leave no room beside.
-      const swingsTo = points.length;
+      // Clear of `[data-thread-avoid]` (section headings, and the work titles, whose longer names fill the gaps
+      // the swings run through): where the line would cut through one, the swing nearest it is moved out beside it, to whichever side has more room, a little further on each
+      // try; with no swing near, a new bend is added beside it. A heading stretches as it comes into view, so it is
+      // kept clear at the widest it has been. Narrow screens leave no room beside.
+      let swingsTo = points.length;
       const avoid = Array.from(document.querySelectorAll<HTMLElement>("[data-thread-avoid]"), (node) => {
         const r = node.getBoundingClientRect();
         const width = Math.max(r.width, widest.get(node) ?? 0);
@@ -264,7 +372,8 @@ export function LogoThread() {
         const left = getComputedStyle(node).direction === "rtl" ? r.right - width : r.left;
         return { left: left - box.left - AVOID.margin, right: left + width - box.left + AVOID.margin, top: r.top - box.top - AVOID.margin, bottom: r.bottom - box.top + AVOID.margin };
       }).filter((r) => r.right - r.left < vw * 0.7);
-      for (let attempt = 0; avoid.length && attempt < AVOID.tries; attempt++) {
+      const tried = new Map<(typeof avoid)[number], number>();
+      for (let attempt = 0; avoid.length && attempt < AVOID.tries * avoid.length; attempt++) {
         const samples = walk(smoothPath(points).curves, 24).samples;
         const hit = avoid.find((r) => samples.some(({ point: p }) => p.x > r.left && p.x < r.right && p.y > r.top && p.y < r.bottom));
         if (!hit) break;
@@ -273,8 +382,18 @@ export function LogoThread() {
         for (let i = 3; i < swingsTo; i++) if (nearest < 0 || Math.abs(points[i].y - middle) < Math.abs(points[nearest].y - middle)) nearest = i;
         if (nearest < 0) break;
         const toRight = vw - hit.right >= hit.left;
-        const out = attempt * AVOID.margin;
-        points[nearest] = { x: toRight ? Math.min(vw - 16, hit.right + out) : Math.max(16, hit.left - out), y: points[nearest].y };
+        const tries = tried.get(hit) ?? 0;
+        if (tries >= AVOID.tries) break;
+        tried.set(hit, tries + 1);
+        const out = tries * AVOID.margin;
+        const x = toRight ? Math.min(vw - 16, hit.right + out) : Math.max(16, hit.left - out);
+        if (Math.abs(points[nearest].y - middle) < vh * 0.3) points[nearest] = { x, y: points[nearest].y };
+        else {
+          let at = 3;
+          while (at < swingsTo && points[at].y < middle) at++;
+          points.splice(at, 0, { x, y: middle });
+          swingsTo++;
+        }
       }
       const dip = spotBox.height * 0.45;
       points.push(
@@ -288,15 +407,8 @@ export function LogoThread() {
       page = { width: vw, height, view: vh };
       win.top = -1;
       follow();
-      mask.setAttribute("width", String(vw));
-      mask.setAttribute("height", String(height));
-      maskFill.setAttribute("width", String(vw));
-      maskFill.setAttribute("height", String(height));
       const route = smoothPath(points);
       stem.setAttribute("d", route.d);
-      stem.setAttribute("stroke-width", String(FOOT.stemWidth * s));
-      inner.setAttribute("stroke-width", String(FOOT.innerWidth * s));
-      tip.setAttribute("r", String(FOOT.stemWidth * s * 2.5));
 
       // Read the stem line at even lengths; the thin line runs beside it, on its right, as it leaves the mark.
       const right = (d: Point) => ({ x: d.y, y: -d.x });
@@ -314,11 +426,19 @@ export function LogoThread() {
       let innerLength = Math.max(0, -lag);
       const read = walk(route.curves, SAMPLE);
       total = read.length;
-      for (const { point: a, dir: d } of read.samples) {
-        const p = { x: a.x + right(d).x * gap, y: a.y + right(d).y * gap };
-        const prev = innerPoints[innerPoints.length - 1];
-        if (prev) innerLength += Math.hypot(p.x - prev.x, p.y - prev.y);
-        innerPoints.push(p);
+      // Into the footer the line comes down to the footer mark's scale and runs up into its stem. It arrives the
+      // other way to how it left the hero, so the thin line would land on the wrong side of it: it ends before the
+      // footer instead, and the mark draws its own thin ribbon.
+      const twistTo = Math.max(0, total - dip);
+      const twistStart = read.samples.findIndex(({ point }) => point.y >= footerTop - vh * 0.2);
+      twist = { from: twistStart < 0 ? twistTo : Math.min(twistStart * SAMPLE, twistTo), to: twistTo, hero: s, foot: ls };
+      for (const [index, { point: a, dir: d }] of read.samples.entries()) {
+        if (index * SAMPLE <= twist.from) {
+          const p = { x: a.x + right(d).x * gap, y: a.y + right(d).y * gap };
+          const prev = innerPoints[innerPoints.length - 1];
+          if (prev) innerLength += Math.hypot(p.x - prev.x, p.y - prev.y);
+          innerPoints.push(p);
+        }
         low = Math.max(low, a.y);
         xs.push(a.x);
         ys.push(a.y);
@@ -330,14 +450,13 @@ export function LogoThread() {
       innerTotal = inner.getTotalLength();
 
       // Behind each section after the hero, the line all but fades: across its content, between its padding.
-      shades.replaceChildren();
+      // Each band is how much of the line shows down its height (1 in full, SHADE.visible faint, 0 not at all).
+      // It is written into the lines' own colour, as a gradient down the page, rather than masked: with a mask
+      // every frame the line moved made the browser lay out the line and the whole mask again (~20 ms a frame,
+      // on every section), which is what made the page so heavy on Safari.
       const main = el.closest("main") ?? document.body;
-      const band = (y0: number, h: number, fill: string) => {
-        const node = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-        for (const [name, value] of [["x", 0], ["y", y0], ["width", vw], ["height", h]] as const) node.setAttribute(name, String(value));
-        node.setAttribute("fill", fill);
-        shades.appendChild(node);
-      };
+      const bands: { y0: number; y1: number; from: number; to: number }[] = [];
+      const band = (y0: number, h: number, from: number, to = from) => bands.push({ y0, y1: y0 + h, from, to });
       /** Whether the line is out of sight where `section` ends (a clear section, or one it fades out of for good). */
       const endsClear = (section: Element | null) => !!section && (section.hasAttribute("data-thread-hidden") || !!section.querySelector("[data-thread-end]"));
       for (const section of Array.from(main.children) as HTMLElement[]) {
@@ -349,8 +468,8 @@ export function LogoThread() {
           if (stop) {
             const top = stop.getBoundingClientRect().top - box.top;
             const bottom = section.getBoundingClientRect().bottom - box.top;
-            band(top - SHADE.feather, SHADE.feather, `url(#${id}-clear-in)`);
-            band(top, bottom - top, "#000");
+            band(top - SHADE.feather, SHADE.feather, 1, 0);
+            band(top, bottom - top, 0);
           }
           continue;
         }
@@ -362,15 +481,44 @@ export function LogoThread() {
         const to = r.bottom - box.top - (clear ? 0 : parseFloat(css.paddingBottom));
         if (to - from < 40) continue;
         const feather = Math.min(SHADE.feather, (to - from) / 2);
-        const kind = clear ? "clear" : "fade";
+        const behind = clear ? 0 : SHADE.visible;
         // Back-to-back clear sections are one stretch: the line does not come out between them.
         const joinsAbove = clear && endsClear(section.previousElementSibling);
         const joinsBelow = clear && !!section.nextElementSibling?.hasAttribute("data-thread-hidden");
         const start = joinsAbove ? from : from + feather;
         const end = joinsBelow ? to : to - feather;
-        if (!joinsAbove) band(from, feather, `url(#${id}-${kind}-in)`);
-        band(start, end - start, clear ? "#000" : `url(#${id}-shade)`);
-        if (!joinsBelow) band(to - feather, feather, `url(#${id}-${kind}-out)`);
+        if (!joinsAbove) band(from, feather, 1, behind);
+        band(start, end - start, behind);
+        if (!joinsBelow) band(to - feather, feather, behind, 1);
+      }
+
+      // The bands, in page order, as one profile down the page (full between them); equal heights make hard edges.
+      bands.sort((a, b) => a.y0 - b.y0);
+      const profile: { y: number; v: number }[] = [];
+      let cursor = 0;
+      for (const { y0: bandTop, y1: bandBottom, from, to } of bands) {
+        const y0 = Math.max(bandTop, cursor);
+        const y1 = Math.max(bandBottom, y0);
+        if (y0 > cursor) profile.push({ y: cursor, v: 1 }, { y: y0, v: 1 });
+        profile.push({ y: y0, v: from }, { y: y1, v: to });
+        cursor = y1;
+      }
+      profile.push({ y: cursor, v: 1 }, { y: Math.max(height, cursor), v: 1 });
+      shade = profile;
+      for (const [gradient, color] of [
+        [stemShade, "--color-paper"],
+        [innerShade, "--color-accent"],
+      ] as const) {
+        gradient.setAttribute("y2", String(Math.max(1, height)));
+        gradient.replaceChildren(
+          ...profile.map(({ y, v }) => {
+            const stop = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+            stop.setAttribute("offset", String(clamp01(y / Math.max(1, height))));
+            stop.style.stopColor = `var(${color})`;
+            stop.style.stopOpacity = String(v);
+            return stop;
+          }),
+        );
       }
 
       logo.setAttribute("transform", `translate(${lx.toFixed(1)} ${ly.toFixed(1)}) scale(${ls.toFixed(4)})`);
@@ -385,7 +533,7 @@ export function LogoThread() {
       for (const char of chars) char.node.style.translate = "";
       chars = Array.from(document.querySelectorAll<HTMLElement>("[data-hero-char]"), (node) => ({ node, x: 0, y: 0 }));
 
-      shown.head = shown.tail = shown.logo = -1;
+      shown.head = shown.tail = shown.logo = shown.scale = -1;
       if (still.matches) {
         head = tail = 0;
         logoDrawn = 1;
@@ -408,9 +556,18 @@ export function LogoThread() {
         const i = Math.min(xs.length - 1, Math.floor(head / SAMPLE));
         const j = Math.min(xs.length - 1, i + 1);
         const k = head / SAMPLE - i;
+        const tipY = ys[i] + (ys[j] - ys[i]) * k;
         tip.setAttribute("cx", String(xs[i] + (xs[j] - xs[i]) * k));
-        tip.setAttribute("cy", String(ys[i] + (ys[j] - ys[i]) * k));
-        tip.style.opacity = head > 2 && head < total - 2 && length > 2 ? "1" : "0";
+        tip.setAttribute("cy", String(tipY));
+        tip.style.opacity = head > 2 && head < total - 2 && length > 2 ? shadeAt(tipY).toFixed(3) : "0";
+        // The line is as wide as the mark it is nearest: the hero's, then, into the footer, the footer's.
+        const scale = twist.hero + (twist.foot - twist.hero) * twistAt(head);
+        if (Math.abs(scale - shown.scale) > 0.002) {
+          shown.scale = scale;
+          stem.setAttribute("stroke-width", String(FOOT.stemWidth * scale));
+          inner.setAttribute("stroke-width", String(FOOT.innerWidth * scale));
+          tip.setAttribute("r", String(FOOT.stemWidth * scale * 2.5));
+        }
       }
       if (Math.abs(logoDrawn - shown.logo) > 0.001) {
         shown.logo = logoDrawn;
@@ -441,9 +598,10 @@ export function LogoThread() {
      */
     /** Returns whether any letter is still on its way. */
     const part = () => {
-      // Out of the hero with every letter back in place, there is nothing to do (and nothing to measure).
-      if (window.scrollY > heroOut && !parted) return false;
-      parted = false;
+      // Out of the hero there is nothing to do (and nothing to measure): the letters are out of sight, and stay
+      // where they are until it comes back. Measuring them each frame (after this frame's writes) forced a layout
+      // of the whole page on every frame of the scroll, on every section.
+      if (window.scrollY > heroOut) return false;
       let moved = false;
       const shift = window.scrollY - originY;
       const reached = Math.min(heroEnd, Math.floor(head / SAMPLE) + 1);
@@ -495,7 +653,6 @@ export function LogoThread() {
             char.x = 0;
             if (char.node.style.translate) char.node.style.translate = "";
           } else {
-            parted = true;
             char.node.style.translate = `${char.x.toFixed(1)}px 0px`;
           }
         }
@@ -593,8 +750,6 @@ export function LogoThread() {
     };
   }, [id]);
 
-  // Opaque grey: in a mask, brightness is how much shows through.
-  const shade = `rgb(${Array(3).fill(Math.round(255 * SHADE.visible)).join(" ")})`;
   const hidden = { strokeDasharray: "0 100000" };
   // Mask strokes for the footer mark (as DrawableLogo): each ribbon is revealed by a thick stroke along its centre line.
   const pen = (part: DrawStroke, d: string, width: number) => (
@@ -619,30 +774,9 @@ export function LogoThread() {
             <stop offset="0.35" stopColor="var(--color-sky)" stopOpacity="0.55" />
             <stop offset="1" stopColor="var(--color-sky)" stopOpacity="0" />
           </radialGradient>
-          <linearGradient id={`${id}-fade-in`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#fff" />
-            <stop offset="1" stopColor={shade} />
-          </linearGradient>
-          <linearGradient id={`${id}-fade-out`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor={shade} />
-            <stop offset="1" stopColor="#fff" />
-          </linearGradient>
-          <linearGradient id={`${id}-clear-in`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#fff" />
-            <stop offset="1" stopColor="#000" />
-          </linearGradient>
-          <linearGradient id={`${id}-clear-out`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#000" />
-            <stop offset="1" stopColor="#fff" />
-          </linearGradient>
-          <linearGradient id={`${id}-shade`}>
-            <stop stopColor={shade} />
-          </linearGradient>
-          {/* What the line shows of itself: all of it, but faint behind each section's content. */}
-          <mask id={`${id}-sections`} data-thread="sections" maskUnits="userSpaceOnUse" x="0" y="0">
-            <rect x="0" y="0" width="100%" height="100%" fill="#fff" />
-            <g data-thread="shades" />
-          </mask>
+          {/* The lines' colours down the page: all of them, but faint behind each section's content (stops set by layout). */}
+          <linearGradient id={`${id}-stem-shade`} data-thread="stem-shade" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1" />
+          <linearGradient id={`${id}-inner-shade`} data-thread="inner-shade" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1" />
           <mask id={`${id}-outer`} {...region}>
             {pen("main", LOGO_DRAW.main, LOGO_DRAW.outerWidth)}
             {pen("stem", LOGO_DRAW.stem, LOGO_DRAW.outerWidth)}
@@ -651,9 +785,9 @@ export function LogoThread() {
             {pen("inner", LOGO_DRAW.inner, LOGO_DRAW.innerWidth)}
           </mask>
         </defs>
-        <g mask={`url(#${id}-sections)`}>
-          <path data-thread="inner" stroke="var(--color-accent)" strokeLinejoin="round" style={hidden} />
-          <path data-thread="stem" stroke="var(--color-paper)" strokeLinejoin="round" style={hidden} />
+        <g>
+          <path data-thread="inner" stroke={`url(#${id}-inner-shade)`} strokeLinejoin="round" style={hidden} />
+          <path data-thread="stem" stroke={`url(#${id}-stem-shade)`} strokeLinejoin="round" style={hidden} />
           <circle data-thread="tip" fill={`url(#${id}-tip)`} style={{ opacity: 0 }} />
         </g>
         {/* The footer mark, drawn whole and on its own as the journey ends. */}

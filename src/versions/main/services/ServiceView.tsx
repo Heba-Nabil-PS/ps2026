@@ -3,6 +3,7 @@ import { fill, getCopy } from "@/versions/main/copy";
 import { industryHref } from "@/versions/main/data/routes";
 import { Reveal } from "@/versions/main/motion/Reveal";
 import { StretchHeading } from "@/versions/main/motion/StretchHeading";
+import { DeliverableGrid } from "@/versions/main/services/DeliverableGrid";
 import { ProcessCards } from "@/versions/main/sections/ProcessCards";
 import { WorkCard } from "@/versions/main/sections/WorkCard";
 import { AppLink } from "@/versions/main/ui/AppLink";
@@ -41,16 +42,7 @@ export function ServiceView({ lang, index }: { lang: Locale; index: number }) {
 
       <section className="gutter section-y">
         <SectionHead label={labels.deliverables.label} title={labels.deliverables.title} intro={service.summary} />
-        <Reveal as="ul" className="mt-14 grid gap-4 sm:grid-cols-2 md:mt-20 lg:grid-cols-3" stagger={0.08}>
-          {service.deliverables.map((item, itemIndex) => (
-            <li key={item} data-reveal-item className="glass group flex min-h-56 flex-col rounded-card p-7">
-              <div className="flex items-center justify-between text-sky">
-                <span className="text-label tabular-nums text-subtle">{String(itemIndex + 1).padStart(2, "0")}</span>
-              </div>
-              <h3 className="text-title mt-auto pt-12 font-medium">{item}</h3>
-            </li>
-          ))}
-        </Reveal>
+        <DeliverableGrid items={service.deliverables} />
       </section>
 
       <ProcessCards label={copy.services.process.label} title={copy.services.process.title} steps={site.process} />
@@ -61,7 +53,7 @@ export function ServiceView({ lang, index }: { lang: Locale; index: number }) {
             label={labels.work.label}
             title={labels.work.title}
             action={
-              <ButtonLink href={`/work?category=${slug}`} variant="glass" transitionLabel={copy.meta.pages.work.title}>
+              <ButtonLink href="/portfolio" variant="glass" transitionLabel={copy.meta.pages.work.title}>
                 {fill(labels.work.all, { service: service.title })}
               </ButtonLink>
             }
@@ -105,11 +97,11 @@ export function ServiceView({ lang, index }: { lang: Locale; index: number }) {
       ) : null}
 
       <section className="gutter grid gap-12 pb-[clamp(5.5rem,12vw,11rem)] md:grid-cols-12">
-        <div className="md:col-span-4">
+        <div className="md:col-span-5">
           <Label className="mb-6">{labels.faq.label}</Label>
           <StretchHeading lines={labels.faq.title} className="text-headline" />
         </div>
-        <div className="md:col-span-8">
+        <div className="md:col-span-7">
           <Faq items={service.faq} />
         </div>
       </section>

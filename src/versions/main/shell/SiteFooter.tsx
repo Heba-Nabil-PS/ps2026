@@ -3,12 +3,22 @@
 import { useCopy } from "@/versions/main/use-copy";
 import { AppLink } from "@/versions/main/ui/AppLink";
 import { industryHref, serviceHref } from "@/versions/main/data/routes";
-import { LOGO_VIEWBOX } from "@/shared/brand/logo-paths";
+import { LOGO_PATHS, LOGO_VIEWBOX, viewBoxOf } from "@/shared/brand/logo-paths";
 import { DrawableLogo } from "@/shared/brand/DrawableLogo";
 import { directionsHref } from "@/versions/main/sections/Offices";
 import { useLenis } from "lenis/react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUp, ArrowUpRight } from "lucide-react";
 import { useEffect, useRef, type CSSProperties } from "react";
+
+/** The wordmark's own bounds in the logo artwork (cap tops to the g's descender). */
+const WORDMARK_BOX = { x: 482, y: 782, width: 546, height: 130 };
+/** Where the wordmark sits over the mark's box in the full logo, as fractions of that box. */
+const WORDMARK_PLACE: CSSProperties = {
+  left: `${((WORDMARK_BOX.x - LOGO_VIEWBOX.mark.x) / LOGO_VIEWBOX.mark.width) * 100}%`,
+  top: `${((WORDMARK_BOX.y - LOGO_VIEWBOX.mark.y) / LOGO_VIEWBOX.mark.height) * 100}%`,
+  width: `${(WORDMARK_BOX.width / LOGO_VIEWBOX.mark.width) * 100}%`,
+  height: `${(WORDMARK_BOX.height / LOGO_VIEWBOX.mark.height) * 100}%`,
+};
 
 /**
  * Every page ends on the quiet sitemap (services, industries, company) and
@@ -20,7 +30,7 @@ export function SiteFooter() {
   const markRef = useRef<HTMLDivElement>(null);
 
   // Off the home page there is no thread to end here (LogoThread drives the mark there), so the mark draws itself
-  // and the name writes in whenever the footer's room comes into view, and wipes away again when it leaves.
+  // whenever the footer's room comes into view, and wipes away again when it leaves.
   useEffect(() => {
     const mark = markRef.current;
     if (!mark) return;
@@ -110,17 +120,22 @@ export function SiteFooter() {
             </ul>
           </div>
         </div>
-        {/* Room for the home page's thread to draw the mark again (LogoThread), the name writing itself in beside it
-            ("PS", a beat, then "digital") once it does; on pages without it, the footer draws them itself. Under the sitemap, beside the studio column, so it adds no height. */}
-        <div ref={markRef} aria-hidden data-footer-mark dir="ltr" className="footer-mark md:col-span-8 md:self-end">
+        {/* Room for the home page's thread to draw the mark again (LogoThread); on pages without it, the footer
+            draws it itself. Under the sitemap, beside the studio column, so it adds no height. The mark is
+            always drawn left to right, so on Arabic pages it is pushed to the right edge, where reading starts. */}
+        <div ref={markRef} aria-hidden data-footer-mark dir="ltr" className="footer-mark md:col-span-8 md:self-end ar:justify-end">
           <span data-footer-mark-logo className="footer-mark-logo" style={{ aspectRatio: `${LOGO_VIEWBOX.mark.width} / ${LOGO_VIEWBOX.mark.height}` }}>
             <DrawableLogo className="block h-full w-full text-paper" renderStroke={(stroke) => <path {...stroke} pathLength={1} />} />
-          </span>
-          {site.name.split("").map((char, index) => (
-            <span key={index} data-letter style={{ "--delay": `${1.1 + index * 0.11 + (index >= 2 ? 0.25 : 0)}s` } as CSSProperties}>
-              {char}
+            {/* The name rises in once the mark is mostly drawn, letter by letter, where and as large as it sits in
+                the header logo. Its own layer, so it shows on the home page too, where the thread draws the mark. */}
+            <span className="footer-mark-name" style={WORDMARK_PLACE}>
+              <svg viewBox={viewBoxOf(WORDMARK_BOX)} focusable="false" className="block h-full w-full text-paper">
+                {LOGO_PATHS.wordmark.map((d, index) => (
+                  <path key={d} d={d} fill="currentColor" style={{ "--i": index } as CSSProperties} />
+                ))}
+              </svg>
             </span>
-          ))}
+          </span>
         </div>
       </div>
 
@@ -129,8 +144,14 @@ export function SiteFooter() {
           © {new Date().getFullYear()} {site.name}. {copy.ui.copyright}
         </p>
         <div className="flex items-center gap-6">
-          <button type="button" onClick={() => (lenis ? lenis.scrollTo(0) : window.scrollTo({ top: 0, behavior: "smooth" }))} className="transition-colors hover:text-fg">
-            {copy.ui.backToTop}
+          <button
+            type="button"
+            aria-label={copy.ui.backToTop}
+            title={copy.ui.backToTop}
+            onClick={() => (lenis ? lenis.scrollTo(0) : window.scrollTo({ top: 0, behavior: "smooth" }))}
+            className="group grid size-10 place-items-center rounded-full border border-line-strong text-fg transition-colors duration-500 hover:border-sky hover:bg-sky hover:text-ink-900"
+          >
+            <ArrowUp aria-hidden className="size-4 transition-transform duration-500 ease-expo group-hover:-translate-y-0.5" />
           </button>
         </div>
       </div>

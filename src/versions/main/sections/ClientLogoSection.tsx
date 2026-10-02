@@ -98,7 +98,10 @@ export function ClientLogoSection({ label, title, intro, clients, row }: { label
             const laneCount = Math.max(1, Math.round(Number(getComputedStyle(root).getPropertyValue("--lanes"))) || 3);
             // `--slot` on the field overrides the default slot, for a tighter single row.
             const slotSize = Number(getComputedStyle(root).getPropertyValue("--slot")) || SLOT;
-            const pitch = root.clientHeight / (laneCount + EDGE * 2);
+            // `--edge` overrides the clear band, for a single row that hugs its marks.
+            const edgeValue = getComputedStyle(root).getPropertyValue("--edge").trim();
+            const edge = edgeValue ? Number(edgeValue) : EDGE;
+            const pitch = root.clientHeight / (laneCount + edge * 2);
             const offsets = new Map(lanes.map((lane, index) => [index, lane.offset / lane.length]));
             unit = pitch / PITCH / 100;
             const slot = pitch / PITCH * slotSize;
@@ -125,7 +128,7 @@ export function ClientLogoSection({ label, title, intro, clients, row }: { label
                 lane,
                 // Centred in its slot, and on its lane's centre line, so every mark lines up with its neighbours.
                 base: Math.floor(index / laneCount) * lane.spacing + (lane.spacing - el.offsetWidth) / 2,
-                top: (EDGE + laneIndex + 0.5) * pitch - el.offsetHeight / 2,
+                top: (edge + laneIndex + 0.5) * pitch - el.offsetHeight / 2,
                 phase: noise(index, 3) * Math.PI * 2,
                 rate: 0.34 + noise(index, 4) * 0.3,
                 x: 0,
@@ -244,7 +247,7 @@ export function ClientLogoSection({ label, title, intro, clients, row }: { label
   );
 
   return (
-    <section data-thread-hidden className={row ? "mt-12 md:mt-16" : "section-y"}>
+    <section data-thread-hidden className={row ? "mt-4 md:mt-6" : "section-y"}>
       {label && title ? <SectionHead className="gutter" label={label} title={title} intro={intro} /> : null}
       <ul ref={field} data-reveal className={row ? "client-field client-field-row" : "client-field mt-12 md:mt-16"}>
         {clients.map((client) => {

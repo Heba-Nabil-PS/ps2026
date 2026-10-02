@@ -13,7 +13,7 @@ import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { useRef, type PointerEvent } from "react";
 
-type JourneyProject = Pick<PortfolioProject, "slug" | "title" | "category" | "description" | "market" | "color" | "hoverVideo"> & { image: string };
+type JourneyProject = Pick<PortfolioProject, "slug" | "title" | "category" | "description" | "market" | "color" | "hoverVideo" | "tags"> & { image: string };
 
 /** Catmull-Rom through the points, as cubic Béziers: one smooth line that passes through every one of them. */
 function smoothPath(points: { x: number; y: number }[]) {
@@ -175,7 +175,7 @@ export function ProjectJourney({ projects, viewLabel }: { projects: readonly Jou
 
       {projects.map((project, index) => (
         <li key={project.slug} data-journey-card className={index % 2 ? "ps-7 md:ms-auto md:w-[58%] md:ps-0" : "ps-7 md:w-[58%] md:ps-0"}>
-          <JourneyCard project={project} index={index} last={index === projects.length - 1} viewLabel={viewLabel} />
+          <JourneyCard project={project} last={index === projects.length - 1} viewLabel={viewLabel} />
         </li>
       ))}
     </ul>
@@ -187,7 +187,7 @@ export function ProjectJourney({ projects, viewLabel }: { projects: readonly Jou
  * Layers (outer → inner): magnetic root → reveal frame → scroll parallax → hover shift/scale → media.
  * Each layer owns exactly one kind of transform so scroll, hover and reveal never fight.
  */
-function JourneyCard({ project, index, last, viewLabel }: { project: JourneyProject; index: number; last: boolean; viewLabel: string }) {
+function JourneyCard({ project, last, viewLabel }: { project: JourneyProject; last: boolean; viewLabel: string }) {
   const root = useRef<HTMLDivElement>(null);
   const frame = useRef<HTMLDivElement>(null);
   const parallax = useRef<HTMLDivElement>(null);
@@ -295,8 +295,7 @@ function JourneyCard({ project, index, last, viewLabel }: { project: JourneyProj
           {/* Legibility scrim + overlay metadata */}
           <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-bg/75 via-bg/5 to-bg/30" />
           <div className="pointer-events-none absolute inset-0 flex flex-col justify-between p-5 md:p-7">
-            <div className="text-label flex items-start justify-between gap-4 text-fg/85">
-              <span data-meta className="tabular-nums">{String(index + 1).padStart(2, "0")}</span>
+            <div className="text-label flex items-start justify-end gap-4 text-fg/85">
               <span data-meta className="text-end">
                 {project.category}
                 {project.market ? (
@@ -312,23 +311,31 @@ function JourneyCard({ project, index, last, viewLabel }: { project: JourneyProj
 
         {/* The home thread fades out just above the last title (LogoThread), clear of the text. */}
         <div data-title data-thread-end={last || undefined} className="mt-5 will-change-transform">
-          <h3 className="text-headline font-extrabold uppercase leading-[0.92]">
-            <span className="block overflow-hidden pb-[0.06em]">
-              <span data-line className="block">
-                {project.title}
+          <div className="text-headline flex items-center gap-[0.35em]">
+            <h3 className="min-w-0 font-extrabold uppercase leading-[0.92] ar:font-display ar:font-bold">
+              <span className="block overflow-hidden pb-[0.06em]">
+                <span data-line className="block">
+                  {project.title}
+                </span>
               </span>
-            </span>
-          </h3>
-          <span className="block overflow-hidden">
+            </h3>
             <span
+              aria-hidden
               className={cn(
-                "text-label mt-3 flex items-center gap-2 text-accent transition-transform duration-700 ease-[var(--ease-expo)]",
-                rich && "translate-y-full group-data-[hovered=true]/card:translate-y-0",
+                "flex shrink-0 text-accent transition-[opacity,translate] duration-700 ease-[var(--ease-expo)]",
+                rich && "-translate-x-[0.3em] opacity-0 rtl:translate-x-[0.3em] group-data-[hovered=true]/card:translate-x-0 group-data-[hovered=true]/card:opacity-100",
               )}
             >
-              <ArrowRight aria-hidden className="size-3.5 rtl:-scale-x-100" /> {viewLabel}
+              <ArrowRight strokeWidth={2.25} className="size-[0.85em] rtl:-scale-x-100" />
             </span>
-          </span>
+          </div>
+          <ul data-meta className="mt-3 flex flex-wrap gap-2">
+            {project.tags.slice(0, 3).map((tag) => (
+              <li key={tag} className="text-label rounded-full border border-line px-3 py-1.5 text-[0.65rem] text-muted">
+                {tag}
+              </li>
+            ))}
+          </ul>
         </div>
 
         <p data-meta className="mt-4 max-w-md text-sm leading-relaxed text-muted">

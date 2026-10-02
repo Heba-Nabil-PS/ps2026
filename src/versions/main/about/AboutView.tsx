@@ -36,7 +36,7 @@ export async function AboutView() {
                 <dt className="order-2 text-sm text-muted">{item.label}</dt>
                 <dd className="stretch order-1 text-[clamp(2.6rem,4.5vw,4.5rem)] leading-none text-sky">
                   <span data-line className="block">
-                    <Counter value={item.value} suffix={item.suffix} />
+                    <Counter value={item.value} suffix={item.suffix} className="text-grain" />
                   </span>
                 </dd>
               </div>
@@ -75,7 +75,6 @@ export async function AboutView() {
         body={page.closing.body}
         primary={{ label: page.closing.primary, href: "/start" }}
         secondary={{ label: page.closing.secondary, href: "/team" }}
-        bleed
       />
     </>
   );

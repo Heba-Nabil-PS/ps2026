@@ -20,7 +20,7 @@ export const portfolioAr: PortfolioProject[] = [
   {
     id: "01",
     slug: "texas-chicken",
-    title: "Texas Chicken",
+    title: "تكساس تشيكن",
     category: "هوية · تطبيق · موقع · تواصل اجتماعي",
     market: "16 سوقًا — الشرق الأوسط وأفريقيا",
     description: "منظومة علامة تجارية واحدة ثنائية اللغة، وتطبيق طلبات إقليمي واحد، وستة عشر بلدًا — تُدار جميعها عبر وكالة معتمدة واحدة.",
@@ -94,7 +94,7 @@ export const portfolioAr: PortfolioProject[] = [
   {
     id: "02",
     slug: "sinclair-aesthetics",
-    title: "Sinclair Aesthetics",
+    title: "سنكلير للتجميل",
     category: "منصات التواصل · حملات للشركات",
     market: "الشرق الأوسط وشمال أفريقيا",
     description: "ترسيخ علوم التجميل العالمية معيارًا للمنطقة — علامة واحدة، وثلاث علامات فرعية، واستراتيجية واحدة.",
@@ -161,7 +161,7 @@ export const portfolioAr: PortfolioProject[] = [
   {
     id: "03",
     slug: "shark-tank-egypt",
-    title: "Shark Tank مصر",
+    title: "شارك تانك مصر",
     category: "منصات التواصل · موقع إلكتروني",
     market: "مصر",
     description: "حسابات بُنيت من الصفر، وبيت ثنائي اللغة للبرنامج — الحلقات، والمستثمرون، وطلب التقديم لعرض المشاريع.",
@@ -226,7 +226,7 @@ export const portfolioAr: PortfolioProject[] = [
   {
     id: "04",
     slug: "million-pound-menu",
-    title: "Million Pound Menu",
+    title: "منيو المليون جنيه",
     category: "منصات التواصل · موقع إلكتروني",
     market: "مصر",
     description: "من أحلام المطبخ إلى واقع الأعمال — محتوى على منصات التواصل بإيقاع الحلقات، وموقع يتقدّم عبره مؤسسو مشاريع الطعام.",
@@ -276,7 +276,7 @@ export const portfolioAr: PortfolioProject[] = [
   {
     id: "05",
     slug: "physiowell",
-    title: "Physiowell",
+    title: "فيزيوويل",
     category: "التسويق القائم على الأداء",
     market: "دبي، الإمارات",
     description: "إعلانات مدفوعة دائمة حوّلت الثقة الطبية إلى مصدر عملاء محتملين قابل للقياس — بعائد على الإنفاق الإعلاني يصل إلى 10 أضعاف.",
@@ -326,7 +326,7 @@ export const portfolioAr: PortfolioProject[] = [
   {
     id: "06",
     slug: "million-riyal-menu",
-    title: "Million Riyal Menu",
+    title: "منيو المليون ريال",
     category: "منصات التواصل · موقع إلكتروني",
     market: "السعودية",
     description: "النسخة السعودية من البرنامج — حملات حلقات بالعربية أولًا بالشراكة مع MBC وموسم الرياض.",
@@ -377,7 +377,7 @@ export const portfolioAr: PortfolioProject[] = [
   {
     id: "07",
     slug: "pharco",
-    title: "Pharco",
+    title: "فاركو",
     category: "الرعاية الصحية · منصات التواصل",
     market: "مصر",
     description: "محتوى توعوي صحي لواحدة من كبرى شركات الأدوية في مصر.",
@@ -417,7 +417,7 @@ export const portfolioAr: PortfolioProject[] = [
   {
     id: "08",
     slug: "m-squared",
-    title: "M.Squared",
+    title: "إم سكويرد",
     category: "حملة · إعلانات خارجية",
     description: "«أبعد من الزمن» — شعار حملة انتقل من اللوحات الإعلانية إلى ملصقات الشوارع.",
     intro:
@@ -454,7 +454,7 @@ export const portfolioAr: PortfolioProject[] = [
   {
     id: "09",
     slug: "elsewhere-developments",
-    title: "Elsewhere Developments",
+    title: "إلسوير للتطوير العقاري",
     category: "عقارات · منصات التواصل",
     market: "مصر",
     description: "مطوّر واحد، ووجهات متعددة — Ajaza، وThe One السكني والإداري.",
@@ -497,7 +497,7 @@ export const portfolioAr: PortfolioProject[] = [
   {
     id: "10",
     slug: "astk",
-    title: "ASTK",
+    title: "أستك",
     category: "أزياء · منصات التواصل",
     description: "محتوى أزياء موسمي بين المدينة والساحل.",
     intro:
@@ -546,7 +546,7 @@ export const portfolioAr: PortfolioProject[] = [
   {
     id: "11",
     slug: "yumochi",
-    title: "Yumochi",
+    title: "يوموتشي",
     category: "منصات التواصل · المحتوى",
     description: "محتوى تقوده المنتجات على منصات التواصل لعلامة آيس كريم موتشي يابانية.",
     intro:
@@ -585,7 +585,7 @@ export const portfolioAr: PortfolioProject[] = [
   {
     id: "12",
     slug: "at-home",
-    title: "@Home",
+    title: "آت هوم",
     category: "منصات التواصل · المحتوى",
     description: "محتوى أثاث يتصدّره الخامة والضوء وإحساس المكان.",
     intro:
@@ -624,7 +624,7 @@ export const portfolioAr: PortfolioProject[] = [
   {
     id: "13",
     slug: "eea",
-    title: "Egypt's Entrepreneur Awards",
+    title: "جوائز رواد الأعمال في مصر",
     category: "جوائز · حملة",
     market: "مصر",
     description: "منظومة حملة بُنيت حول مجسّم جائزة نحتي واحد وطباعة تحريرية.",
@@ -665,7 +665,7 @@ export const portfolioAr: PortfolioProject[] = [
   {
     id: "14",
     slug: "moishi",
-    title: "Moishi",
+    title: "مويشي",
     category: "تصميم التطبيقات",
     market: "الإمارات",
     description: "تطبيق طلبات لعلامة موتشي وآيس كريم، صُمّم للسلة الصغيرة المتكررة.",

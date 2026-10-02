@@ -15,8 +15,11 @@ function Frame({ id, label, hint, error, optionalLabel, className, children }: S
         {label}
         {optionalLabel ? <span className="normal-case tracking-normal text-subtle">({optionalLabel})</span> : null}
       </label>
-      {children}
-      <span aria-hidden className="pointer-events-none absolute bottom-0 start-0 h-px w-full origin-left scale-x-0 bg-sky transition-transform duration-700 ease-expo group-focus-within:scale-x-100 rtl:origin-right" />
+      {/* Underline hugs the control, so a hint or error below never gets a second line. */}
+      <div className="relative flex flex-col">
+        {children}
+        <span aria-hidden className="pointer-events-none absolute bottom-0 start-0 h-px w-full origin-left scale-x-0 bg-sky transition-transform duration-700 ease-expo group-focus-within:scale-x-100 rtl:origin-right" />
+      </div>
       {hint && !error ? (
         <p id={`${id}-hint`} className="mt-2 text-xs text-subtle">
           {hint}

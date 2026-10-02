@@ -127,7 +127,7 @@ export function BriefForm({ aside }: { aside?: ReactNode }) {
                   <TextField name="name" label={t.details.name.label} placeholder={t.details.name.placeholder} autoComplete="name" error={message("name")} onInput={clear("name")} />
                   <TextField name="company" label={t.details.company.label} placeholder={t.details.company.placeholder} autoComplete="organization" optionalLabel={copy.ui.optional} />
                   <TextField name="email" type="email" label={t.details.email.label} placeholder={t.details.email.placeholder} autoComplete="email" error={message("email")} onInput={clear("email")} />
-                  <PhoneField copy={t.details.phone} optionalLabel={copy.ui.optional} />
+                  <PhoneField copy={t.details.phone} optionalLabel={copy.ui.optional} defaultIso="AE" />
                   <TextField name="role" label={t.details.role.label} placeholder={t.details.role.placeholder} autoComplete="organization-title" optionalLabel={copy.ui.optional} className="md:col-span-2" />
                 </fieldset>
 

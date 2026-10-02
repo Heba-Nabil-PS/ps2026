@@ -1,6 +1,7 @@
 import { getServerCopy } from "@/versions/main/server";
 import { MotionBlurReveal } from "@/versions/main/motion/MotionBlurReveal";
 import { Reveal } from "@/versions/main/motion/Reveal";
+import { ScrollHighlight } from "@/versions/main/motion/ScrollHighlight";
 import { FlutedGlass } from "@/versions/main/ui/FlutedGlass";
 import { Label } from "@/versions/main/ui/Label";
 import Image from "next/image";
@@ -23,8 +24,8 @@ export async function Leadership() {
         <div data-reveal-item>
           <Label className="mb-10">{section.label}</Label>
         </div>
-        <blockquote data-reveal-item className="text-[clamp(1.5rem,2.8vw,2.7rem)] font-medium leading-[1.18] tracking-[-0.02em]">
-          “{section.quote}”
+        <blockquote data-reveal-item>
+          <ScrollHighlight text={`“${section.quote}”`} className="text-[clamp(1.5rem,2.8vw,2.7rem)] font-medium leading-[1.18] tracking-[-0.02em]" />
         </blockquote>
         <p data-reveal-item className="mt-10 flex items-center gap-4">
           <span className="h-px w-10 bg-sky" aria-hidden />

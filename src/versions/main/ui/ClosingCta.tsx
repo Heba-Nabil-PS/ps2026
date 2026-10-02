@@ -14,13 +14,14 @@ type Action = { label: string; href: string };
  * moodboard's hand-behind-glass tile made interactive. One primary action,
  * one glass action.
  */
-export function ClosingCta({ label, title, body, primary, secondary, bleed = false }: { label: string; title: readonly string[]; body: string; primary: Action; secondary?: Action; bleed?: boolean }) {
+export function ClosingCta({ label, title, body, primary, secondary, bleed = true }: { label: string; title: readonly string[]; body: string; primary: Action; secondary?: Action; bleed?: boolean }) {
   return (
     <section className={bleed ? "relative isolate overflow-hidden section-y" : "gutter section-y"}>
       {bleed ? (
-        // Full-bleed ribbed light, the same backdrop as ProcessCards.
+        // Full-bleed ribbed light, the same backdrop as ProcessCards. In light mode it is inverted
+        // (hue kept), so the ribs read as frosted glass instead of a grey wash behind dark text.
         <div aria-hidden className="absolute inset-0 -z-10">
-          <Image src="/images/site/cover.webp" alt="" fill sizes="100vw" quality={70} className="object-cover opacity-35 [mask-image:linear-gradient(180deg,transparent,black_25%,black_75%,transparent)]" />
+          <Image src="/images/site/cover.webp" alt="" fill sizes="100vw" quality={70} className="object-cover opacity-35 light:opacity-60 light:[filter:invert(1)_hue-rotate(180deg)] [mask-image:linear-gradient(180deg,transparent,black_25%,black_75%,transparent)]" />
           <PointerLight className="opacity-60 [mask-image:linear-gradient(180deg,transparent,black_25%,black_75%,transparent)]" />
         </div>
       ) : null}

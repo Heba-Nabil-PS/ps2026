@@ -17,11 +17,14 @@ export function WordMarquee({ items, speed = 1, className }: { items: readonly s
   useGSAP(
     () =>
       motionGate(() => {
+        // The row starts at the reading edge and runs past the other; it drifts toward that far side
+        // (right in Arabic), so the screen never shows the empty space behind the row's end.
+        const dir = getComputedStyle(root.current!).direction === "rtl" ? -1 : 1;
         gsap.fromTo(
           track.current,
           { xPercent: 0 },
           {
-            xPercent: -25 * speed,
+            xPercent: -25 * speed * dir,
             ease: "none",
             scrollTrigger: { trigger: root.current, start: "top bottom", end: "bottom top", scrub: 0.6 },
           },

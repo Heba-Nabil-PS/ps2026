@@ -3,16 +3,13 @@ import type { PortfolioProject } from "@/data/portfolio";
 import type { Locale } from "@/i18n/config";
 import { cn } from "@/lib/utils";
 import { getCopy } from "@/versions/main/copy";
-import { serviceHref } from "@/versions/main/data/routes";
 import { FrameRise } from "@/versions/main/motion/FrameRise";
 import { Reveal } from "@/versions/main/motion/Reveal";
 import { WorkCard } from "@/versions/main/sections/WorkCard";
-import { AppLink } from "@/versions/main/ui/AppLink";
 import { BackLink } from "@/versions/main/ui/BackLink";
 import { ClosingCta } from "@/versions/main/ui/ClosingCta";
 import { PageHero } from "@/versions/main/ui/PageHero";
 import { SectionHead } from "@/versions/main/ui/SectionHead";
-import { ArrowUpRight } from "lucide-react";
 
 /** Same rhythm as the work index: wide, narrow / narrow, wide. */
 const wide = (index: number) => index % 4 === 0 || index % 4 === 3;
@@ -20,8 +17,8 @@ const wide = (index: number) => index % 4 === 0 || index % 4 === 3;
 type IndustryViewProps = { lang: Locale; industry: Industry; index: number };
 
 /**
- * An industry: the problems we hear in it, what we build and run (each line
- * links to its service), the work that proves it, then one call to action.
+ * An industry: the problems we hear in it, what we build and run,
+ * the work that proves it, then one call to action.
  */
 export function IndustryView({ lang, industry, index }: IndustryViewProps) {
   const { copy, work, industries: list } = getCopy(lang);
@@ -42,11 +39,25 @@ export function IndustryView({ lang, industry, index }: IndustryViewProps) {
 
       <section className="gutter section-y">
         <SectionHead label={labels.challenges.label} title={labels.challenges.title} />
-        <Reveal as="ul" className="mt-14 grid gap-4 sm:grid-cols-2 md:mt-20 lg:grid-cols-4" stagger={0.1}>
-          {industry.challenges.map((challenge) => (
-            <li key={challenge.title} data-reveal-item className="glass group flex min-h-64 flex-col rounded-card p-7">
-              <h3 className="text-title mt-auto pt-12 font-medium">{challenge.title}</h3>
-              <p className="mt-3 text-sm text-muted">{challenge.body}</p>
+        <Reveal as="ul" className="problems mt-14 md:mt-20" stagger={0.1}>
+          {industry.challenges.map((challenge, challengeIndex) => (
+            <li key={challenge.title} data-reveal-item className="problem rounded-card">
+              <span aria-hidden className="problem-flutes" />
+              <span aria-hidden className="problem-glow" />
+              <div className="relative flex items-center justify-between">
+                <span className="text-label tabular-nums text-subtle">
+                  {String(challengeIndex + 1).padStart(2, "0")} / {String(industry.challenges.length).padStart(2, "0")}
+                </span>
+                <span aria-hidden className="problem-dot" />
+              </div>
+              <span aria-hidden className="problem-num stretch text-grain text-sky">
+                {String(challengeIndex + 1).padStart(2, "0")}
+              </span>
+              <div className="relative mt-auto">
+                <span aria-hidden className="problem-rule" />
+                <h3 className="text-title font-medium">{challenge.title}</h3>
+                <p className="problem-body mt-3 text-sm text-muted">{challenge.body}</p>
+              </div>
             </li>
           ))}
         </Reveal>
@@ -59,22 +70,16 @@ export function IndustryView({ lang, industry, index }: IndustryViewProps) {
             const service = services.find((item) => item.slug === help.service);
             return (
               <li key={help.title} data-reveal-item className="border-t border-line">
-                <AppLink href={serviceHref(help.service)} transitionLabel={service?.title} className="group grid gap-4 py-8 md:grid-cols-12 md:gap-8 md:py-10">
+                <div className="grid gap-4 py-8 md:grid-cols-12 md:gap-8 md:py-10">
                   <span className="text-label flex items-center gap-3 tabular-nums text-subtle md:col-span-2">
                     {String(helpIndex + 1).padStart(2, "0")}
                   </span>
-                  <h3 className="text-title font-medium transition-colors duration-500 group-hover:text-sky md:col-span-4">{help.title}</h3>
-                  <div className="md:col-span-5">
+                  <h3 className="text-title font-medium md:col-span-4">{help.title}</h3>
+                  <div className="md:col-span-6">
                     <p className="text-muted">{help.body}</p>
                     {service ? <p className="text-label mt-3 text-subtle">{service.title}</p> : null}
                   </div>
-                  <span
-                    aria-hidden
-                    className="grid size-10 place-items-center self-start rounded-full border border-line-strong transition-all duration-700 ease-expo group-hover:rotate-45 group-hover:border-sky group-hover:bg-sky group-hover:text-ink-900 md:col-span-1 md:justify-self-end rtl:-scale-x-100"
-                  >
-                    <ArrowUpRight className="size-4" />
-                  </span>
-                </AppLink>
+                </div>
               </li>
             );
           })}
@@ -106,7 +111,7 @@ export function IndustryView({ lang, industry, index }: IndustryViewProps) {
         title={copy.industries.closing.title}
         body={copy.industries.closing.body}
         primary={{ label: copy.industries.closing.primary, href: "/start" }}
-        secondary={{ label: copy.industries.closing.secondary, href: "/work" }}
+        secondary={{ label: copy.industries.closing.secondary, href: `/portfolio?industry=${industry.slug}` }}
       />
     </>
   );

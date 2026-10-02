@@ -15,7 +15,7 @@ export async function Testimonials() {
 
   return (
     <section data-thread-hidden className="gutter section-y">
-      <SectionHead label={section.label} title={section.title} intro={section.intro} />
+      <SectionHead label={section.label} title={section.title} />
       <TestimonialStage section={section} />
     </section>
   );

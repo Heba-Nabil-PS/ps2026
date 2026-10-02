@@ -65,6 +65,8 @@ export function StretchHeading({ as: Component = "h2", lines, className, lineCla
   const isAr = useLocale() === "ar";
   const stretches = useContext(SectionTitlesStretch) || Component === "h1";
   const letter = stretches && !isAr ? stretchLetterOf(lines.join(" ")) : undefined;
+  // Arabic titles read as one line; the copy's line breaks are tuned to the Latin face. A title still wraps where the screen is too narrow.
+  const shown = isAr ? [lines.join(" ")] : lines;
 
   useGSAP(
     () => {
@@ -120,7 +122,7 @@ export function StretchHeading({ as: Component = "h2", lines, className, lineCla
 
   return (
     <Component ref={root} data-reveal className={cn("stretch", className)} style={{ "--wdth": width } as CSSProperties}>
-      {lines.map((line, index) => (
+      {shown.map((line, index) => (
         <span key={`${line}-${index}`} className="block overflow-hidden pb-[0.1em] -mb-[0.04em]">
           <span data-line className={cn("block origin-bottom-left will-change-transform rtl:origin-bottom-right", lineClassNames?.[index])}>
             <StretchText text={line} letter={letter} />

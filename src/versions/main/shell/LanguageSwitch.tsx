@@ -21,7 +21,8 @@ export function LanguageSwitch({ className }: { className?: string }) {
       href={localizeHref(pathname, other)}
       hrefLang={other}
       lang={other}
-      className={cn("text-sm text-muted transition-colors duration-500 hover:text-fg", className)}
+      // The Arabic label in its own face: English pages have no Arabic glyphs, so it would fall back to a thin system font.
+      className={cn("text-sm text-muted transition-colors duration-500 hover:text-fg", other === "ar" && "font-[family-name:var(--font-arabic)]", className)}
       aria-label={`${copy.ui.language}: ${copy.ui.switchTo}`}
     >
       {copy.ui.switchTo}

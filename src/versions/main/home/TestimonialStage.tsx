@@ -17,9 +17,9 @@ const HOLD = 7000;
 const SWIPE = 48;
 
 /**
- * One big quote at a time, open on the page and on the section grid: the client's mark and their words,
- * the result beside them, then a closing rule with who said it. Thin lines on that rule show
- * the rotation and double as navigation.
+ * One quote at a time in a glass card: the client's words and who said them on the start side,
+ * the result in its own panel on the end side. Client marks under the card are the navigation;
+ * the active one carries a thin line that shows the rotation.
  *
  * - Rotation: advances every HOLD ms. It holds while the pointer or focus is on
  *   it or it is off screen, and stops once the visitor picks a quote. The pause
@@ -104,112 +104,110 @@ export function TestimonialStage({ section }: { section: Section }) {
         onFocus={() => setHeld(true)}
         onBlur={(event) => !event.currentTarget.contains(event.relatedTarget) && setHeld(false)}
       >
-        {/* Mark + quote: one cell for all, so the block is as tall as the longest and never shifts. */}
-        <div className="grid touch-pan-y" onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerCancel={() => (swipe.current = null)}>
-          {items.map((item, index) => {
-            const on = index === active;
-            const mark = clientMarks[item.client];
-            return (
-              <figure key={index} aria-hidden={!on} inert={!on} className={cn("col-start-1 row-start-1 grid gap-10 md:grid-cols-12 md:items-end md:gap-8", fade(on))}>
-                {/* Same 12 columns as SectionHead: the quote under the title, the result under the intro. */}
-                <div className="md:col-span-8">
-                  <div className="flex min-h-12 items-center gap-5">
-                    {mark ? (
-                      <Image
-                        src={`/images/clients/marks/${item.client}.webp`}
-                        alt={item.clientName}
-                        width={mark.width}
-                        height={mark.height}
-                        className="h-9 w-auto max-w-36 object-contain object-left rtl:object-right md:h-11"
-                      />
-                    ) : null}
-                    {item.pending ? <span className="text-label rounded-full border border-dashed border-sky/50 px-3 py-1 text-sky">{section.pending}</span> : null}
-                  </div>
+        {/* The card: quote and who said it on the start side, the result in its own panel on the end side. */}
+        <div className="relative isolate overflow-hidden rounded-[2rem] border border-line bg-glass">
+          <div aria-hidden className="pointer-events-none absolute -top-48 -z-10 size-[36rem] rounded-full bg-sky/10 blur-3xl end-[-12%]" />
+          <span
+            aria-hidden
+            className="pointer-events-none absolute top-2 start-5 -z-10 select-none font-serif text-[10rem] leading-[0.8] text-sky/20 md:top-6 md:start-12 md:text-[13rem]"
+          >
+            &ldquo;
+          </span>
 
-                  <blockquote
-                    className={cn(
-                      "mt-8 max-w-[24ch] text-[clamp(1.9rem,4.2vw,3.75rem)] leading-[1.12] tracking-[-0.02em] text-balance md:mt-10",
-                      item.pending ? "text-fg/70" : "text-fg",
-                    )}
-                  >
-                    {/* Hanging quote marks: the first letter, not the mark, lines up with the title above. */}
-                    <p className="relative">
-                      <span aria-hidden className="absolute -translate-x-full text-sky rtl:translate-x-full">
-                        &ldquo;
-                      </span>
-                      {item.quote}
-                      <span aria-hidden className="text-sky">
-                        &rdquo;
-                      </span>
-                    </p>
-                  </blockquote>
-                </div>
-
-                <p className="flex flex-col gap-3 md:col-span-4 md:pb-2">
-                  <span className="stretch text-[clamp(3rem,6vw,5.5rem)] leading-[0.9] text-sky" style={{ ["--wdth" as string]: 112 }}>
-                    {item.result.value}
-                  </span>
-                  <span className="max-w-[24ch] text-muted">{item.result.caption}</span>
-                </p>
-              </figure>
-            );
-          })}
-        </div>
-
-        {/* Closing rule: who said it on the start side, controls on the end side. */}
-        <div className="mt-12 flex flex-col gap-6 border-t border-line pt-6 md:mt-16 md:flex-row md:items-center md:justify-between">
-          <div className="grid">
+          {/* One cell for all quotes, so the card is as tall as the longest and never shifts. */}
+          <div className="grid touch-pan-y" onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerCancel={() => (swipe.current = null)}>
             {items.map((item, index) => {
               const on = index === active;
               return (
-                <p key={index} aria-hidden={!on} className={cn("col-start-1 row-start-1 text-sm", fade(on))}>
-                  <cite className="font-medium not-italic text-fg">{item.name}</cite>
-                  <span className="text-muted"> · {item.role}</span>
-                </p>
+                <figure key={index} aria-hidden={!on} inert={!on} className={cn("col-start-1 row-start-1 grid md:grid-cols-12", fade(on))}>
+                  <div className="flex flex-col justify-between gap-10 p-7 pt-24 sm:p-10 sm:pt-28 md:col-span-8 md:p-14 md:pt-32">
+                    <blockquote
+                      className={cn(
+                        "max-w-[26ch] text-[clamp(1.5rem,2.8vw,2.5rem)] leading-[1.2] tracking-[-0.015em] text-balance",
+                        item.pending ? "text-fg/70" : "text-fg",
+                      )}
+                    >
+                      <p>{item.quote}</p>
+                    </blockquote>
+
+                    <figcaption className="flex flex-wrap items-center gap-4">
+                      <span aria-hidden className="grid size-11 shrink-0 place-items-center rounded-full border border-sky/30 bg-sky/10 text-sm font-medium text-sky">
+                        {initials(item.name)}
+                      </span>
+                      <span className="flex flex-col text-sm">
+                        <cite className="font-medium not-italic text-fg">{item.name}</cite>
+                        <span className="text-muted">{item.role}</span>
+                      </span>
+                      {item.pending ? (
+                        <span className="text-label ms-auto rounded-full border border-dashed border-sky/40 px-3 py-1 text-sky/80">{section.pending}</span>
+                      ) : null}
+                    </figcaption>
+                  </div>
+
+                  <p className="flex flex-col justify-end gap-3 border-t border-line bg-sky/[0.04] p-7 sm:p-10 md:col-span-4 md:border-t-0 md:border-s md:p-14">
+                    <span className="stretch text-[clamp(3.5rem,7vw,6.5rem)] leading-[0.9] text-sky" style={{ ["--wdth" as string]: 112 }}>
+                      {item.result.value}
+                    </span>
+                    <span className="max-w-[18ch] text-muted">{item.result.caption}</span>
+                  </p>
+                </figure>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Under the card: client marks as tabs (the active one carries the rotation line), controls at the end. */}
+        <div className="mt-6 flex flex-col gap-4 md:mt-8 md:flex-row md:items-center md:justify-between">
+          <div role="group" aria-label={section.clients} className="-mx-2 flex flex-wrap items-center gap-1">
+            {items.map((item, index) => {
+              const on = index === active;
+              const mark = clientMarks[item.client];
+              return (
+                <button
+                  key={index}
+                  type="button"
+                  aria-label={item.clientName}
+                  aria-current={on ? "true" : undefined}
+                  onClick={() => go(index)}
+                  className={cn(
+                    "relative grid h-14 place-items-center px-4 transition-opacity duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky",
+                    on ? "opacity-100 light:opacity-80" : "opacity-35 hover:opacity-70",
+                  )}
+                >
+                  {mark ? (
+                    <Image
+                      src={`/images/clients/marks/${item.client}.webp`}
+                      alt=""
+                      width={mark.width}
+                      height={mark.height}
+                      className="h-7 w-auto max-w-28 object-contain light:brightness-0"
+                    />
+                  ) : (
+                    <span className="text-sm font-medium text-fg">{item.clientName}</span>
+                  )}
+                  <span className="absolute inset-x-4 bottom-1 h-0.5 overflow-hidden rounded-full bg-line">
+                    {on ? (
+                      <span
+                        key={`${active}-${rotating}`}
+                        className={cn("absolute inset-0 origin-left bg-sky rtl:origin-right", rotating ? "animate-[testimonial-progress_linear_forwards]" : "scale-x-100")}
+                        style={
+                          rotating
+                            ? {
+                                animationDuration: `${HOLD}ms`,
+                                animationPlayState: advancing ? "running" : "paused",
+                              }
+                            : undefined
+                        }
+                        onAnimationEnd={() => go(active + 1, false)}
+                      />
+                    ) : null}
+                  </span>
+                </button>
               );
             })}
           </div>
 
-          <div className="flex items-center gap-1 sm:gap-3">
-            <div role="group" aria-label={section.clients} className="me-auto flex items-center gap-1 md:me-2">
-              {items.map((item, index) => {
-                const on = index === active;
-                return (
-                  <button
-                    key={index}
-                    type="button"
-                    aria-label={item.clientName}
-                    aria-current={on ? "true" : undefined}
-                    onClick={() => go(index)}
-                    className="group grid h-11 place-items-center px-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky"
-                  >
-                    <span
-                      className={cn(
-                        "relative block h-0.5 overflow-hidden rounded-full bg-line-strong transition-[width] duration-500 ease-expo",
-                        on ? "w-12" : "w-5 group-hover:w-8",
-                      )}
-                    >
-                      {on ? (
-                        <span
-                          key={`${active}-${rotating}`}
-                          className={cn("absolute inset-0 origin-left bg-sky rtl:origin-right", rotating ? "animate-[testimonial-progress_linear_forwards]" : "scale-x-100")}
-                          style={
-                            rotating
-                              ? {
-                                  animationDuration: `${HOLD}ms`,
-                                  animationPlayState: advancing ? "running" : "paused",
-                                }
-                              : undefined
-                          }
-                          onAnimationEnd={() => go(active + 1, false)}
-                        />
-                      ) : null}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-
+          <div className="flex items-center gap-2 self-end md:self-auto">
             {count > 1 && !calm ? (
               <ControlButton label={paused ? section.play : section.pause} onClick={() => setPaused((value) => !value)} quiet>
                 {paused ? <Play className="size-3 fill-current" /> : <Pause className="size-3 fill-current" />}
@@ -230,6 +228,17 @@ export function TestimonialStage({ section }: { section: Section }) {
       </div>
     </Reveal>
   );
+}
+
+/** Up to two initials for the avatar beside the name. */
+function initials(name: string) {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase();
 }
 
 function ControlButton({ label, onClick, quiet, children }: { label: string; onClick: () => void; quiet?: boolean; children: ReactNode }) {

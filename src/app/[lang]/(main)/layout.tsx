@@ -8,7 +8,7 @@ import { alternatesFor } from "@/i18n/server";
 import { siteConfig } from "@/lib/site";
 import { AppShell } from "@/versions/main/shell/AppShell";
 import type { Metadata, Viewport } from "next";
-import { Anybody, IBM_Plex_Sans_Arabic, Inter_Tight } from "next/font/google";
+import { Alexandria, Anybody, IBM_Plex_Sans_Arabic, Inter_Tight } from "next/font/google";
 import { notFound } from "next/navigation";
 import "@/versions/main/styles.css";
 
@@ -28,7 +28,17 @@ const text = Inter_Tight({
   display: "swap",
 });
 
-/* Arabic, not preloaded so English pages never download it. */
+/* Arabic display: Alexandria, a geometric, wide-set Arabic whose heavy cuts carry the
+   same extended, futuristic voice as Anybody. Arabic text: IBM Plex Sans Arabic, the
+   closest open grotesque to Helvetica Neue. Neither is preloaded, so English pages
+   never download them. */
+const arabicDisplay = Alexandria({
+  variable: "--font-arabic-display",
+  subsets: ["arabic", "latin"],
+  display: "swap",
+  preload: false,
+});
+
 const arabic = IBM_Plex_Sans_Arabic({
   variable: "--font-arabic",
   subsets: ["arabic"],
@@ -90,7 +100,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
   };
 
   return (
-    <html lang={lang} dir={localeDirection(lang)} className={`${stretch.variable} ${text.variable} ${arabic.variable}`} suppressHydrationWarning>
+    <html lang={lang} dir={localeDirection(lang)} className={`${stretch.variable} ${text.variable} ${arabic.variable} ${arabicDisplay.variable}`} suppressHydrationWarning>
       <head>
         {/* Reveal animations hide content only once we know scripts run. Safety net: if the
             app has not started within 5 s (a script failed to load), drop the flag so every
@@ -110,7 +120,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
           }}
         />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         {/* Structured data lives in <body> (as the Next.js JSON-LD guide does): in <head> the
             served HTML can reach the browser without its type attribute, which React reports
             as a hydration mismatch. */}

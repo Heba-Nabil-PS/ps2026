@@ -21,7 +21,8 @@ export function Counter({ value, suffix = "", className }: { value: number; suff
   const count = useMotionValue(value);
 
   const format = useMemo(() => {
-    const numbers = new Intl.NumberFormat(locale === "ar" ? "ar-EG" : "en-US");
+    // Arabic pages keep Western digits, as the copy around each figure ("1 → 15", "10M") does.
+    const numbers = new Intl.NumberFormat(locale === "ar" ? "ar-u-nu-latn" : "en-US");
     return (n: number) => (isYear ? String(Math.round(n)) : numbers.format(Math.round(n)));
   }, [locale, isYear]);
 

@@ -12,8 +12,8 @@ export const siteConfig = {
   location: "Alexandria — Dubai",
   timeZone: "Africa/Cairo",
   offices: [
-    { city: "Alexandria", address: "8 Al Amir Gamil Street, Zezenia, Alexandria, Egypt" },
     { city: "Dubai", address: "Dubai Design District, Building 3, Dubai, UAE" },
+    { city: "Alexandria", address: "8 Al Amir Gamil Street, Zezenia, Alexandria, Egypt" },
   ],
   /** Primary navigation — the studio header shows the first three, menus show all. */
   nav: [
@@ -129,7 +129,8 @@ export const siteConfig = {
       { name: "Muhamed Hotyba", role: "Software Director", image: "/images/team/muhamed-hotyba.webp" },
       { name: "Hesham Zahran", role: "Digital Director", image: "/images/team/hesham-zahran.webp" },
       { name: "Shahinaz Maher", role: "Chief Financial Officer", image: "/images/team/shahinaz-maher.webp" },
-      { name: "Heba Nabil", role: "Digital Product & UX Lead", image: "/images/team/heba-nabil.webp" },
+      { name: "Heba Nabil", role: "Digital Product, UI & UX Lead", image: "/images/team/heba-nabil.webp" },
+      { name: "Dina Salem", role: "Account Director", image: "/images/team/dina-salem.webp" },
     ],
   },
   /** The four-step process from the company profile. */

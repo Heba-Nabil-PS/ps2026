@@ -17,8 +17,8 @@ export const siteConfigAr: Localized<typeof siteConfig> = {
     "PSdigital وكالة رقمية متكاملة الخدمات، صُمّمت لمنطقة الشرق الأوسط وشمال أفريقيا وما بعدها — الهوية التجارية، والمواقع والتطبيقات، والإنتاج، والحملات الرقمية، ومنصات التواصل الاجتماعي، وتحسين محركات البحث، وكلها داخل فريق واحد.",
   location: "الإسكندرية — دبي",
   offices: [
-    { city: "الإسكندرية", address: "8 شارع الأمير جميل، زيزينيا، الإسكندرية، مصر" },
     { city: "دبي", address: "حي دبي للتصميم، المبنى 3، دبي، الإمارات العربية المتحدة" },
+    { city: "الإسكندرية", address: "8 شارع الأمير جميل، زيزينيا، الإسكندرية، مصر" },
   ],
   nav: [
     { label: "الخدمات", href: "/services" },
@@ -96,7 +96,8 @@ export const siteConfigAr: Localized<typeof siteConfig> = {
       { name: "محمد حطيبة", role: "مدير البرمجيات", image: siteConfig.team.members[3].image },
       { name: "هشام زهران", role: "المدير الرقمي", image: siteConfig.team.members[4].image },
       { name: "شاهيناز ماهر", role: "المديرة المالية", image: siteConfig.team.members[5].image },
-      { name: "هبة نبيل", role: "قائدة المنتجات الرقمية وتجربة المستخدم", image: siteConfig.team.members[6].image },
+      { name: "هبة نبيل", role: "قائدة المنتجات الرقمية وواجهة وتجربة المستخدم", image: siteConfig.team.members[6].image },
+      { name: "دينا سالم", role: "مديرة الحسابات", image: siteConfig.team.members[7].image },
     ],
   },
   process: [

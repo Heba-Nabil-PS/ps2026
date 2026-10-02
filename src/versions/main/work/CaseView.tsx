@@ -52,7 +52,7 @@ export function CaseView({ lang, found }: CaseViewProps) {
 
       <header className="gutter pb-14 pt-36 md:pt-44">
         <div className="mb-10 flex flex-wrap items-center justify-between gap-4">
-          <BackLink href="/work" label={labels.back} />
+          <BackLink href="/portfolio" label={labels.back} />
           <p className="text-label tabular-nums text-subtle">
             {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
           </p>

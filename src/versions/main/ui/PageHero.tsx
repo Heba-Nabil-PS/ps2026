@@ -19,6 +19,7 @@ export function PageHero({
   className,
   titleClassName,
   footer,
+  heading,
 }: {
   title: readonly string[];
   intro: string;
@@ -31,9 +32,11 @@ export function PageHero({
   titleClassName?: string;
   /** Full-width content under the intro. */
   footer?: ReactNode;
+  /** A custom h1 in place of the stretched title (e.g. the Projects ripple title). */
+  heading?: ReactNode;
 }) {
   return (
-    <section data-page-hero className={cn("relative isolate flex min-h-[68svh] flex-col justify-end overflow-hidden pb-14 pt-32 md:pb-16", className)}>
+    <section data-page-hero className={cn("relative isolate flex min-h-[68svh] flex-col justify-end overflow-hidden pb-14 pt-40 md:pb-16 md:pt-48", className)}>
       {/* Masked to transparent at the foot so the backdrop dissolves into the page below, whatever its colour, instead of ending on a seam. */}
       <div aria-hidden className="absolute inset-0 -z-10 [mask-image:linear-gradient(180deg,#000_0%,#000_55%,transparent_100%)]">
         {image ? (
@@ -50,8 +53,10 @@ export function PageHero({
       </div>
 
       <div className="gutter">
-        <StretchHeading as="h1" lines={title} immediate delay={0.35} className={titleClassName ?? "text-display"} lineClassNames={titleClassName ? undefined : [undefined, "md:ps-[8vw]"]} />
-        <Reveal immediate delay={0.9} className="mt-10 grid gap-8 md:mt-14">
+        {heading ?? (
+          <StretchHeading as="h1" lines={title} immediate delay={0.35} className={titleClassName ?? "text-display"} lineClassNames={titleClassName ? undefined : [undefined, "md:ps-[8vw]"]} />
+        )}
+        <Reveal immediate delay={0.9} className="mt-6 grid gap-8 md:mt-7">
           {/* Sized in em so the measure tracks the fluid type: every intro (up to ~180 characters) sets on two balanced lines from md up. */}
           <p data-reveal-item className="text-lead max-w-xl text-balance text-muted md:max-w-[46em]">
             {intro}

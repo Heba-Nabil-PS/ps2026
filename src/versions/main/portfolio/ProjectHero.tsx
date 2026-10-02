@@ -111,12 +111,11 @@ export function ProjectHero({ project }: { project: PortfolioProject }) {
             </li>
           </ol>
         </nav>
-        {/* The display face runs wide: the title is sized so its longest word (twelve letters) still fits the screen.
-            It has no Arabic: Arabic keeps the text face. */}
+        {/* The display face runs wide: the title is sized so its longest word (twelve letters) still fits the screen. */}
         <ViewTransition name={`pf-title-${project.slug}`} share={{ "pf-open": "pf-morph-title", default: "none" }} default="none">
           <h1
             id="project-title"
-            className={cn(locale === "ar" ? "text-[clamp(2.1rem,8vw,9.1rem)] font-extrabold" : "stretch text-[clamp(1.2rem,5.9vw,7.2rem)]", "leading-[0.86]")}
+            className={cn("stretch", locale === "ar" ? "text-[clamp(2rem,6.4vw,7.2rem)]" : "text-[clamp(1.2rem,5.9vw,7.2rem)]", "leading-[0.86]")}
           >
             <span className="block overflow-hidden pb-[0.06em]">
               <span data-line className="block">

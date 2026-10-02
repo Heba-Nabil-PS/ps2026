@@ -18,10 +18,10 @@ function Flag({ iso }: { iso: string }) {
  * Phone number with a searchable country picker (flag, name, ISO code, dial code).
  * Submits `phone` as "+<dial> <number>" (empty when no number is typed) and `phoneCountry` as the ISO code.
  */
-export function PhoneField({ copy, optionalLabel, name = "phone", error, onInput }: { copy: Copy; optionalLabel?: string; name?: string; error?: string; onInput?: () => void }) {
+export function PhoneField({ copy, optionalLabel, name = "phone", error, onInput, defaultIso = defaultCountry }: { copy: Copy; optionalLabel?: string; name?: string; error?: string; onInput?: () => void; defaultIso?: string }) {
   const locale = useLocale();
   const id = useId();
-  const [iso, setIso] = useState(defaultCountry);
+  const [iso, setIso] = useState(defaultIso);
   const [number, setNumber] = useState("");
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -61,14 +61,21 @@ export function PhoneField({ copy, optionalLabel, name = "phone", error, onInput
     };
     document.addEventListener("pointerdown", onDown);
     requestAnimationFrame(() => {
-      search.current?.focus();
-      list.current?.querySelector<HTMLElement>('[aria-selected="true"]')?.scrollIntoView({ block: "center" });
+      search.current?.focus({ preventScroll: true });
+      // Scroll only the list (scrollIntoView would also move the page) so the chosen country sits in the middle.
+      const ul = list.current;
+      const item = ul?.querySelector<HTMLElement>('[aria-selected="true"]');
+      if (ul && item) ul.scrollTop = item.offsetTop - ul.clientHeight / 2 + item.offsetHeight / 2;
     });
     return () => document.removeEventListener("pointerdown", onDown);
   }, [open]);
 
   useEffect(() => {
-    list.current?.querySelector<HTMLElement>(`[data-index="${active}"]`)?.scrollIntoView({ block: "nearest" });
+    const ul = list.current;
+    const item = ul?.querySelector<HTMLElement>(`[data-index="${active}"]`);
+    if (!ul || !item) return;
+    if (item.offsetTop < ul.scrollTop) ul.scrollTop = item.offsetTop;
+    else if (item.offsetTop + item.offsetHeight > ul.scrollTop + ul.clientHeight) ul.scrollTop = item.offsetTop + item.offsetHeight - ul.clientHeight;
   }, [active]);
 
   const choose = (code: string) => {
@@ -148,7 +155,7 @@ export function PhoneField({ copy, optionalLabel, name = "phone", error, onInput
       <input type="hidden" name={`${name}Country`} value={selected.iso} />
 
       {open ? (
-        <div className="glass absolute inset-x-0 top-full z-30 mt-2 overflow-hidden rounded-card bg-ink-900/95 shadow-2xl">
+        <div className="absolute inset-x-0 top-full z-30 mt-2 overflow-hidden rounded-card border border-line-strong bg-ink-900 shadow-2xl">
           <div className="flex items-center gap-3 border-b border-line px-4">
             <Search aria-hidden className="size-4 shrink-0 text-subtle" />
             <input
@@ -167,7 +174,7 @@ export function PhoneField({ copy, optionalLabel, name = "phone", error, onInput
               className="w-full bg-transparent py-3 text-sm text-fg placeholder:text-subtle focus:outline-none"
             />
           </div>
-          <ul ref={list} id={`${id}-list`} role="listbox" aria-label={copy.country} data-lenis-prevent className="max-h-72 overflow-y-auto overscroll-contain py-1">
+          <ul ref={list} id={`${id}-list`} role="listbox" aria-label={copy.country} data-lenis-prevent className="relative max-h-72 overflow-y-auto overscroll-contain py-1 [scrollbar-color:var(--color-line-strong)_transparent] [scrollbar-width:thin]">
             {filtered.length ? (
               filtered.map((c, index) => (
                 <li

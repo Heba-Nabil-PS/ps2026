@@ -87,7 +87,7 @@ export function NextProject({ next, previous }: NextProjectProps) {
               {t.common.nextProject} — {next.id}
             </p>
             <ViewTransition name={`pf-title-${next.slug}`} share={{ "pf-open": "pf-morph-title", default: "none" }} default="none">
-              <h2 className="text-[clamp(2.1rem,8vw,9.1rem)] font-extrabold uppercase leading-[0.86]">
+              <h2 className="text-[clamp(2.1rem,8vw,9.1rem)] font-extrabold uppercase leading-[0.86] ar:font-display ar:font-bold ar:text-[clamp(2rem,6vw,7rem)]">
                 <span className="block overflow-hidden pb-[0.06em]">
                   <span data-line className="block">
                     {next.title}

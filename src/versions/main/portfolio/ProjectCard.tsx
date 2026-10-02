@@ -192,7 +192,7 @@ export function ProjectCard({ project, layout, preload = false }: ProjectCardPro
             )}
           >
             <ViewTransition name={`pf-title-${project.slug}`} share={{ "pf-open": "pf-morph-title", default: "none" }} default="none">
-              <h2 className="min-w-0 font-extrabold uppercase leading-[0.95] tracking-[-0.01em]">
+              <h2 className="min-w-0 font-extrabold uppercase leading-[0.95] tracking-[-0.01em] ar:font-display ar:font-bold">
                 <span className="block overflow-hidden pb-[0.06em]">
                   <span data-line className="block">
                     {project.title}

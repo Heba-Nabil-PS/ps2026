@@ -3,7 +3,7 @@ import type { CompanionModel } from "./kit";
 /**
  * How a companion travels:
  * - `swim`  leaves a piece of campaign artwork (a posts item marked `emerge`) and swims the page, turning as it goes.
- * - `tumble` drops out of the case-study hero and spins down the page alongside the story.
+ * - `tumble` rises from below the screen as the story starts and spins down the page alongside it.
  */
 export type Motion = "swim" | "tumble";
 /** `deep`: moonlit water light; `studio`: a soft room reflected in every surface, for product-like objects. */

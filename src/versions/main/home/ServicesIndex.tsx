@@ -15,11 +15,8 @@ import { useRef } from "react";
 const tag =
   "inline-flex items-center gap-2 rounded-full border border-line bg-fg/[0.04] px-3.5 py-1.5 text-xs text-fg/85 shadow-[inset_0_1px_0_rgb(255_255_255/0.08)] md:text-sm";
 
-/** Scroll (in viewport heights) each row gets while the list is held. */
-const STEP = 0.5;
-/** Timeline units: a row opening or closing, and the pause it stays open for. */
-const MOVE = 1;
-const HOLD = 0.8;
+/** Seconds a row takes to open (and, reversed, to close). */
+const MOVE = 0.9;
 /** Closed frame height (3.25rem); the open one is at least clamp(9rem, 15vw, 14rem) and grows to fit its row (openHeight). */
 const SLICE = 52;
 const frameOpen = () => gsap.utils.clamp(144, 224, window.innerWidth * 0.15);
@@ -37,18 +34,14 @@ const LIT = "grayscale(0) contrast(1) brightness(1)";
  * image; the open row slides the slice down into a full-height frame in colour and brings its
  * description and deliverables in. Each row opens its service page.
  *
- * On desktop the list is held on screen (sticky inside a taller track) and the rows are
- * scrubbed by the scroll: a row opens exactly as far as the page has scrolled, so slow
- * scrolling opens it slowly, reversing closes it, and Lenis plus `scrub` ease every stop.
- * Holding the list keeps the page still while rows resize: the track is as tall as the
- * list can get, so nothing above or below moves.
+ * On desktop only the first row opens from the scroll, as the list comes into view; the page
+ * then scrolls on normally, and hovering (or focusing) another row moves the open state to it.
  *
  * Phones skip this: rows show their deliverables as plain tags.
  */
 export function ServicesIndex() {
   const { copy } = useCopy();
   const section = copy.home.services;
-  const track = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -56,75 +49,63 @@ export function ServicesIndex() {
       const mm = gsap.matchMedia();
 
       mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
-        const trackEl = track.current;
         const stageEl = stage.current;
-        if (!trackEl || !stageEl) return;
-        const rows = gsap.utils.toArray<HTMLElement>("[data-row]", stageEl).map((row) => ({
-          frame: row.querySelector<HTMLElement>("[data-frame]")!,
-          image: row.querySelector<HTMLElement>("[data-frame] img")!,
-          title: row.querySelector<HTMLElement>("h3")!,
-          tags: row.querySelector<HTMLElement>("[data-tags]")!,
-          pills: gsap.utils.toArray<HTMLElement>("[data-tag]", row),
-        }));
-        type Row = (typeof rows)[number];
+        if (!stageEl) return;
         const glide = "power2.inOut";
-
-        const tl = gsap.timeline({ defaults: { ease: "none" } });
-        const open = (row: Row, at: number) =>
-          tl
-            .to(row.frame, { height: () => openHeight(row.title, row.tags), duration: MOVE, ease: glide }, at)
-            .to(row.image, { filter: LIT, scale: 1, duration: MOVE, ease: glide }, at)
-            .to(row.title, { "--lit": 1, duration: MOVE * 0.6 }, at)
-            .to(row.tags, { height: () => row.tags.scrollHeight, marginTop: GAP, duration: MOVE, ease: glide }, at)
-            .to(row.pills, { autoAlpha: 1, y: 0, duration: MOVE * 0.6, stagger: 0.05, ease: "power2.out" }, at + MOVE * 0.3);
-        const close = (row: Row, at: number) =>
-          tl
-            .to(row.pills, { autoAlpha: 0, y: -10, duration: MOVE * 0.4, stagger: { each: 0.03, from: "end" }, ease: "power2.in" }, at)
-            .to(row.tags, { height: 0, marginTop: 0, duration: MOVE, ease: glide }, at + MOVE * 0.15)
-            .to(row.frame, { height: SLICE, duration: MOVE, ease: glide }, at + MOVE * 0.15)
-            .to(row.image, { filter: MONO, scale: 1.1, duration: MOVE, ease: glide }, at + MOVE * 0.15)
-            .to(row.title, { "--lit": 0, duration: MOVE * 0.6 }, at + MOVE * 0.15);
-
-        // The next row starts sliding down while the previous one is still sliding up.
-        let time = 0;
-        rows.forEach((row, index) => {
-          if (index > 0) close(rows[index - 1], time);
-          open(row, index > 0 ? time + MOVE * 0.25 : time);
-          time += MOVE * 1.25 + HOLD;
+        const items = gsap.utils.toArray<HTMLElement>("[data-row]", stageEl);
+        const rows = items.map((row) => {
+          const frame = row.querySelector<HTMLElement>("[data-frame]")!;
+          const image = row.querySelector<HTMLElement>("[data-frame] img")!;
+          const title = row.querySelector<HTMLElement>("h3")!;
+          const tags = row.querySelector<HTMLElement>("[data-tags]")!;
+          const pills = gsap.utils.toArray<HTMLElement>("[data-tag]", row);
+          return gsap
+            .timeline({ paused: true, defaults: { ease: "none" } })
+            .to(frame, { height: () => openHeight(title, tags), duration: MOVE, ease: glide }, 0)
+            .to(image, { filter: LIT, scale: 1, duration: MOVE, ease: glide }, 0)
+            .to(title, { "--lit": 1, duration: MOVE * 0.6 }, 0)
+            .to(tags, { height: () => tags.scrollHeight, marginTop: GAP, duration: MOVE, ease: glide }, 0)
+            .to(pills, { autoAlpha: 1, y: 0, duration: MOVE * 0.6, stagger: 0.05, ease: "power2.out" }, MOVE * 0.3);
         });
-        tl.set({}, {}, time);
 
-        // Track = the list at its tallest + the scroll the rows play over; the list sits centred while held.
-        let tallest = 0;
-        let top = 0;
-        const size = () => {
-          const progress = tl.progress();
-          tl.progress(0);
-          const closed = stageEl.offsetHeight;
-          const grows = rows.map(({ title, tags }) => openHeight(title, tags) - Math.max(SLICE, title.offsetHeight));
-          tl.progress(progress);
-          tallest = closed + Math.max(...grows);
-          top = Math.max(24, (window.innerHeight - tallest) / 2);
-          stageEl.style.top = `${top}px`;
-          trackEl.style.height = `${tallest + rows.length * STEP * window.innerHeight}px`;
+        // One row open at a time: the new one plays in while the old one plays back out.
+        let active = -1;
+        const activate = (index: number) => {
+          if (index === active) return;
+          if (active >= 0) rows[active].reverse();
+          if (index >= 0) rows[index].play();
+          active = index;
         };
-        size();
-        ScrollTrigger.addEventListener("refreshInit", size);
 
+        // Only the first row opens from the scroll; scrolling back above the list closes it again.
         ScrollTrigger.create({
-          animation: tl,
-          trigger: trackEl,
-          // The first row starts opening a little before the list settles, so it's open as it lands.
-          start: () => `top ${top + window.innerHeight * 0.3}px`,
-          end: () => `bottom ${top + tallest}px`,
-          scrub: 1,
-          invalidateOnRefresh: true,
+          trigger: stageEl,
+          start: "top 70%",
+          onEnter: () => active < 0 && activate(0),
+          onLeaveBack: () => activate(-1),
         });
+
+        const listeners = items.map((item, index) => {
+          const on = () => activate(index);
+          item.addEventListener("mouseenter", on);
+          item.addEventListener("focusin", on);
+          return () => {
+            item.removeEventListener("mouseenter", on);
+            item.removeEventListener("focusin", on);
+          };
+        });
+
+        // Open heights depend on the width: re-measure them from the closed state on resize.
+        const remeasure = () =>
+          rows.forEach((tl) => {
+            const progress = tl.progress();
+            tl.progress(0).invalidate().progress(progress);
+          });
+        ScrollTrigger.addEventListener("refreshInit", remeasure);
 
         return () => {
-          ScrollTrigger.removeEventListener("refreshInit", size);
-          trackEl.style.height = "";
-          stageEl.style.top = "";
+          ScrollTrigger.removeEventListener("refreshInit", remeasure);
+          listeners.forEach((off) => off());
         };
       });
 
@@ -161,8 +142,7 @@ export function ServicesIndex() {
         }
       />
 
-      <div ref={track} className="mt-10 md:mt-14">
-        <div ref={stage} className="md:sticky">
+      <div ref={stage} className="mt-10 md:mt-14">
           <Reveal as="ol" className="border-b border-line" stagger={0.07}>
             {copy.services.list.map((service) => (
               <li key={service.slug} data-reveal-item data-row className="border-t border-line">
@@ -193,7 +173,6 @@ export function ServicesIndex() {
                       <ul aria-label={copy.services.labels.deliverables} className="mt-4 flex flex-wrap gap-2">
                         {service.deliverables.map((item) => (
                           <li key={item} data-tag className={tag} style={hidden}>
-                            <span aria-hidden className="size-1.5 rounded-full bg-sky shadow-[0_0_8px_rgb(125_211_252/0.8)]" />
                             {item}
                           </li>
                         ))}
@@ -219,7 +198,6 @@ export function ServicesIndex() {
               </li>
             ))}
           </Reveal>
-        </div>
       </div>
     </section>
   );

@@ -26,7 +26,7 @@ export function InsightCard({ insight, date, viewLabel, sizes = "(min-width: 768
       <div className="mt-5 flex items-start justify-between gap-6">
         <div>
           <time dateTime={insight.date} className="text-label block tabular-nums text-subtle">{date}</time>
-          <h3 className="text-lead mt-2 font-normal transition-colors duration-500 group-hover:text-sky">{insight.title}</h3>
+          <h3 className="text-lead mt-2 line-clamp-3 font-normal transition-colors duration-500 group-hover:text-sky">{insight.title}</h3>
         </div>
         <span aria-hidden className="mt-1 grid size-10 shrink-0 place-items-center rounded-full border border-line-strong transition-all duration-700 ease-expo group-hover:rotate-45 group-hover:border-sky group-hover:bg-sky group-hover:text-ink-900 rtl:-scale-x-100">
           <ArrowUpRight className="size-4" />

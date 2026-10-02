@@ -4,7 +4,6 @@ import { insights } from "@/data/insights";
 import { portfolio, portfolioHref } from "@/data/portfolio";
 import { en } from "@/versions/main/content/en";
 import { industryHref, insightHref, roleHref, serviceHref } from "@/versions/main/data/routes";
-import { workHref } from "@/versions/main/data/work";
 import { localeTags, localizeHref, locales } from "@/i18n/config";
 import { siteConfig } from "@/lib/site";
 import type { MetadataRoute } from "next";
@@ -18,7 +17,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const entries: Entry[] = [
     monthly("/", 1),
-    monthly("/work", 0.9),
     monthly("/portfolio", 0.8),
     monthly("/services", 0.9),
     monthly("/industries", 0.8),
@@ -26,7 +24,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...["/about", "/insights", "/careers", "/contact", "/team"].map((path) => monthly(path, 0.7)),
     ...en.services.list.map((service) => monthly(serviceHref(service.slug), 0.8)),
     ...industries.map((industry) => monthly(industryHref(industry.slug), 0.7)),
-    ...portfolio.map((project) => yearly(workHref(project.slug), 0.7)),
     ...portfolio.map((project) => yearly(portfolioHref(project.slug), 0.6)),
     ...insights.map((insight) => yearly(insightHref(insight.slug), 0.6)),
     ...[...roles.map((role) => role.id), en.careers.role.open.id].map((id) => monthly(roleHref(id), 0.5)),

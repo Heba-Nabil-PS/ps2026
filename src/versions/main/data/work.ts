@@ -10,7 +10,7 @@
 
 import type { PortfolioProject } from "@/data/portfolio";
 
-export const workHref = (slug: string) => `/work/${slug}`;
+export const workHref = (slug: string) => `/portfolio/${slug}`;
 
 /** Deck discipline slug → indexes into siteConfig.services. */
 const legacyServices: Record<string, number[]> = {

@@ -14,7 +14,7 @@ import { ClientLogoSection } from "@/versions/main/sections/ClientLogoSection";
 
 /**
  * Home — first impression (the loading intro, see AppShell, lands its logo on the hero's mark) → positioning → showreel → proof (work, then the numbers it
- * delivered) → capabilities → trust (clients, then their words) → insights → conversion.
+ * delivered) → capabilities → trust (client words) → insights → conversion.
  * See docs/website-direction.md §4.
  */
 export async function HomeView() {
@@ -25,12 +25,13 @@ export async function HomeView() {
     <StretchSectionTitles>
       <LogoThread />
       <HeroSection />
+      {/* The client marks in a single drifting row under the hero, as on the projects page. */}
+      <ClientLogoSection row clients={site.clients} />
       <Positioning />
       <Showreel {...home.showreel} />
       <SelectedWork />
       <Numbers />
       <ServicesIndex />
-      <ClientLogoSection label={home.clients.label} title={home.clients.title} intro={home.clients.intro} clients={site.clients} />
       <Testimonials />
       <InsightsPreview />
       <ClosingCta
@@ -39,6 +40,7 @@ export async function HomeView() {
         body={home.closing.body}
         primary={{ label: home.closing.primary, href: "/start" }}
         secondary={{ label: home.closing.secondary, href: "/careers" }}
+        bleed={false}
       />
     </StretchSectionTitles>
   );

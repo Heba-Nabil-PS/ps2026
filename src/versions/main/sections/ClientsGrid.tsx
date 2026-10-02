@@ -5,8 +5,8 @@ import { SectionHead } from "@/versions/main/ui/SectionHead";
 import Image from "next/image";
 
 /**
- * The client wall in the site's dark theme, using the same transparent white
- * marks as the client field. On hover each tile fills white from below and the
+ * The client wall, using the same transparent white marks as the client field
+ * (inked dark in light mode so they read on the pale ground). On hover each tile fills white from below and the
  * mark turns into the original, full-colour logo.
  */
 export function ClientsGrid({ label, title, intro, clients }: { label: string; title: readonly string[]; intro?: string; clients: readonly ClientLogo[] }) {
@@ -23,7 +23,7 @@ export function ClientsGrid({ label, title, intro, clients }: { label: string; t
               data-reveal-item
               className="group relative flex aspect-[3/2] items-center justify-center overflow-hidden border-e border-b border-line px-6 py-8"
             >
-              <span aria-hidden className="absolute inset-0 translate-y-full bg-white transition-transform duration-700 ease-[var(--ease-expo)] group-hover:translate-y-0" />
+              <span aria-hidden className="absolute inset-0 translate-y-[calc(100%+2px)] bg-white transition-transform duration-700 ease-[var(--ease-expo)] group-hover:translate-y-0 light:shadow-[inset_0_0_0_1px_rgb(13_29_49/0.1)]" />
               <span className="relative grid max-w-[72%] place-items-center">
                 <Image
                   src={`/images/clients/marks/${client.file}.webp`}
@@ -31,7 +31,7 @@ export function ClientsGrid({ label, title, intro, clients }: { label: string; t
                   width={size.width}
                   height={size.height}
                   unoptimized
-                  className="col-start-1 row-start-1 max-h-14 w-auto max-w-full object-contain opacity-70 transition-opacity duration-500 group-hover:opacity-0"
+                  className="col-start-1 row-start-1 max-h-14 w-auto max-w-full object-contain opacity-70 transition-opacity duration-500 group-hover:opacity-0 light:opacity-75 light:brightness-0"
                 />
                 {/* The original artwork, on its own white, shown as the tile fills. */}
                 <Image

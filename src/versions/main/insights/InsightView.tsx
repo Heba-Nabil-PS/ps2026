@@ -26,6 +26,11 @@ export function InsightView({ lang, insight }: { lang: Locale; insight: Insight 
   const more = list.filter((item) => item.slug !== insight.slug).slice(0, 3);
   const closing = copy.home.closing;
 
+  // Long "Topic: explanation" titles keep only the topic at headline size; the rest drops to a deck line.
+  const split = insight.title.length > 60 ? insight.title.match(/^(.+?)[:：]\s+(.+)$/) : null;
+  const headline = split ? split[1] : insight.title;
+  const deck = split ? split[2] : undefined;
+
   // Headings get stable ids for the index beside the text.
   let heading = 0;
   const blocks = insight.body.map((block) => (block.type === "heading" ? { ...block, id: `section-${++heading}` } : { ...block, id: undefined }));
@@ -51,12 +56,14 @@ export function InsightView({ lang, insight }: { lang: Locale; insight: Insight 
           <p className="text-label tabular-nums text-subtle">{minutes}</p>
         </div>
         <Label className="mb-8">{insight.topic}</Label>
-        <StretchHeading as="h1" lines={[insight.title]} immediate delay={0.3} className="text-headline max-w-[22ch]" />
-        <Reveal immediate delay={0.8} className="mt-10 grid md:mt-14 md:grid-cols-12">
-          <p data-reveal-item className="text-lead text-muted md:col-span-7 md:col-start-6">
-            {insight.lead}
-          </p>
-        </Reveal>
+        <StretchHeading as="h1" lines={[headline]} immediate delay={0.3} className="text-headline max-w-[22ch]" />
+        {deck ? (
+          <Reveal immediate delay={0.6} className="mt-6 md:mt-8">
+            <p data-reveal-item className="text-title max-w-[48ch] text-muted">
+              {deck}
+            </p>
+          </Reveal>
+        ) : null}
       </header>
 
       <div className="gutter">

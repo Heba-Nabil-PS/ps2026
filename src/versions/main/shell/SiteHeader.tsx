@@ -53,6 +53,15 @@ export function SiteHeader() {
         animate={{ y: hidden && !menuOpen ? "-110%" : "0%" }}
         transition={{ duration: 0.8, ease: ease.expo, delay: 0 }}
       >
+        {/* At the top of the page the bar sits straight on the hero (ribbed glass, photography), so a soft scrim in the
+            page colour settles the ground under the links and keeps them readable. It fades as the capsule takes over. */}
+        <div
+          aria-hidden
+          className={cn(
+            "pointer-events-none absolute inset-x-0 top-0 -z-20 h-40 bg-[linear-gradient(180deg,color-mix(in_srgb,var(--color-ink-900)_70%,transparent),transparent)] transition-opacity duration-700 light:bg-[linear-gradient(180deg,color-mix(in_srgb,var(--color-ink-900)_88%,transparent)_0%,color-mix(in_srgb,var(--color-ink-900)_55%,transparent)_55%,transparent)]",
+            scrolled ? "opacity-0" : "opacity-100",
+          )}
+        />
         {/* Once the page scrolls, the bar tightens into a slim frosted capsule: the logo and actions draw in toward the centre. */}
         <div
           className={cn(
@@ -87,8 +96,15 @@ export function SiteHeader() {
             </AppLink>
           </Magnetic>
 
-          {/* Centred in the space between the logo and the actions, so the gap before the first link matches the gap after the last. */}
-          <nav aria-label={copy.ui.mainNav} className="hidden min-w-0 flex-1 justify-center xl:flex">
+          {/* At the top of the page (on wide screens) the links sit on the true page centre, in line with the hero logo.
+              Once scrolled into the capsule they centre in the space between the logo and the actions instead. */}
+          <nav
+            aria-label={copy.ui.mainNav}
+            className={cn(
+              "hidden min-w-0 flex-1 justify-center xl:flex",
+              !scrolled && "2xl:absolute 2xl:left-1/2 2xl:top-1/2 2xl:-translate-x-1/2 2xl:-translate-y-1/2",
+            )}
+          >
             <ul
               className="flex items-center gap-1 2xl:gap-3"
               onPointerLeave={() => setHovered(null)}
@@ -107,7 +123,8 @@ export function SiteHeader() {
                         onBlur={() => setHovered(null)}
                         className={cn(
                           "relative flex items-center gap-1.5 whitespace-nowrap px-3 py-2.5 text-base font-medium tracking-[-0.005em] transition-colors duration-500 2xl:text-[1.0625rem]",
-                          active ? "text-fg" : "text-muted hover:text-fg",
+                          // Light mode: inactive links in near-navy, not steel, so they clear 4.5:1 over the hero.
+                          active ? "text-fg" : "text-muted hover:text-fg light:text-fg/80 light:hover:text-fg",
                         )}
                       >
                         {item.label}
@@ -121,8 +138,8 @@ export function SiteHeader() {
           </nav>
 
           <div className="relative z-10 flex items-center gap-5">
-            <ThemeSwitch className="-me-3 hidden sm:grid" />
-            <LanguageSwitch className="hidden min-h-11 items-center px-1 text-sm text-muted transition-colors hover:text-fg sm:inline-flex" />
+            <ThemeSwitch className="-me-3 hidden sm:grid light:text-fg/80" />
+            <LanguageSwitch className="hidden min-h-11 items-center px-1 text-sm text-muted transition-colors hover:text-fg light:font-medium light:text-fg/80 sm:inline-flex" />
             <ButtonLink href={copy.nav.start.href} transitionLabel={copy.nav.start.label} className="hidden min-h-11 text-sm md:inline-flex">
               {copy.nav.start.label}
             </ButtonLink>

@@ -32,7 +32,7 @@ export async function SelectedWork() {
             {section.intro}
           </p>
           <div data-reveal-item>
-            <ButtonLink href="/work" variant="glass" transitionLabel={copy.meta.pages.work.title}>
+            <ButtonLink href="/portfolio" variant="glass" transitionLabel={copy.meta.pages.work.title}>
               {section.cta}
             </ButtonLink>
           </div>

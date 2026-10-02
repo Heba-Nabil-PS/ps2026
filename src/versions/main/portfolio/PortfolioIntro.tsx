@@ -82,11 +82,11 @@ export function PortfolioIntro({ title, footer }: PortfolioIntroProps) {
       />
       <div className="gutter relative flex flex-col">
         <div data-title className="origin-bottom-left rtl:origin-bottom-right">
-          {/* The display face has no Arabic: Arabic keeps the text face. */}
           <h1
             id="portfolio-title"
             className={cn(
-              locale === "ar" ? "font-extrabold tracking-[-0.04em] text-[clamp(1.5rem,6vw,6.5rem)]" : "stretch text-[clamp(1.2rem,6vw,6.5rem)]",
+              "stretch",
+              locale === "ar" ? "text-[clamp(1.5rem,5vw,5.5rem)]" : "text-[clamp(1.2rem,6vw,6.5rem)]",
               "leading-[0.88]",
             )}
           >

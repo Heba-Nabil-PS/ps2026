@@ -31,7 +31,7 @@ export const en = {
     /** Sitemap order. */
     primary: [
       { label: "About", href: "/about" },
-      // { label: "Work", href: "/work" }, // hidden for now
+      // { label: "Work", href: "/portfolio" }, // hidden for now
       { label: "Projects", href: "/portfolio" },
       { label: "Services", href: "/services" },
       { label: "Insights", href: "/insights" },
@@ -97,16 +97,15 @@ export const en = {
       title: ["Numbers from", "real projects"],
       intro: "Every figure below comes from work we delivered and measured with the client.",
       items: [
-        { value: "16×", caption: "return on ad spend", client: "ZEE" },
-        { value: "10M", caption: "people reached every month", client: "Pharco" },
-        { value: "50", caption: "days to design and build a site for 5 countries", client: "Burger King" },
-        { value: "1 → 15", caption: "branches since we started working together", client: "Beit El Gomla" },
+        { value: "16×", caption: "return on ad spend", client: "ZEE", mark: "zee" },
+        { value: "10M", caption: "people reached every month", client: "Pharco", mark: "pharco" },
+        { value: "50", caption: "days to design and build a site for 5 countries", client: "Burger King", mark: "burger-king" },
+        { value: "1 → 15", caption: "branches since we started working together", client: "Beit El Gomla", mark: "beit-el-gomla" },
       ],
     },
     testimonials: {
       label: "In our clients' words",
       title: ["Heard from", "the other side"],
-      intro: "What the people we build with say once the work is live, and the number that backs it up.",
       pending: "Quote to collect",
       clients: "Choose a client",
       previous: "Previous testimonial",
@@ -223,7 +222,7 @@ export const en = {
     },
     services: {
       label: "What we do",
-      title: ["Six", "disciplines"],
+      title: ["End to end", "services"],
       intro: "One team, no hand-offs. Pick the one you need, or let them work together.",
       cta: "All services",
     },
@@ -504,14 +503,14 @@ export const en = {
     leadership: {
       label: "Leadership",
       quote:
-        "We built PSdigital so the people who win the brief are the same people who ship it. Nothing gets lost when nobody has to hand anything over.",
+        "We built PSdigital for what comes after launch. A brand is shaped by the decisions that follow, so we stay for them, and judge our work by what still works years later.",
       portraitAlt: "Portrait of the PSdigital Chief Executive Officer",
     },
     leads: {
       label: "Our team",
       title: ["The people", "who set the bar"],
       intro: "The leadership, directors and makers who review every piece of work before it leaves the studio.",
-      more: { value: "80+", title: "specialists behind them", action: "Join them" },
+      more: { value: "80+", title: "specialists behind them", action: "Join us" },
     },
     disciplines: {
       label: "Crafts",

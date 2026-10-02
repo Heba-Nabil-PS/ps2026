@@ -18,7 +18,7 @@ function supportsWebGL() {
 
 /**
  * The project's 3D companion (see registry). A swimmer starts on the artwork marked
- * `data-companion-emerge`; everything else drops out of the hero. Nothing is shown under
+ * `data-companion-emerge`; everything else rises from below as the story starts. Nothing is shown under
  * reduced motion or without WebGL — the page reads exactly as before.
  */
 export function CaseCompanion({ slug }: { slug: string }) {
@@ -30,8 +30,9 @@ export function CaseCompanion({ slug }: { slug: string }) {
     if (!key || reduced) return;
     const spec = companions[key];
     const emerge = spec.motion === "swim" ? document.querySelector<HTMLElement>("[data-companion-emerge]") : null;
-    const anchor = emerge ?? document.querySelector<HTMLElement>("[data-pf-hero-media]");
     const until = document.querySelector<HTMLElement>("[data-case-content]");
+    // A tumbler rises from below as the story starts, so its scroll path begins at the story.
+    const anchor = emerge ?? until;
     if (!anchor || !until) return;
 
     let cancelled = false;

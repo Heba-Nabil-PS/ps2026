@@ -49,8 +49,6 @@ type Choreography = {
   seat: Seat;
   start: string;
   pose: Pose;
-  /** Fades in on its own when the page opens, rather than with the scroll. */
-  appears: boolean;
   build: (path: gsap.core.Timeline, pose: Pose, side: () => number) => void;
 };
 
@@ -61,7 +59,6 @@ const choreographies: Record<Motion, Choreography> = {
   swim: {
     seat: { x: 0.5, y: 0.74, size: 1.1 },
     start: "center 62%",
-    appears: false,
     // Seen from behind and above, heading into the picture (nose tipped away and up, back to the viewer).
     pose: { ...rest, size: 0.5, yaw: Math.PI, pitch: -0.62, fade: 0 },
     build: (path, pose, side) =>
@@ -83,18 +80,17 @@ const choreographies: Record<Motion, Choreography> = {
         .to(pose, { z: -16, y: -0.45, pitch: 0.7, duration: 0.14, ease: "power1.in" }, 0.86)
         .to(pose, { fade: 0, duration: 0.06, ease: "none" }, 0.94),
   },
-  // Rests in the hero, drops out toward the viewer, then spins down the page from side to side.
+  // Like the shark, it keeps out of the hero: once the story starts it rises from below the screen,
+  // then spins down the page from side to side.
   tumble: {
     seat: { x: 0.5, y: 0.4, size: 0.42 },
-    start: "top top",
-    appears: true,
-    pose: { ...rest, pitch: 0.1 },
+    start: "top 85%",
+    pose: { ...rest, glue: 0, x: 0.3, y: -1.5, z: 1.2, size: 0.3, pitch: 0.1, fade: 0 },
     build: (path, pose, side) =>
       path
         .to(pose, { spin: Math.PI * 8, duration: 1, ease: "none" }, 0)
-        .to(pose, { glue: 0, duration: 0.1, ease: "power2.inOut" }, 0)
-        .to(pose, { z: 2.6, x: 0.35, y: -0.05, size: 0.32, duration: 0.08, ease: "power2.out" }, 0)
-        .to(pose, { z: 0.4, x: side, y: 0.12, size: 0.26, duration: 0.14 }, 0.08)
+        .to(pose, { fade: 1, duration: 0.03, ease: "none" }, 0)
+        .to(pose, { z: 0.4, x: side, y: 0.12, size: 0.26, duration: 0.2, ease: "power2.out" }, 0)
         .to(pose, { x: () => -side(), y: -0.1, z: 1, duration: 0.18 }, 0.22)
         .to(pose, { x: side, y: 0.1, z: 0.2, duration: 0.18 }, 0.4)
         .to(pose, { x: () => -side(), y: -0.05, z: 0.8, duration: 0.18 }, 0.58)
@@ -189,15 +185,6 @@ export default function CompanionScene({ build, motion, mood, anchor, veil, unti
     });
     plan.build(path, pose, side);
 
-    // Opening entrance (tumble): it pops into the hero once the page has settled.
-    const entrance = { opacity: plan.appears ? 0 : 1, pop: plan.appears ? 0 : 1 };
-    const intro = plan.appears
-      ? gsap
-          .timeline({ delay: 1 })
-          .to(entrance, { opacity: 1, duration: 0.5, ease: "none" }, 0)
-          .to(entrance, { pop: 1, duration: 1.1, ease: "back.out(1.8)" }, 0)
-      : null;
-
     const halfHeight = Math.tan((FOV / 2) * (Math.PI / 180)) * CAMERA_Z;
     const free = new Vector3();
     const held = new Vector3();
@@ -215,7 +202,7 @@ export default function CompanionScene({ build, motion, mood, anchor, veil, unti
 
     const render = () => {
       if (veil) veil.style.opacity = String(pose.veil);
-      const opacity = pose.fade * entrance.opacity;
+      const opacity = pose.fade;
       if (opacity < 0.001) {
         if (shown) renderer.domElement.style.opacity = "0";
         shown = false;
@@ -245,7 +232,7 @@ export default function CompanionScene({ build, motion, mood, anchor, veil, unti
 
       holder.position.lerpVectors(held, free, loose);
       holder.position.z = pose.z;
-      holder.scale.setScalar((heldRadius + (freeRadius - heldRadius) * loose) * unit * entrance.pop);
+      holder.scale.setScalar((heldRadius + (freeRadius - heldRadius) * loose) * unit);
 
       if (motion === "swim") {
         holder.rotation.set(pose.pitch, pose.yaw + Math.sin(t * 0.7) * 0.05 * loose, pose.roll);
@@ -271,7 +258,6 @@ export default function CompanionScene({ build, motion, mood, anchor, veil, unti
 
     return () => {
       gsap.ticker.remove(render);
-      intro?.kill();
       path.scrollTrigger?.kill();
       path.kill();
       resizeObserver.disconnect();

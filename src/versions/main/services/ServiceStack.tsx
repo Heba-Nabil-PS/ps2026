@@ -30,12 +30,11 @@ export function ServiceStack() {
             // Stacking is desktop-only: on phones a card is taller than the screen.
             const next = cards[index + 1];
             if (!next || !window.matchMedia("(min-width: 768px)").matches) return;
-            gsap.to(card.querySelector("[data-card]"), {
-              scale: 0.92,
-              opacity: 0.35,
-              ease: "none",
-              scrollTrigger: { trigger: next, start: "top bottom", end: "top 15%", scrub: 0.6 },
-            });
+            // Dim with an overlay, never the card's own opacity: a see-through card would show the text of the cards stacked under it.
+            gsap
+              .timeline({ defaults: { ease: "none" }, scrollTrigger: { trigger: next, start: "top bottom", end: "top 15%", scrub: 0.6 } })
+              .to(card.querySelector("[data-card]"), { scale: 0.92 }, 0)
+              .to(card.querySelector("[data-dim]"), { opacity: 0.7 }, 0);
           });
         },
         () => cards.forEach((card) => card.classList.add("is-lit")),
@@ -53,10 +52,10 @@ export function ServiceStack() {
             {/* Opaque (not frosted): stacked cards must fully cover the one beneath. */}
             <article
               data-card
-              className="theme-dark grid origin-top border border-line bg-[linear-gradient(160deg,#13304f_0%,#0c1d31_45%,#08131f_100%)] shadow-[inset_0_1px_0_rgb(255_255_255/0.07),0_-30px_60px_-20px_rgb(0_0_0/0.55)] gap-8 overflow-hidden rounded-frame p-5 will-change-transform md:min-h-[72svh] md:grid-cols-12 md:gap-10 md:p-6 lg:p-8">
+              className="service-card theme-dark relative grid origin-top border border-line bg-[linear-gradient(160deg,#13304f_0%,#0c1d31_45%,#08131f_100%)] shadow-[inset_0_1px_0_rgb(255_255_255/0.07),0_-30px_60px_-20px_rgb(0_0_0/0.55)] gap-8 overflow-hidden rounded-frame p-5 will-change-transform md:min-h-[72svh] md:grid-cols-12 md:gap-10 md:p-6 lg:p-8">
               <div className="flex flex-col md:col-span-6 md:p-3">
                 <h2 className="text-title font-medium">{service.title}</h2>
-                <StretchHeading as="p" lines={service.headline} className="mt-3 text-[clamp(2.2rem,min(4.6vw,9svh),4.8rem)] leading-[0.88] text-sky" />
+                <StretchHeading as="p" lines={service.headline} className="mt-3 text-[clamp(2.2rem,min(4.6vw,9svh),4.8rem)] leading-[0.88] text-sky ar:text-[clamp(1.9rem,min(3.6vw,8svh),3.8rem)]" />
                 <p className="text-lead mt-5 max-w-md text-muted">{service.summary}</p>
 
                 <div className="mt-auto pt-8">
@@ -81,6 +80,8 @@ export function ServiceStack() {
                 <Image src={service.image} alt="" fill sizes="(min-width: 768px) 48vw, 100vw" quality={75} className="mono object-cover" />
                 <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,transparent_50%,rgb(3_7_13/0.5))]" />
               </div>
+              {/* Darkens the card as the next one covers it (opacity driven by the stack timeline). */}
+              <div aria-hidden data-dim className="pointer-events-none absolute inset-0 z-10 bg-[#050b14] opacity-0" />
             </article>
           </li>
         );
