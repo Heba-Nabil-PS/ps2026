@@ -413,10 +413,12 @@ export function LogoThread() {
      * slide back and those after it slide on, together, so a clean gap opens around the line (and the thin
      * one beside it) without one letter running into the next. They close again as the line is wound back.
      */
+    /** Returns whether any letter is still on its way. */
     const part = () => {
       // Out of the hero with every letter back in place, there is nothing to do (and nothing to measure).
-      if (window.scrollY > heroOut && !parted) return;
+      if (window.scrollY > heroOut && !parted) return false;
       parted = false;
+      let moved = false;
       const shift = window.scrollY - originY;
       const reached = Math.min(heroEnd, Math.floor(head / SAMPLE) + 1);
       const headY = reached > 0 ? ys[reached - 1] : -Infinity;
@@ -460,6 +462,7 @@ export function LogoThread() {
         }
         for (const { box, char } of row) {
           const target = box.right <= edge + 0.5 ? before : after;
+          if (Math.abs(target - char.x) > 0.05) moved = true;
           char.x += (target - char.x) * 0.14;
           char.y = 0;
           if (target === 0 && Math.abs(char.x) < 0.05) {
@@ -471,6 +474,7 @@ export function LogoThread() {
           }
         }
       }
+      return moved;
     };
 
     // The head is pulled out of the stem faster than the page moves, then rides at HEAD down the screen.
@@ -478,8 +482,16 @@ export function LogoThread() {
     const state = { end: 0 };
     let ending = false;
     let tailFrom = 0;
+    // Resting (page still, line caught up, letters in place) the tick does nothing for a while, then stops
+    // measuring altogether until the page scrolls, the end plays or the line is laid out again.
+    let lastY = Number.NaN;
+    let lastEnd = -1;
+    let idle = 0;
     const tick = () => {
       if (still.matches) return;
+      if (idle > 60 && window.scrollY === lastY && state.end === lastEnd) return;
+      lastY = window.scrollY;
+      lastEnd = state.end;
       const on = window.scrollY >= Math.min(finaleFrom, document.documentElement.scrollHeight - window.innerHeight - 2);
       if (on !== ending) {
         ending = on;
@@ -496,7 +508,8 @@ export function LogoThread() {
       tail += (tailTo - tail) * 0.12;
       logoDrawn = f;
       paint();
-      part();
+      const shifting = part();
+      idle = shifting || Math.abs(headTo - head) > 0.5 || Math.abs(tailTo - tail) > 0.5 ? 0 : idle + 1;
     };
 
     // Laying out reads the whole line, so it waits for the page to settle (rows opening on hover, images
@@ -512,6 +525,7 @@ export function LogoThread() {
     const settle = () => {
       layout();
       laidOut = size();
+      idle = 0;
     };
     const relayout = () => {
       window.clearTimeout(timer);

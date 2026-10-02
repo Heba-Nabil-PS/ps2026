@@ -1,6 +1,7 @@
 "use client";
 
 import { usePrefersReducedMotion } from "@/lib/hooks";
+import { onIntroReveal } from "@/versions/main/intro/intro-signal";
 import { useEffect, useRef } from "react";
 
 /**
@@ -39,6 +40,9 @@ export function FlowField({
     let height = 0;
     let frame = 0;
     let running = false;
+    let inView = false;
+    // Held still behind the loading intro, so the two never compete for frames.
+    let revealed = false;
     const pointer = { x: -9999, y: -9999, tx: -9999, ty: -9999 };
 
     const resize = () => {
@@ -102,7 +106,7 @@ export function FlowField({
     };
 
     const start = () => {
-      if (running || reduced) return;
+      if (running || reduced || !revealed || !inView || document.hidden) return;
       running = true;
       frame = requestAnimationFrame(draw);
     };
@@ -112,6 +116,7 @@ export function FlowField({
     };
 
     const onPointer = (event: PointerEvent) => {
+      if (!running) return;
       const rect = canvas.getBoundingClientRect();
       pointer.tx = event.clientX - rect.left;
       pointer.ty = event.clientY - rect.top;
@@ -127,14 +132,23 @@ export function FlowField({
     });
     resizeObserver.observe(canvas);
 
-    const intersection = new IntersectionObserver(([entry]) => (entry.isIntersecting ? start() : stop()));
+    const intersection = new IntersectionObserver(([entry]) => {
+      inView = entry.isIntersecting;
+      if (inView) start();
+      else stop();
+    });
     intersection.observe(canvas);
+    const unsubscribe = onIntroReveal(() => {
+      revealed = true;
+      start();
+    });
 
     window.addEventListener("pointermove", onPointer, { passive: true });
     document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
       stop();
+      unsubscribe();
       resizeObserver.disconnect();
       intersection.disconnect();
       window.removeEventListener("pointermove", onPointer);

@@ -97,20 +97,27 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
             section shows as plain content instead of staying hidden.
             It has already run by the time React hydrates, and browser extensions or the dev
             overlay can empty inline scripts in the DOM, so React must not compare its contents.
-            It also decides, before first paint, whether the loading intro plays: on every full
-            load, never with reduced motion (the "intro-play" class is named in
+            It also decides, before first paint, whether the loading intro plays: on the first full
+            load of a browser session (key "ps-intro", set by IntroAnimation), never with reduced motion (the "intro-play" class is named in
             versions/main/intro/intro-signal.ts). And it applies the saved light/dark choice
             (key "ps-theme", see versions/main/shell/ThemeSwitch.tsx) so the page never flashes. */}
         <script
           suppressHydrationWarning
           dangerouslySetInnerHTML={{
             __html:
-              "var d=document.documentElement;d.classList.add('js');try{if(localStorage.getItem('ps-theme')==='light')d.dataset.theme='light'}catch(e){}try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('intro-play')}catch(e){}setTimeout(function(){if(!window.__psReady)d.classList.remove('js','intro-play')},5000)",
+              "var d=document.documentElement;d.classList.add('js');try{if(localStorage.getItem('ps-theme')==='light')d.dataset.theme='light'}catch(e){}try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&!sessionStorage.getItem('ps-intro'))d.classList.add('intro-play')}catch(e){}setTimeout(function(){if(!window.__psReady)d.classList.remove('js','intro-play')},5000)",
           }}
         />
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organization) }} />
       </head>
       <body>
+        {/* Structured data lives in <body> (as the Next.js JSON-LD guide does): in <head> the
+            served HTML can reach the browser without its type attribute, which React reports
+            as a hydration mismatch. */}
+        <script
+          type="application/ld+json"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organization).replace(/</g, "\\u003c") }}
+        />
         <AppShell locale={lang}>{children}</AppShell>
       </body>
     </html>

@@ -374,28 +374,14 @@ html[data-theme="light"] {
 .grain {
   pointer-events: none;
   position: fixed;
-  /* Just past the screen's edges, enough for its ±3% jitter: at -50% it was a layer four screens big, composited every frame. */
-  inset: -10%;
+  /* Still: a full-screen layer above everything that jittered forever kept the compositor busy on every
+     frame, competing with the scroll and every animation beneath it. */
+  inset: 0;
   z-index: 90;
   opacity: 0.07;
-  will-change: transform;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  animation: grain 1.2s steps(6) infinite;
 }
 
-/* Over the glass backdrop (PageBackdrop) the grain would only read as noise. */
-html:has([data-page-backdrop]) .grain {
-  display: none;
-}
-
-@keyframes grain {
-  0% { transform: translate(0, 0); }
-  20% { transform: translate(-3%, 2%); }
-  40% { transform: translate(2%, -3%); }
-  60% { transform: translate(-2%, -1%); }
-  80% { transform: translate(3%, 3%); }
-  100% { transform: translate(0, 0); }
-}
 
 /* Liquid glass buttons (ui/Button): a near-clear pane with a specular top edge,
    a hairline ring that is brightest where light would hit it (::before, masked to
@@ -766,9 +752,9 @@ body:has([data-logo-thread]) .footer-mark-logo > svg {
 .js.intro-play {
   overflow: hidden;
 }
-/* The curtain's fine grain over flat navy (as on the brand deck), flickering like film:
-   the tile jumps to a new offset each beat, so the pattern changes without moving.
-   On each half, so it splits open with them. */
+/* The curtain's fine grain over flat navy (as on the brand deck). On each half, so it splits
+   open with them. Held still: flickering it repainted two blended full-screen layers every
+   beat, which made the logo's drawing stutter on the first load. */
 .intro [data-panel]::after {
   content: "";
   position: absolute;
@@ -778,21 +764,6 @@ body:has([data-logo-thread]) .footer-mark-logo > svg {
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='2' intercept='-.5'/%3E%3CfeFuncG type='linear' slope='2' intercept='-.5'/%3E%3CfeFuncB type='linear' slope='2' intercept='-.5'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 200px 200px;
-  animation: intro-grain 0.4s steps(1) infinite;
-}
-
-@keyframes intro-grain {
-  0% { background-position: 0 0; }
-  10% { background-position: -73px 41px; }
-  20% { background-position: 118px -96px; }
-  30% { background-position: -152px -27px; }
-  40% { background-position: 37px 133px; }
-  50% { background-position: 91px -158px; }
-  60% { background-position: -44px 76px; }
-  70% { background-position: 167px 19px; }
-  80% { background-position: -121px -63px; }
-  90% { background-position: 58px 104px; }
-  100% { background-position: 0 0; }
 }
 
 /* Home hero entrance: the headline words wait below their line and the details wait

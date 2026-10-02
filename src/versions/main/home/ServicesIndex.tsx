@@ -13,7 +13,7 @@ import { useRef } from "react";
 
 /** Glass pill for a deliverable tag. */
 const tag =
-  "inline-flex items-center gap-2 rounded-full border border-line bg-fg/[0.04] px-3.5 py-1.5 text-xs text-fg/85 shadow-[inset_0_1px_0_rgb(255_255_255/0.08)] backdrop-blur-sm md:text-sm";
+  "inline-flex items-center gap-2 rounded-full border border-line bg-fg/[0.04] px-3.5 py-1.5 text-xs text-fg/85 shadow-[inset_0_1px_0_rgb(255_255_255/0.08)] md:text-sm";
 
 /** Scroll (in viewport heights) each row gets while the list is held. */
 const STEP = 0.5;
@@ -28,7 +28,7 @@ const GAP = 18;
 /** An open frame runs the full height of its row: at least frameOpen, or as tall as the title, description and tags. */
 const openHeight = (title: HTMLElement, tags: HTMLElement) => Math.max(frameOpen(), title.offsetHeight + GAP + tags.scrollHeight);
 /** Closed state of a description or tag, written inline so the first paint matches the timeline's start. */
-const hidden = { opacity: 0, visibility: "hidden", transform: "translateY(-10px)", filter: "blur(6px)" } as const;
+const hidden = { opacity: 0, visibility: "hidden", transform: "translateY(-10px)" } as const;
 const MONO = "grayscale(1) contrast(1.06) brightness(0.86)";
 const LIT = "grayscale(0) contrast(1) brightness(1)";
 
@@ -76,10 +76,10 @@ export function ServicesIndex() {
             .to(row.image, { filter: LIT, scale: 1, duration: MOVE, ease: glide }, at)
             .to(row.title, { "--lit": 1, duration: MOVE * 0.6 }, at)
             .to(row.tags, { height: () => row.tags.scrollHeight, marginTop: GAP, duration: MOVE, ease: glide }, at)
-            .to(row.pills, { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: MOVE * 0.6, stagger: 0.05, ease: "power2.out" }, at + MOVE * 0.3);
+            .to(row.pills, { autoAlpha: 1, y: 0, duration: MOVE * 0.6, stagger: 0.05, ease: "power2.out" }, at + MOVE * 0.3);
         const close = (row: Row, at: number) =>
           tl
-            .to(row.pills, { autoAlpha: 0, y: -10, filter: "blur(6px)", duration: MOVE * 0.4, stagger: { each: 0.03, from: "end" }, ease: "power2.in" }, at)
+            .to(row.pills, { autoAlpha: 0, y: -10, duration: MOVE * 0.4, stagger: { each: 0.03, from: "end" }, ease: "power2.in" }, at)
             .to(row.tags, { height: 0, marginTop: 0, duration: MOVE, ease: glide }, at + MOVE * 0.15)
             .to(row.frame, { height: SLICE, duration: MOVE, ease: glide }, at + MOVE * 0.15)
             .to(row.image, { filter: MONO, scale: 1.1, duration: MOVE, ease: glide }, at + MOVE * 0.15)
@@ -134,7 +134,7 @@ export function ServicesIndex() {
         if (!stageEl) return;
         gsap.set(stageEl.querySelectorAll("[data-frame] img"), { filter: LIT, scale: 1 });
         gsap.set(stageEl.querySelectorAll("[data-tags]"), { height: "auto", marginTop: GAP });
-        gsap.set(stageEl.querySelectorAll("[data-tag]"), { autoAlpha: 1, y: 0, filter: "none" });
+        gsap.set(stageEl.querySelectorAll("[data-tag]"), { autoAlpha: 1, y: 0 });
         stageEl.querySelectorAll<HTMLElement>("[data-row]").forEach((row) => {
           gsap.set(row.querySelector("[data-frame]"), { height: openHeight(row.querySelector("h3")!, row.querySelector<HTMLElement>("[data-tags]")!) });
         });

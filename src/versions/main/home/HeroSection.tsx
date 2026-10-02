@@ -52,8 +52,8 @@ export function HeroSection() {
           // y is pinned to 0: GSAP would otherwise read the CSS starting offset as pixels and keep it.
           entrance.fromTo(
             "[data-hero-word]",
-            { y: 0, yPercent: 110, opacity: 0, filter: "blur(6px)" },
-            { y: 0, yPercent: 0, opacity: 1, filter: "blur(0px)", duration: 1.2, ease: "power4.out", stagger: 0.09, clearProps: "filter" },
+            { y: 0, yPercent: 110, opacity: 0 },
+            { y: 0, yPercent: 0, opacity: 1, duration: 1.2, ease: "power4.out", stagger: 0.09 },
             0.25,
           );
           // Once its word has landed, the letter pulls out long.

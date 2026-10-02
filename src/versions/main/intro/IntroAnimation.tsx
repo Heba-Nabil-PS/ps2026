@@ -74,6 +74,10 @@ export function IntroAnimation() {
       }
 
       window.scrollTo(0, 0);
+      // Once a session: later full loads open straight onto the page (see the head script in the main layout).
+      try {
+        sessionStorage.setItem("ps-intro", "1");
+      } catch {}
 
       // On the home page the logo lands on the hero mark; it stays hidden until the logo arrives and takes its place.
       const heroMark = document.querySelector<HTMLElement>("[data-hero-mark]");
@@ -87,6 +91,8 @@ export function IntroAnimation() {
 
       gsap.set("[data-seam]", { xPercent: -50, yPercent: -50, rotation: SEAM_ANGLE, scaleX: 0 });
       const tl = gsap.timeline({ onComplete: finish });
+      // Played a third faster than authored: the same choreography, but the page opens in about 3 s instead of 4.
+      tl.timeScale(1.35);
       // 1 — drawn like the header's DrawLogo.
       tl.to("[data-draw='main']", { strokeDashoffset: 0, duration: 1.5, ease: "power2.inOut" }, DRAW_AT)
         .to("[data-draw='stem']", { strokeDashoffset: 0, duration: 0.55, ease: "power2.inOut" }, DRAW_AT + 0.5)

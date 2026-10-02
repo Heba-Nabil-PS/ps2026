@@ -14,7 +14,7 @@ type Spec = { load: () => Promise<{ default: () => CompanionModel }>; motion: Mo
 /** Each model is its own chunk, fetched only on the case study that shows it. */
 export const companions = {
   shark: { load: () => import("./models/shark"), motion: "swim", mood: "deep" },
-  drumstick: { load: () => import("./models/drumstick"), motion: "tumble", mood: "studio" },
+  sandwich: { load: () => import("./models/sandwich"), motion: "tumble", mood: "studio" },
   syringe: { load: () => import("./models/syringe"), motion: "tumble", mood: "studio" },
   cloche: { load: () => import("./models/cloche"), motion: "tumble", mood: "studio" },
   dumbbell: { load: () => import("./models/dumbbell"), motion: "tumble", mood: "studio" },
@@ -33,7 +33,7 @@ export type CompanionKey = keyof typeof companions;
 
 /** The object each case study carries, by project slug. A project without one simply has none. */
 export const companionOf: Partial<Record<string, CompanionKey>> = {
-  "texas-chicken": "drumstick",
+  "texas-chicken": "sandwich",
   "sinclair-aesthetics": "syringe",
   "shark-tank-egypt": "shark",
   "million-pound-menu": "cloche",

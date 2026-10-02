@@ -142,6 +142,8 @@ function LogoCurtain({ arrived, onCovered, onDone }: { arrived: boolean; onCover
       const at = 0.35;
       gsap
         .timeline({ onComplete: () => setDrawn(true) })
+        // Played faster than authored: a visitor moving between pages should not wait on the drawing.
+        .timeScale(1.8)
         .fromTo(root.current, { opacity: 0 }, { opacity: 1, duration: at, ease: "power2.out" }, 0)
         .call(() => callbacks.current.onCovered(), [], at)
         .to("[data-draw='main']", { strokeDashoffset: 0, duration: 1.5, ease: "power2.inOut" }, at)
@@ -181,6 +183,7 @@ function LogoCurtain({ arrived, onCovered, onDone }: { arrived: boolean; onCover
 
       gsap
         .timeline({ onComplete: () => callbacks.current.onDone() })
+        .timeScale(1.3)
         .to("[data-seam]", { scaleX: 1, duration: 0.5, ease: "power3.inOut" }, 0)
         .to("[data-curtain-logo]", { scale: 0.92, opacity: 0, filter: "blur(10px)", duration: 0.55, ease: "power3.in" }, 0.2)
         .to("[data-panel='a']", { x: NORMAL.x * travel, y: NORMAL.y * travel, duration: 1.15, ease: "expo.inOut" }, 0.45)

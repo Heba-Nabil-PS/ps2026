@@ -63,7 +63,7 @@ export function SiteHeader() {
           <div
             aria-hidden
             className={cn(
-              "pointer-events-none absolute inset-0 -z-10 rounded-full border bg-[linear-gradient(180deg,color-mix(in_srgb,var(--color-ink-900)_88%,transparent),color-mix(in_srgb,var(--color-ink-900)_72%,transparent))] shadow-[0_20px_40px_-24px_rgb(0_0_0/0.7)] light:shadow-[0_20px_40px_-24px_rgb(13_29_49/0.25)] backdrop-blur-xl transition-[opacity,transform,border-color] duration-700 ease-expo",
+              "pointer-events-none absolute inset-0 -z-10 rounded-full border bg-[linear-gradient(180deg,color-mix(in_srgb,var(--color-ink-900)_88%,transparent),color-mix(in_srgb,var(--color-ink-900)_72%,transparent))] shadow-[0_20px_40px_-24px_rgb(0_0_0/0.7)] light:shadow-[0_20px_40px_-24px_rgb(13_29_49/0.25)] backdrop-blur-md transition-[opacity,transform,border-color] duration-700 ease-expo",
               scrolled ? "scale-100 border-line opacity-100" : "scale-95 border-transparent opacity-0",
             )}
           />
