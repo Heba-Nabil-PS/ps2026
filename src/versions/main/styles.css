@@ -1171,3 +1171,13 @@ html[data-theme="light"] .universe-list .universe-prefix {
   --lit: 0;
   color: color-mix(in srgb, var(--color-sky) calc(var(--lit) * 100%), var(--color-fg));
 }
+
+/* Safari redraws every backdrop blur whenever anything behind it moves, and wide, saturated ones
+   (the glass panes and buttons over the animated hero) cost it a frame each. There the glass keeps
+   a light blur and no saturation boost: it still reads as glass, without stalling the scroll. */
+.safari .glass,
+.safari .glass-button,
+.safari [class*="backdrop-blur"] {
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}

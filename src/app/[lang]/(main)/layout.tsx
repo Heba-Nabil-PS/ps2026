@@ -100,12 +100,13 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
             It also decides, before first paint, whether the loading intro plays: on the first full
             load of a browser session (key "ps-intro", set by IntroAnimation), never with reduced motion (the "intro-play" class is named in
             versions/main/intro/intro-signal.ts). And it applies the saved light/dark choice
-            (key "ps-theme", see versions/main/shell/ThemeSwitch.tsx) so the page never flashes. */}
+            (key "ps-theme", see versions/main/shell/ThemeSwitch.tsx) so the page never flashes.
+            Safari gets a "safari" class: it scrolls natively (see SmoothScroll) and draws lighter glass (styles.css). */}
         <script
           suppressHydrationWarning
           dangerouslySetInnerHTML={{
             __html:
-              "var d=document.documentElement;d.classList.add('js');try{if(localStorage.getItem('ps-theme')==='light')d.dataset.theme='light'}catch(e){}try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&!sessionStorage.getItem('ps-intro'))d.classList.add('intro-play')}catch(e){}setTimeout(function(){if(!window.__psReady)d.classList.remove('js','intro-play')},5000)",
+              "var d=document.documentElement;d.classList.add('js');try{if(/^((?!chrome|chromium|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent))d.classList.add('safari')}catch(e){}try{if(localStorage.getItem('ps-theme')==='light')d.dataset.theme='light'}catch(e){}try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&!sessionStorage.getItem('ps-intro'))d.classList.add('intro-play')}catch(e){}setTimeout(function(){if(!window.__psReady)d.classList.remove('js','intro-play')},5000)",
           }}
         />
       </head>

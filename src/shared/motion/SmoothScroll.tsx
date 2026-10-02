@@ -3,7 +3,12 @@
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { usePrefersReducedMotion } from "@/lib/hooks";
 import { ReactLenis, useLenis } from "lenis/react";
-import { useEffect, useMemo, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
+
+/** Desktop and iOS Safari (every iOS browser is Safari underneath, but iOS keeps native touch scrolling anyway). */
+function isSafari() {
+  return /^((?!chrome|chromium|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent);
+}
 
 /**
  * Global Lenis instance on the window scroller, so native scroll events,
@@ -12,18 +17,21 @@ import { useEffect, useMemo, type ReactNode } from "react";
  */
 export function SmoothScroll({ children }: { children: ReactNode }) {
   const reduced = usePrefersReducedMotion();
+  // Safari's own scrolling is already smooth and runs off the main thread; smoothing it in script there
+  // made every scroll wait on the page's animations, so it felt heavy and lagged behind the hand.
+  const [safari] = useState(() => typeof window !== "undefined" && isSafari());
 
   const options = useMemo(
     () => ({
       lerp: 0.1,
-      smoothWheel: !reduced,
+      smoothWheel: !reduced && !safari,
       syncTouch: false,
       anchors: true,
       stopInertiaOnNavigate: true,
       // Driven by GSAP's ticker instead (see TickerSync).
       autoRaf: false,
     }),
-    [reduced],
+    [reduced, safari],
   );
 
   return (

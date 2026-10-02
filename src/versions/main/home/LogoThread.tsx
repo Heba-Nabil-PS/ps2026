@@ -152,7 +152,8 @@ export function LogoThread() {
     const inner = el?.querySelector<SVGPathElement>("[data-thread='inner']");
     const tip = el?.querySelector<SVGCircleElement>("[data-thread='tip']");
     const logo = el?.querySelector<SVGGElement>("[data-thread='logo']");
-    if (!el || !svg || !mask || !shades || !stem || !inner || !tip || !logo) return;
+    const maskFill = mask?.querySelector("rect");
+    if (!el || !svg || !mask || !maskFill || !shades || !stem || !inner || !tip || !logo) return;
     const draws = Array.from(logo.ownerSVGElement!.querySelectorAll<SVGPathElement>("[data-draw]"));
     const still = window.matchMedia("(prefers-reduced-motion: reduce)");
 
@@ -180,6 +181,27 @@ export function LogoThread() {
     let tail = 0;
     let logoDrawn = 0;
     const shown = { head: -1, tail: -1, logo: -1 };
+
+    /*
+     * The drawing is in page coordinates, but the SVG is only a window onto it, a few screens tall, kept
+     * around the viewport. A page-tall SVG (with its mask) was redrawn whole on every frame the line moved,
+     * which Safari could not keep up with, and its size went past what Safari will draw at all.
+     */
+    const WINDOW = { screens: 3, edge: 0.25 };
+    let page = { width: 0, height: 0, view: 0 };
+    const win = { top: -1, height: 0 };
+    const follow = () => {
+      if (!page.height) return;
+      const height = Math.min(page.height, Math.ceil(page.view * WINDOW.screens));
+      const view = window.scrollY - originY;
+      const edge = page.view * WINDOW.edge;
+      if (win.top >= 0 && height === win.height && view >= win.top + edge && view + page.view <= win.top + height - edge) return;
+      win.height = height;
+      win.top = Math.round(Math.min(Math.max(0, view - (height - page.view) / 2), page.height - height));
+      svg.style.height = `${height}px`;
+      svg.style.transform = `translateY(${win.top}px)`;
+      svg.setAttribute("viewBox", `0 ${win.top} ${page.width} ${height}`);
+    };
 
     const layout = () => {
       const mark = document.querySelector<HTMLElement>("[data-hero-mark-inner]");
@@ -263,9 +285,13 @@ export function LogoThread() {
       );
 
       el.style.height = `${height}px`;
-      svg.setAttribute("viewBox", `0 0 ${vw} ${height}`);
+      page = { width: vw, height, view: vh };
+      win.top = -1;
+      follow();
       mask.setAttribute("width", String(vw));
       mask.setAttribute("height", String(height));
+      maskFill.setAttribute("width", String(vw));
+      maskFill.setAttribute("height", String(height));
       const route = smoothPath(points);
       stem.setAttribute("d", route.d);
       stem.setAttribute("stroke-width", String(FOOT.stemWidth * s));
@@ -545,6 +571,7 @@ export function LogoThread() {
     });
     for (const node of document.querySelectorAll("[data-thread-avoid]")) grown.observe(node);
     window.addEventListener("resize", relayout);
+    window.addEventListener("scroll", follow, { passive: true });
     window.addEventListener("load", relayout);
     // The footer's name is set in em, so the mark's spot moves once the font arrives.
     let alive = true;
@@ -558,6 +585,7 @@ export function LogoThread() {
       observer.disconnect();
       grown.disconnect();
       window.removeEventListener("resize", relayout);
+      window.removeEventListener("scroll", follow);
       window.removeEventListener("load", relayout);
       still.removeEventListener("change", settle);
       for (const char of chars) char.node.style.translate = "";
@@ -583,7 +611,8 @@ export function LogoThread() {
   // Behind the content: the hero's backdrop layers and the footer's ground sit lower still (see HeroSection, SiteFooter).
   return (
     <div ref={root} aria-hidden data-logo-thread className="pointer-events-none absolute inset-x-0 top-0 -z-5 overflow-hidden">
-      <svg className="block h-full w-full" preserveAspectRatio="none" fill="none">
+      {/* A window onto the line, kept around the viewport (see `follow`). */}
+      <svg className="absolute inset-x-0 top-0 block h-full w-full" preserveAspectRatio="none" fill="none">
         <defs>
           <radialGradient id={`${id}-tip`}>
             <stop offset="0" stopColor="var(--color-paper)" />
@@ -611,7 +640,7 @@ export function LogoThread() {
           </linearGradient>
           {/* What the line shows of itself: all of it, but faint behind each section's content. */}
           <mask id={`${id}-sections`} data-thread="sections" maskUnits="userSpaceOnUse" x="0" y="0">
-            <rect width="100%" height="100%" fill="#fff" />
+            <rect x="0" y="0" width="100%" height="100%" fill="#fff" />
             <g data-thread="shades" />
           </mask>
           <mask id={`${id}-outer`} {...region}>

@@ -49,6 +49,9 @@ export function ProjectJourney({ projects, viewLabel }: { projects: readonly Jou
       const list = root.current;
       if (!list) return;
       const svg = list.querySelector<SVGSVGElement>("[data-journey-svg]")!;
+      // While the line is hidden (as on the home page, where LogoThread is the line) it is not laid out or followed:
+      // reading points along a path on every scroll was pure cost, and a heavy one on Safari.
+      if (getComputedStyle(svg).visibility === "hidden") return;
       const track = svg.querySelector<SVGPathElement>("[data-journey-track]")!;
       const line = svg.querySelector<SVGPathElement>("[data-journey-line]")!;
       const head = svg.querySelector<SVGGElement>("[data-journey-head]")!;
