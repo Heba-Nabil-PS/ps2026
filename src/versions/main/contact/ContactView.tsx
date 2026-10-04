@@ -25,7 +25,7 @@ export async function ContactView() {
           <div data-reveal-item>
             <h2 className="mb-8 text-2xl font-medium md:text-3xl">{page.reach.label}</h2>
             <p className="text-sm text-muted">{page.reach.email}</p>
-            <a href={`mailto:${site.email}`} className="text-lg text-fg underline decoration-line-strong underline-offset-8 transition-colors hover:decoration-sky">
+            <a href={`mailto:${site.email}`} className="-my-2.5 inline-block py-2.5 text-lg text-fg underline decoration-line-strong underline-offset-8 transition-colors hover:decoration-sky">
               {site.email}
             </a>
           </div>
@@ -45,7 +45,7 @@ export async function ContactView() {
                   href={directionsHref(office.address)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group/link inline-flex w-fit items-center gap-2 text-sm text-fg transition-colors duration-500 hover:text-sky"
+                  className="group/link -my-3 inline-flex w-fit items-center gap-2 py-3 text-sm text-fg transition-colors duration-500 hover:text-sky"
                 >
                   {copy.ui.directions}
                   <ArrowUpRight aria-hidden className="size-4 transition-transform duration-500 ease-expo group-hover/link:rotate-45 rtl:-scale-x-100" />

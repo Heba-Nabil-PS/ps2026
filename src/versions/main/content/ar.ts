@@ -255,7 +255,7 @@ export const ar: Localized<typeof en> = {
       intro:
         "ستة تخصصات ينفّذها أكثر من 80 متخصصًا داخل الوكالة من البداية إلى النهاية. الاستراتيجية تشكّل الهوية، والهوية تشكّل المنصة والحملة وكل منشور.",
     },
-    labels: { deliverables: "ما تحصل عليه", projects: "شاهد المشاريع التي استخدمت هذه الخدمة" },
+    labels: { deliverables: "ما تحصل عليه", projects: "شاهد المشاريع التي استخدمت هذه الخدمة", explore: "استكشف الخدمة" },
     detail: {
       back: "كل الخدمات",
       deliverables: { label: "ما تحصل عليه", title: ["ما نقدّمه"] },
@@ -617,6 +617,7 @@ export const ar: Localized<typeof en> = {
       allTeams: "كل الفرق",
       search: { label: "ابحث في الوظائف", placeholder: "ابحث بالمسمى أو الفريق أو المهارة" },
       filters: {
+        toggle: "التصفية",
         search: "بحث",
         department: "القسم",
         allDepartments: "كل الأقسام",

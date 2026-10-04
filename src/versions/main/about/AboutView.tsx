@@ -29,12 +29,12 @@ export async function AboutView() {
       <section className="gutter section-y grid gap-12 md:grid-cols-12">
         <div className="md:col-span-7">
           <Label className="mb-10">{page.statement.label}</Label>
-          <ScrollHighlight text={page.statement.text} className="text-[clamp(1.6rem,3vw,3rem)] font-medium leading-[1.15] tracking-[-0.025em]" />
+          <ScrollHighlight text={page.statement.text} className="text-[clamp(1.28rem,3vw,3rem)] font-medium leading-[1.15] tracking-[-0.025em]" />
           <Reveal as="dl" className="mt-14 grid grid-cols-2 gap-x-8 gap-y-10 md:mt-20 lg:grid-cols-4" stagger={0.08}>
             {page.numbers.items.map((item) => (
               <div key={item.label} data-reveal-item className="flex flex-col gap-3">
                 <dt className="order-2 text-sm text-muted">{item.label}</dt>
-                <dd className="stretch order-1 text-[clamp(2.6rem,4.5vw,4.5rem)] leading-none text-sky">
+                <dd className="stretch order-1 text-[clamp(2.08rem,4.5vw,4.5rem)] leading-none text-sky">
                   <span data-line className="block">
                     <Counter value={item.value} suffix={item.suffix} className="text-grain" />
                   </span>

@@ -35,7 +35,7 @@ export function Offices({
             <div className="flex items-center justify-between text-subtle">
               <LocalTime timeZone={timeZones[index] ?? timeZones[0]} className="text-label tabular-nums" />
             </div>
-            <p className="stretch self-end pt-10 text-[clamp(2.2rem,4.4vw,4.2rem)] leading-none">
+            <p className="stretch self-end pt-10 text-[clamp(1.76rem,4.4vw,4.2rem)] leading-none">
               <span data-line className="block">
                 {office.city}
               </span>

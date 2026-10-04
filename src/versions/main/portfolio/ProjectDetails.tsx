@@ -60,7 +60,7 @@ export async function ProjectDetails({ project }: { project: PortfolioProject })
           {/* Read word by word as it scrolls, like the home page's positioning statement. */}
           <ScrollHighlight
             text={project.intro}
-            className="max-w-4xl text-[clamp(1.4rem,2.5vw,2.5rem)] font-medium leading-[1.12] tracking-[-0.025em]"
+            className="max-w-4xl text-[clamp(1.25rem,2.5vw,2.5rem)] font-medium leading-[1.12] tracking-[-0.025em]"
           />
         </div>
       </div>

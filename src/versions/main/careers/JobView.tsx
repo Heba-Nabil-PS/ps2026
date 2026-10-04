@@ -1,5 +1,6 @@
 import type { Locale } from "@/i18n/config";
 import { siteConfig } from "@/lib/site";
+import { ApplyBar } from "@/versions/main/careers/ApplyBar";
 import { JobApply } from "@/versions/main/careers/JobApply";
 import { JobCard } from "@/versions/main/careers/JobCard";
 import type { RoleDetail } from "@/versions/main/careers/roles";
@@ -52,7 +53,7 @@ export function JobView({ lang, role }: { lang: Locale; role: RoleDetail }) {
     <>
       {jsonLd ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} /> : null}
 
-      <section className="relative isolate overflow-hidden pb-12 pt-32 md:pb-16 md:pt-44">
+      <section className="relative isolate overflow-hidden pb-8 pt-28 md:pb-16 md:pt-44">
         <div aria-hidden className="absolute inset-0 -z-10 [mask-image:linear-gradient(180deg,#000_0%,#000_55%,transparent_100%)]">
           <Image src="/images/site/who-we-are.webp" alt="" fill priority sizes="100vw" quality={70} className="object-cover opacity-40" />
           <PointerLight className="opacity-60" />
@@ -62,9 +63,9 @@ export function JobView({ lang, role }: { lang: Locale; role: RoleDetail }) {
 
         <div className="gutter">
           <BackLink href="/careers" label={t.back} transitionLabel={copy.meta.pages.careers.title} />
-          <StretchHeading as="h1" lines={twoLines(role.title)} immediate delay={0.35} className="text-headline mt-12 md:text-[clamp(2.2rem,4.2vw,4.75rem)]" />
+          <StretchHeading as="h1" lines={twoLines(role.title)} immediate delay={0.35} className="text-headline mt-8 md:mt-12 md:text-[clamp(1.76rem,4.2vw,4.75rem)]" />
           <Reveal immediate delay={0.8}>
-            <ul data-reveal-item className="mt-8 flex flex-wrap gap-2 text-sm text-fg">
+            <ul data-reveal-item className="mt-6 flex flex-wrap gap-2 text-sm text-fg md:mt-8">
               {facts.map(({ term, value, Icon }) => (
                 <li key={term} className="glass inline-flex items-center gap-2 rounded-full px-4 py-2">
                   <Icon aria-hidden className="size-4 text-sky" />
@@ -124,9 +125,13 @@ export function JobView({ lang, role }: { lang: Locale; role: RoleDetail }) {
             </Reveal>
 
             <StickyAside className="lg:col-span-5 lg:col-start-8 xl:col-span-4 xl:col-start-9">
-              <JobApply role={role.open ? "" : role.id} />
+              <div id="apply" tabIndex={-1} className="scroll-mt-24 focus:outline-none">
+                <JobApply role={role.open ? "" : role.id} />
+              </div>
             </StickyAside>
           </div>
+          {/* Below lg the form comes after the brief: a bar at the foot of the screen leads to it. */}
+          <ApplyBar target="apply" label={t.apply.title.join(" ")} />
         </section>
       ) : (
         <section className="gutter section-y">

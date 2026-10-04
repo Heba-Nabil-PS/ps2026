@@ -1,6 +1,7 @@
 "use client";
 
 import { gsap } from "@/lib/gsap";
+import { useMediaQuery } from "@/lib/hooks";
 import { LOGO_DRAW, LOGO_PATHS, LOGO_VIEWBOX } from "@/shared/brand/logo-paths";
 import { LOGO_BASELINE } from "@/shared/brand/logo-spine";
 import { useEffect, useId, useRef } from "react";
@@ -228,8 +229,15 @@ function tunedPage(hero: HTMLElement, box: DOMRect, foot: number) {
  * in there, and the mark draws itself, whole. Scrolling back up plays it all in
  * reverse. Laid out in page coordinates from where the marks sit, and rebuilt whenever
  * the page changes height. With reduced motion the finished mark simply stands.
+ *
+ * Desktop widths only: below 64rem the content spans the screen, so the line could only cross the
+ * copy. There the footer draws its mark itself, as on every other page (SiteFooter).
  */
 export function LogoThread() {
+  return useMediaQuery("(min-width: 64rem)") ? <Thread /> : null;
+}
+
+function Thread() {
   const root = useRef<HTMLDivElement>(null);
   const id = useId().replace(/[^\w-]/g, "");
 

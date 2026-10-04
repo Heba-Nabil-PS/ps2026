@@ -8,6 +8,9 @@ import Image from "next/image";
 
 type Action = { label: string; href: string };
 
+/** Smaller buttons on phones, so the two actions fit side by side. */
+const compact = "max-sm:min-h-11 max-sm:gap-2 max-sm:ps-4 max-sm:pe-1.5 max-sm:text-[0.8125rem] max-sm:[&>span:last-child]:size-7";
+
 /**
  * The conversion moment at the end of each page ("Let's build your brand
  * together"). A light sits behind reeded glass and follows the pointer, the
@@ -25,7 +28,7 @@ export function ClosingCta({ label, title, body, primary, secondary, bleed = tru
           <PointerLight className="opacity-60 [mask-image:linear-gradient(180deg,transparent,black_25%,black_75%,transparent)]" />
         </div>
       ) : null}
-      <div className={bleed ? "gutter" : "theme-dark relative isolate overflow-hidden rounded-frame border border-line px-[clamp(1.25rem,5vw,5rem)] py-[clamp(3rem,6.5vw,6rem)]"}>
+      <div className={bleed ? "gutter" : "theme-dark relative isolate overflow-hidden rounded-frame border border-line px-[clamp(1rem,5vw,5rem)] py-[clamp(2.25rem,6.5vw,6rem)]"}>
         {bleed ? null : (
           <div aria-hidden className="absolute inset-0 -z-10">
             <Image src="/images/site/cover.webp" alt="" fill sizes="100vw" quality={70} className="object-cover opacity-40" />
@@ -35,18 +38,20 @@ export function ClosingCta({ label, title, body, primary, secondary, bleed = tru
           </div>
         )}
 
-        <Label className="mb-8">{label}</Label>
-        <StretchHeading lines={title} className="text-display max-w-[14ch]" />
-        <Reveal className="mt-8 flex max-w-xl flex-col gap-7 md:mt-10">
+        <Label className="mb-5 md:mb-8">{label}</Label>
+        {/* Phones set the title smaller and let it run the full width, so it sits on two or three lines instead of one word a line. */}
+        <StretchHeading lines={title} className="text-display max-w-[14ch] max-sm:max-w-none max-sm:text-[1.6rem]" />
+        <Reveal className="mt-5 flex max-w-xl flex-col gap-6 md:mt-10 md:gap-7">
           <p data-reveal-item className="text-lead text-muted">
             {body}
           </p>
-          <div data-reveal-item className="flex flex-wrap gap-4">
-            <ButtonLink href={primary.href} transitionLabel={primary.label}>
+          {/* Both actions share one row on phones: compact buttons, wrapping only on the narrowest screens. */}
+          <div data-reveal-item className="flex flex-wrap gap-2 sm:gap-4">
+            <ButtonLink href={primary.href} transitionLabel={primary.label} className={compact}>
               {primary.label}
             </ButtonLink>
             {secondary ? (
-              <ButtonLink href={secondary.href} variant="glass" transitionLabel={secondary.label}>
+              <ButtonLink href={secondary.href} variant="glass" transitionLabel={secondary.label} className={compact}>
                 {secondary.label}
               </ButtonLink>
             ) : null}

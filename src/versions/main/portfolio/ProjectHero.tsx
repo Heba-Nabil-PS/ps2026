@@ -91,7 +91,7 @@ export function ProjectHero({ project }: { project: PortfolioProject }) {
         <nav data-fade aria-label={t.common.breadcrumb} className="text-label mb-6 text-fg/70 md:mb-8">
           <ol className="flex flex-wrap items-center gap-x-3 gap-y-2">
             <li>
-              <Link href={localize("/")} className="transition-colors hover:text-fg">
+              <Link href={localize("/")} className="-my-3 inline-block py-3 transition-colors hover:text-fg">
                 {t.common.home}
               </Link>
             </li>
@@ -99,7 +99,7 @@ export function ProjectHero({ project }: { project: PortfolioProject }) {
               <ChevronRight className="size-3 rtl:rotate-180" />
             </li>
             <li>
-              <Link href={localize("/portfolio")} transitionTypes={[PF_BACK]} className="transition-colors hover:text-fg">
+              <Link href={localize("/portfolio")} transitionTypes={[PF_BACK]} className="-my-3 inline-block py-3 transition-colors hover:text-fg">
                 {t.common.projectsCrumb}
               </Link>
             </li>
@@ -115,7 +115,7 @@ export function ProjectHero({ project }: { project: PortfolioProject }) {
         <ViewTransition name={`pf-title-${project.slug}`} share={{ "pf-open": "pf-morph-title", default: "none" }} default="none">
           <h1
             id="project-title"
-            className={cn("stretch", locale === "ar" ? "text-[clamp(2rem,6.4vw,7.2rem)]" : "text-[clamp(1.2rem,5.9vw,7.2rem)]", "leading-[0.86]")}
+            className={cn("stretch", locale === "ar" ? "text-[clamp(1.6rem,6.4vw,7.2rem)]" : "text-[clamp(1.2rem,5.9vw,7.2rem)]", "leading-[0.86]")}
           >
             <span className="block overflow-hidden pb-[0.06em]">
               <span data-line className="block">

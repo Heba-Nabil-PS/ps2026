@@ -7,8 +7,9 @@ import { LOGO_PATHS, LOGO_VIEWBOX, viewBoxOf } from "@/shared/brand/logo-paths";
 import { DrawableLogo } from "@/shared/brand/DrawableLogo";
 import { directionsHref } from "@/versions/main/sections/Offices";
 import { useLenis } from "lenis/react";
-import { ArrowUp, ArrowUpRight } from "lucide-react";
-import { useEffect, useRef, type CSSProperties } from "react";
+import { cn } from "@/lib/utils";
+import { ArrowUp, ArrowUpRight, ChevronDown } from "lucide-react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 /** The wordmark's own bounds in the logo artwork (cap tops to the g's descender). */
 const WORDMARK_BOX = { x: 482, y: 782, width: 546, height: 130 };
@@ -28,6 +29,8 @@ export function SiteFooter() {
   const { copy, site, industries } = useCopy();
   const lenis = useLenis();
   const markRef = useRef<HTMLDivElement>(null);
+  /** Phones fold the sitemap columns into an accordion (the column title that is open, or none). */
+  const [openColumn, setOpenColumn] = useState<string | null>(null);
 
   // Off the home page there is no thread to end here (LogoThread drives the mark there), so the mark draws itself
   // whenever the footer's room comes into view, and wipes away again when it leaves.
@@ -62,27 +65,44 @@ export function SiteFooter() {
     <footer className="gutter relative pb-8 pt-6">
       {/* The ground is its own layer under the content, so the home page's thread (LogoThread) can draw between them. */}
       <div aria-hidden className="absolute inset-0 -z-10 bg-navy-800" />
-      <div className="grid gap-12 pt-10 text-sm md:grid-cols-12">
-        <nav aria-label={copy.footer.sitemap} className="grid gap-12 sm:grid-cols-3 md:col-span-8">
-          {columns.map((column) => (
-            <div key={column.title}>
-              <h2 className="text-label mb-5 text-subtle">{column.title}</h2>
-              <ul className="flex flex-col gap-3">
+      <div className="grid gap-10 pt-4 text-sm sm:gap-12 sm:pt-10 md:grid-cols-12">
+        {/* Phones: each column folds behind its title, so the footer opens on the studios rather than three long lists. */}
+        <nav aria-label={copy.footer.sitemap} className="grid border-b border-line sm:gap-12 sm:border-0 sm:grid-cols-3 md:col-span-8">
+          {columns.map((column, index) => {
+            const expanded = openColumn === column.title;
+            const list = `footer-column-${index}`;
+            return (
+            <div key={column.title} className="border-t border-line sm:border-0">
+              <h2 className="text-label mb-5 hidden text-subtle sm:block">{column.title}</h2>
+              <h2 className="sm:hidden">
+                <button
+                  type="button"
+                  aria-expanded={expanded}
+                  aria-controls={list}
+                  onClick={() => setOpenColumn(expanded ? null : column.title)}
+                  className="text-label flex min-h-13 w-full items-center justify-between text-start text-subtle"
+                >
+                  {column.title}
+                  <ChevronDown aria-hidden className={cn("size-4 transition-transform duration-500 ease-expo", expanded && "rotate-180")} />
+                </button>
+              </h2>
+              <ul id={list} className={cn("flex flex-col items-start gap-3 max-md:gap-0 max-sm:pb-4 pointer-coarse:gap-0", !expanded && "max-sm:hidden")}>
                 {column.links.map((item) => (
                   <li key={item.href}>
-                    <AppLink href={item.href} transitionLabel={item.label} className="text-muted transition-colors hover:text-fg">
+                    <AppLink href={item.href} transitionLabel={item.label} className="-my-1.5 inline-flex items-center py-1.5 text-muted transition-colors hover:text-fg max-md:my-0 max-md:min-h-11 max-md:py-0 pointer-coarse:my-0 pointer-coarse:min-h-11 pointer-coarse:py-0">
                       {item.label}
                     </AppLink>
                   </li>
                 ))}
               </ul>
             </div>
-          ))}
+            );
+          })}
         </nav>
-        <div className="flex flex-col gap-10 md:col-span-4 md:row-span-2">
+        <div className="flex flex-col gap-8 sm:gap-10 md:col-span-4 md:row-span-2">
           <div>
             <h2 className="text-label mb-5 text-subtle">{copy.footer.studios}</h2>
-            <ul className="grid gap-5 sm:grid-cols-2">
+            <ul className="grid grid-cols-2 gap-x-4 gap-y-5">
               {site.offices.map((office) => (
                 <li key={office.city}>
                   <a
@@ -104,15 +124,15 @@ export function SiteFooter() {
           </div>
           <div>
             <h2 className="text-label mb-5 text-subtle">{copy.footer.write}</h2>
-            <a href={`mailto:${site.email}`} className="text-fg transition-colors hover:text-sky">
+            <a href={`mailto:${site.email}`} className="-my-3 inline-block py-3 text-fg transition-colors hover:text-sky">
               {site.email}
             </a>
           </div>
           <div>
             <h2 className="text-label mb-5 text-subtle">{copy.footer.awards}</h2>
-            <ul className="flex flex-wrap items-center gap-3">
+            <ul className="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
               {site.awards.map((award) => (
-                <li key={award.file} className="flex h-16 w-28 items-center justify-center overflow-hidden rounded-md p-1.5" style={{ backgroundColor: award.surface }}>
+                <li key={award.file} className="flex h-14 items-center sm:h-16 sm:w-28 justify-center overflow-hidden rounded-md p-1.5" style={{ backgroundColor: award.surface }}>
                   {/* eslint-disable-next-line @next/next/no-img-element -- small static SVG badge, nothing to optimize */}
                   <img src={`/images/awards/${award.file}.svg`} alt={`${award.title}, ${award.issuer}`} title={`${award.title}, ${award.issuer}`} className="h-full w-full object-contain" loading="lazy" />
                 </li>

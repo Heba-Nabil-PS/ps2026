@@ -55,7 +55,7 @@ export function CaseStats({ items }: { items: readonly StatItem[] }) {
       {items.map((item) => (
         <div key={item.label} data-reveal-item className="bg-ink-900 p-8 md:p-10">
           <dt className="text-sm text-muted">{item.label}</dt>
-          <dd className="stretch mt-8 text-[clamp(3rem,7vw,6.5rem)] leading-none text-sky">
+          <dd className="stretch mt-8 text-[clamp(2.4rem,7vw,6.5rem)] leading-none text-sky">
             <span data-line className="block">
               {item.prefix}
               <Counter value={item.value} suffix={item.suffix} />
@@ -221,7 +221,7 @@ export function CaseBlocks({ blocks }: { blocks: ContentBlock[] }) {
             return (
               <Reveal key={key} as="section" className="gutter">
                 <figure data-reveal-item className="mx-auto max-w-4xl">
-                  <blockquote className="text-[clamp(1.6rem,3.2vw,3rem)] font-medium leading-[1.15] tracking-[-0.02em]">“{block.quote}”</blockquote>
+                  <blockquote className="text-[clamp(1.28rem,3.2vw,3rem)] font-medium leading-[1.15] tracking-[-0.02em]">“{block.quote}”</blockquote>
                   <figcaption className="mt-8 text-sm text-muted">
                     <span className="text-fg">{block.author}</span> — {block.role}
                   </figcaption>

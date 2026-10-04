@@ -174,7 +174,7 @@ export function ProjectJourney({ projects, viewLabel }: { projects: readonly Jou
       </svg>
 
       {projects.map((project, index) => (
-        <li key={project.slug} data-journey-card className={index % 2 ? "ps-7 md:ms-auto md:w-[58%] md:ps-0" : "ps-7 md:w-[58%] md:ps-0"}>
+        <li key={project.slug} data-journey-card className={index % 2 ? "md:ms-auto md:w-[58%]" : "md:w-[58%]"}>
           <JourneyCard project={project} last={index === projects.length - 1} viewLabel={viewLabel} />
         </li>
       ))}
@@ -331,7 +331,7 @@ function JourneyCard({ project, last, viewLabel }: { project: JourneyProject; la
           </div>
           <ul data-meta className="mt-3 flex flex-wrap gap-2">
             {project.tags.slice(0, 3).map((tag) => (
-              <li key={tag} className="text-label rounded-full border border-line px-3 py-1.5 text-[0.65rem] text-muted">
+              <li key={tag} className="text-label rounded-full border border-line px-3 py-1.5 text-[0.75rem] text-muted md:text-[0.65rem]">
                 {tag}
               </li>
             ))}

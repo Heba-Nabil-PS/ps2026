@@ -7,6 +7,7 @@ import { AppLink } from "@/versions/main/ui/AppLink";
 import { Label } from "@/versions/main/ui/Label";
 import { useCopy } from "@/versions/main/use-copy";
 import { fill } from "@/versions/main/copy";
+import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, Building2, Check, ChevronDown, MapPin, Search, SlidersHorizontal, X, type LucideIcon } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
@@ -64,7 +65,7 @@ function FilterSelect({ icon: Icon, label, allLabel, value, options, onChange }:
       >
         <Icon aria-hidden className="size-5 shrink-0 text-sky" />
         <span className="flex min-w-0 flex-1 flex-col">
-          <span className="text-label text-[0.7rem] text-subtle">{label}</span>
+          <span className="text-label text-subtle">{label}</span>
           <span className={`truncate pt-0.5 font-medium ${value.length ? "text-fg" : "text-muted"}`}>{summary}</span>
         </span>
         <ChevronDown aria-hidden className={`size-4 shrink-0 text-muted transition-transform duration-500 ease-expo ${open ? "rotate-180" : ""}`} />
@@ -122,6 +123,9 @@ export function JobsBoard() {
   const [location, setLocation] = useState<string[]>([]);
   const [type, setType] = useState<string[]>([]);
   const [query, setQuery] = useState("");
+  /** Phones keep the three filters behind one button (their panel open or not). */
+  const [showFilters, setShowFilters] = useState(false);
+  const active = department.length + location.length + type.length;
 
   const needle = query.trim().toLowerCase();
   const visible = roles.filter((role) => {
@@ -149,11 +153,13 @@ export function JobsBoard() {
         </div>
       </div>
 
-      <div role="search" aria-label={labels.filterLabel} className="mt-10 grid gap-x-10 gap-y-8 md:mt-14 md:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1fr]">
-        <label className="flex cursor-text items-center gap-4 border-b border-line-strong pb-3 transition-colors duration-500 hover:border-fg/40 focus-within:border-sky md:col-span-2 lg:col-span-1">
+      <div role="search" aria-label={labels.filterLabel} className="mt-10 grid gap-x-10 gap-y-6 md:mt-14 md:gap-y-8 md:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1fr]">
+        {/* Phones: the search and a filters button share a row; from md up the row dissolves into the grid. */}
+        <div className="flex items-end gap-3 md:contents">
+        <label className="flex min-w-0 flex-1 cursor-text items-center gap-4 border-b border-line-strong pb-3 transition-colors duration-500 hover:border-fg/40 focus-within:border-sky md:col-span-2 lg:col-span-1">
           <Search aria-hidden className="size-5 shrink-0 text-sky" />
           <span className="flex min-w-0 flex-1 flex-col">
-            <span className="text-label text-[0.7rem] text-subtle">{labels.filters.search}</span>
+            <span className="text-label text-subtle">{labels.filters.search}</span>
             <input
               type="search"
               value={query}
@@ -164,15 +170,32 @@ export function JobsBoard() {
             />
           </span>
           {query ? (
-            <button type="button" onClick={() => setQuery("")} aria-label={labels.clear} className="grid size-7 shrink-0 place-items-center rounded-full text-muted transition-colors hover:text-fg">
+            <button type="button" onClick={() => setQuery("")} aria-label={labels.clear} className="-my-1.5 -me-1.5 grid size-10 shrink-0 place-items-center rounded-full text-muted transition-colors hover:text-fg">
               <X aria-hidden className="size-4" />
             </button>
           ) : null}
         </label>
+          <button
+            type="button"
+            aria-expanded={showFilters}
+            aria-controls="role-filters"
+            onClick={() => setShowFilters((current) => !current)}
+            className={cn(
+              "flex min-h-12 shrink-0 items-center gap-2 rounded-full border px-4 text-sm font-medium transition-colors duration-500 md:hidden",
+              showFilters || active ? "border-sky text-fg" : "border-line-strong text-muted",
+            )}
+          >
+            <SlidersHorizontal aria-hidden className="size-4 text-sky" />
+            {labels.filters.toggle}
+            {active ? <span className="grid size-5 place-items-center rounded-full bg-sky text-[0.7rem] font-semibold tabular-nums text-ink-900">{active}</span> : null}
+          </button>
+        </div>
 
+        <div id="role-filters" className={cn("grid gap-y-6 md:contents", !showFilters && "max-md:hidden")}>
         <FilterSelect icon={Building2} label={labels.filters.department} allLabel={labels.filters.allDepartments} value={department} options={departments} onChange={setDepartment} />
         <FilterSelect icon={MapPin} label={labels.filters.location} allLabel={labels.filters.allLocations} value={location} options={locations} onChange={setLocation} />
         <FilterSelect icon={SlidersHorizontal} label={labels.filters.type} allLabel={labels.filters.allTypes} value={type} options={types} onChange={setType} />
+        </div>
       </div>
 
       <p aria-live="polite" className="mt-8 text-sm text-muted">

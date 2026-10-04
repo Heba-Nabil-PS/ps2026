@@ -7,9 +7,10 @@ import { AppLink } from "@/versions/main/ui/AppLink";
 import { ButtonLink } from "@/versions/main/ui/Button";
 import { SectionHead } from "@/versions/main/ui/SectionHead";
 import { serviceHref } from "@/versions/main/data/routes";
-import { ArrowUpRight } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { ArrowUpRight, Plus } from "lucide-react";
 import Image from "next/image";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 /** Glass pill for a deliverable tag. */
 const tag =
@@ -37,12 +38,15 @@ const LIT = "grayscale(0) contrast(1) brightness(1)";
  * On desktop only the first row opens from the scroll, as the list comes into view; the page
  * then scrolls on normally, and hovering (or focusing) another row moves the open state to it.
  *
- * Phones skip this: rows show their deliverables as plain tags.
+ * Phones get an accordion instead: each row is a button that opens its image, summary, deliverables
+ * and a link to the service, one row at a time (the first starts open), so the list stays short.
  */
 export function ServicesIndex() {
   const { copy } = useCopy();
   const section = copy.home.services;
   const stage = useRef<HTMLDivElement>(null);
+  /** The open row in the phone accordion (-1: none). */
+  const [open, setOpen] = useState(0);
 
   useGSAP(
     () => {
@@ -144,12 +148,62 @@ export function ServicesIndex() {
 
       <div ref={stage} className="mt-10 md:mt-14">
           <Reveal as="ol" className="border-b border-line" stagger={0.07}>
-            {copy.services.list.map((service) => (
+            {copy.services.list.map((service, index) => {
+              const expanded = open === index;
+              const panel = `service-panel-${service.slug}`;
+              return (
               <li key={service.slug} data-reveal-item data-row className="border-t border-line">
+                {/* Phones: an accordion row. */}
+                <div className="md:hidden">
+                  <h3>
+                    <button
+                      type="button"
+                      aria-expanded={expanded}
+                      aria-controls={panel}
+                      onClick={() => setOpen(expanded ? -1 : index)}
+                      className="flex min-h-16 w-full items-center justify-between gap-4 py-4 text-start"
+                    >
+                      <span className={cn("text-lg font-medium leading-snug tracking-[-0.01em] transition-colors duration-500", expanded ? "text-sky" : "text-fg")}>
+                        {service.title}
+                      </span>
+                      <span aria-hidden className={cn("grid size-9 shrink-0 place-items-center rounded-full border transition-[rotate,border-color,background-color,color] duration-500 ease-expo", expanded ? "rotate-45 border-sky bg-sky text-ink-900" : "border-line-strong text-fg")}>
+                        <Plus className="size-4" />
+                      </span>
+                    </button>
+                  </h3>
+                  {/* Collapsed rows are inert, so their links and tags are skipped by keyboard and screen readers. */}
+                  <div id={panel} inert={!expanded} className={cn("grid transition-[grid-template-rows] duration-500 ease-expo", expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]")}>
+                    <div className="min-h-0 overflow-hidden">
+                      <div className="pb-6">
+                        <div className="theme-dark relative aspect-[16/9] overflow-hidden rounded-xl bg-navy-800">
+                          <Image src={service.image} alt="" fill sizes="(min-width: 768px) 1px, 100vw" quality={70} className="object-cover" />
+                        </div>
+                        <p className="mt-4 text-sm leading-relaxed text-fg/70">{service.summary}</p>
+                        <ul aria-label={copy.services.labels.deliverables} className="mt-3 flex flex-wrap gap-1.5">
+                          {service.deliverables.map(({ title: item }) => (
+                            <li key={item} className={tag}>
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                        <AppLink
+                          href={serviceHref(service.slug)}
+                          transitionLabel={service.title}
+                          className="group mt-5 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-sky"
+                        >
+                          {copy.services.labels.explore}
+                          <ArrowUpRight aria-hidden className="size-4 transition-transform duration-500 ease-expo group-hover:rotate-45 rtl:-scale-x-100" />
+                        </AppLink>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Wider screens: the whole row opens the service. */}
                 <AppLink
                   href={serviceHref(service.slug)}
                   transitionLabel={service.title}
-                  className="group grid grid-cols-[1fr_auto] items-start gap-x-5 gap-y-4 py-6 md:grid-cols-12 md:gap-x-8"
+                  className="group hidden items-start gap-x-8 gap-y-4 py-6 md:grid md:grid-cols-12"
                 >
                   {/* Closed state is written inline so the first paint matches the timeline's start. */}
                   <div data-frame className="relative col-span-3 hidden overflow-hidden rounded-xl bg-navy-800 md:col-span-4 md:block" style={{ height: SLICE }}>
@@ -178,14 +232,6 @@ export function ServicesIndex() {
                         ))}
                       </ul>
                     </div>
-                    <p className="mt-2 text-sm leading-relaxed text-fg/65 md:hidden">{service.summary}</p>
-                    <ul aria-label={copy.services.labels.deliverables} className="mt-3 flex flex-wrap gap-1.5 md:hidden">
-                      {service.deliverables.map(({ title: item }) => (
-                        <li key={item} className={tag}>
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
                   </div>
 
                   <span
@@ -196,7 +242,8 @@ export function ServicesIndex() {
                   </span>
                 </AppLink>
               </li>
-            ))}
+              );
+            })}
           </Reveal>
       </div>
     </section>

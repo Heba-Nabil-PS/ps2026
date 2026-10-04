@@ -103,7 +103,7 @@ export function HeroSection() {
 
   return (
     <section ref={root}>
-      <div data-hero-content className="gutter relative flex min-h-svh flex-col items-center justify-center overflow-hidden pb-20 pt-28 text-center md:pt-32">
+      <div data-hero-content className="gutter relative flex flex-col items-center justify-center overflow-hidden pb-6 pt-28 text-center md:min-h-svh md:pb-20 md:pt-32">
         {/* The brand cover art, sunk into the navy, with the identity's flowing lines over it (as on option 2's home).
             Not isolated: the page's thread (LogoThread) runs between these layers and the type.
             Both layers fade out towards the bottom, so the hero melts into the page's backdrop instead of ending on a hard edge. */}
@@ -131,7 +131,7 @@ export function HeroSection() {
         <h1
           data-hero-title
           aria-label={hero.title.join(" ")}
-          className="stretch max-w-[16ch] text-[clamp(min(2.2rem,8.6vw),5.8vw,7rem)] leading-[0.92] ar:text-[clamp(2rem,4.9vw,6rem)]"
+          className="stretch max-w-[16ch] text-[clamp(min(2.2rem,8.6vw),5.8vw,7rem)] leading-[0.92] ar:text-[clamp(1.6rem,4.9vw,6rem)]"
         >
           {hero.title.map((line, lineIndex) => (
             <span key={line} data-hero-line className={lineIndex === 1 ? "block text-sky ar:inline" : "block ar:inline"}>
@@ -164,7 +164,7 @@ export function HeroSection() {
 
         {/* Proof under the promise: the awards and the Meta partnership, each badge on its own plate (third-party marks keep
             their colours). Every chip leads to the full story on About. */}
-        <ul data-hero-awards aria-label={copy.footer.awards} className="mt-10 flex flex-nowrap items-center justify-center gap-3 md:mt-14">
+        <ul data-hero-awards aria-label={copy.footer.awards} className="mt-10 flex flex-nowrap items-center justify-center gap-2 sm:gap-3 md:mt-14">
           {site.awards.map((award) => (
             <li key={award.file} data-hero-award>
               <AppLink
@@ -172,7 +172,7 @@ export function HeroSection() {
                 transitionLabel={copy.meta.pages.about.title}
                 aria-label={`${award.title}, ${award.issuer}`}
                 title={`${award.title}, ${award.issuer}`}
-                className="flex h-16 w-28 items-center justify-center overflow-hidden rounded-md p-1.5 transition-[translate] duration-500 ease-expo hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky"
+                className="flex h-[clamp(3.25rem,15vw,4rem)] w-[clamp(5.5rem,26vw,7rem)] items-center justify-center overflow-hidden rounded-md p-1.5 transition-[translate] duration-500 ease-expo hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky"
                 style={{ backgroundColor: award.surface }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element -- third-party SVG badges, served as they are */}

@@ -160,8 +160,8 @@ export function PositioningStage({ media, children }: { media: ReactNode; childr
             geo.cy0 = top + geo.h0 / 2;
             geo.r0 = parseFloat(getComputedStyle(slot).borderTopLeftRadius) || 0;
             // The showreel's opening frame: centred in the section's last screen.
-            geo.w1 = geo.W * size;
-            geo.h1 = geo.H * size;
+            geo.w1 = geo.W * size.w;
+            geo.h1 = geo.H * size.h;
             geo.cx1 = geo.W / 2;
             geo.cy1 = section.offsetHeight - geo.H / 2;
             box.style.width = `${geo.W}px`;
@@ -172,9 +172,10 @@ export function PositioningStage({ media, children }: { media: ReactNode; childr
             const cx = lerp(geo.cx0, geo.cx1, state.x);
             // Pulled to the centre of the screen and held there as the page scrolls (the same spot it lands on at the handoff).
             const view = -section.getBoundingClientRect().top + geo.H / 2;
-            const cy = lerp(geo.cy0, Math.min(view, geo.cy1), state.y);
             const w = lerp(geo.w0, geo.w1, state.s);
             const h = lerp(geo.h0, geo.h1, state.s);
+            // On phones the frame sits under the pillars, so it only ever travels down: its top edge never rises over the copy.
+            const cy = phone ? Math.max(lerp(geo.cy0, Math.min(view, geo.cy1), state.y), geo.top + h / 2) : lerp(geo.cy0, Math.min(view, geo.cy1), state.y);
             const r = lerp(geo.r0, REEL_START_RADIUS, state.s);
             // A screen-sized layer, scaled to cover the frame and clipped to it: the showreel's own crop.
             const k = Math.max(w / geo.W, h / geo.H);

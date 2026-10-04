@@ -123,7 +123,7 @@ export function TestimonialStage({ section }: { section: Section }) {
                   <div className="flex flex-col justify-between gap-10 p-7 pt-24 sm:p-10 sm:pt-28 md:col-span-8 md:p-14 md:pt-32">
                     <blockquote
                       className={cn(
-                        "max-w-[26ch] text-[clamp(1.5rem,2.8vw,2.5rem)] leading-[1.2] tracking-[-0.015em] text-balance",
+                        "max-w-[26ch] text-[clamp(1.25rem,2.8vw,2.5rem)] leading-[1.2] tracking-[-0.015em] text-balance",
                         item.pending ? "text-fg/70" : "text-fg",
                       )}
                     >
@@ -145,7 +145,7 @@ export function TestimonialStage({ section }: { section: Section }) {
                   </div>
 
                   <p className="flex flex-col justify-end gap-3 border-t border-line bg-sky/[0.04] p-7 sm:p-10 md:col-span-4 md:border-t-0 md:border-s md:p-14">
-                    <span className="stretch text-[clamp(3.5rem,7vw,6.5rem)] leading-[0.9] text-sky" style={{ ["--wdth" as string]: 112 }}>
+                    <span className="stretch text-[clamp(2.8rem,7vw,6.5rem)] leading-[0.9] text-sky" style={{ ["--wdth" as string]: 112 }}>
                       {item.result.value}
                     </span>
                     <span className="max-w-[18ch] text-muted">{item.result.caption}</span>

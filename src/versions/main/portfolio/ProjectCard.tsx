@@ -188,7 +188,7 @@ export function ProjectCard({ project, layout, preload = false }: ProjectCardPro
           <div
             className={cn(
               "flex items-center gap-[0.35em]",
-              large ? "text-[clamp(1.7rem,4.35vw,4.7rem)]" : "text-[clamp(1.3rem,2.65vw,2.8rem)]",
+              large ? "text-[clamp(1.36rem,4.35vw,4.7rem)]" : "text-[clamp(1.3rem,2.65vw,2.8rem)]",
             )}
           >
             <ViewTransition name={`pf-title-${project.slug}`} share={{ "pf-open": "pf-morph-title", default: "none" }} default="none">
@@ -212,7 +212,7 @@ export function ProjectCard({ project, layout, preload = false }: ProjectCardPro
           </div>
           <ul data-meta className="mt-3 flex flex-wrap gap-2" aria-label={t.common.tags}>
             {project.tags.slice(0, 3).map((tag) => (
-              <li key={tag} className="text-label rounded-full border border-line px-3 py-1.5 text-[0.65rem] text-muted">
+              <li key={tag} className="text-label rounded-full border border-line px-3 py-1.5 text-[0.75rem] text-muted md:text-[0.65rem]">
                 {tag}
               </li>
             ))}

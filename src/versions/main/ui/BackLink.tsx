@@ -8,7 +8,7 @@ export function BackLink({ href, label, transitionLabel, large }: { href: string
     <AppLink
       href={href}
       transitionLabel={transitionLabel ?? label}
-      className={cn("group text-label flex items-center gap-3 text-muted transition-colors hover:text-fg", large && "gap-4 text-base uppercase tracking-[0.14em] md:text-lg rtl:tracking-normal")}
+      className={cn("group text-label -my-3 flex items-center gap-3 py-3 text-muted transition-colors hover:text-fg", large && "gap-4 text-base uppercase tracking-[0.14em] md:text-lg rtl:tracking-normal")}
     >
       <ArrowLeft
         aria-hidden

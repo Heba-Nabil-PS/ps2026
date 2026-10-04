@@ -6,7 +6,7 @@ type ProjectQuoteProps = { quote: string; author: string; role: string };
 export function ProjectQuote({ quote, author, role }: ProjectQuoteProps) {
   return (
     <figure className="gutter mx-auto max-w-6xl py-28 md:py-28">
-      <span aria-hidden className="block font-serif text-[clamp(5rem,12vw,10rem)] leading-[0.5] text-accent">
+      <span aria-hidden className="block font-serif text-[clamp(4rem,12vw,10rem)] leading-[0.5] text-accent">
         “
       </span>
       <blockquote>

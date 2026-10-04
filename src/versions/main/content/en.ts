@@ -263,7 +263,7 @@ export const en = {
       intro:
         "Six disciplines delivered end to end by 80+ in-house specialists. Strategy shapes the identity, and the identity shapes the platform, the campaign and every post that runs on it.",
     },
-    labels: { deliverables: "What you get", projects: "See projects using this service" },
+    labels: { deliverables: "What you get", projects: "See projects using this service", explore: "Explore the service" },
     detail: {
       back: "All services",
       deliverables: { label: "What you get", title: ["What we", "deliver"] },
@@ -627,6 +627,7 @@ export const en = {
       allTeams: "All teams",
       search: { label: "Search roles", placeholder: "Search by title, team or skill" },
       filters: {
+        toggle: "Filters",
         search: "Search",
         department: "Department",
         allDepartments: "All departments",

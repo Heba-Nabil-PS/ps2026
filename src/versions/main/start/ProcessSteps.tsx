@@ -11,6 +11,8 @@ const ICONS: readonly LucideIcon[] = [Search, Compass, PenTool, Rocket];
 /**
  * The process as a vertical line drawing: each step's ring and icon trace themselves in,
  * its text rises, then the connector draws down to the next step, one step at a time.
+ * On phones the steps sit a screen apart, so each one draws as it scrolls into view instead of
+ * waiting its turn in the chain (which left the later steps blank while they were on screen).
  */
 export function ProcessSteps({ steps }: { steps: readonly { title: string; body: string }[] }) {
   const root = useRef<HTMLDivElement>(null);
@@ -24,10 +26,13 @@ export function ProcessSteps({ steps }: { steps: readonly { title: string; body:
 
       return motionGate(
         () => {
+          const phone = window.matchMedia("(max-width: 767.98px)").matches;
           const tl = gsap.timeline({ paused: true, defaults: { ease: "power2.inOut" } });
           gsap.set(el, { autoAlpha: 1 });
 
           items.forEach((item, index) => {
+            // Phones: a timeline of its own per step, played when that step comes into view.
+            const step = phone ? gsap.timeline({ paused: true, defaults: { ease: "power2.inOut" } }) : tl;
             const paths = strokes(item);
             paths.forEach((path) => {
               const length = path.getTotalLength?.() || 1;
@@ -38,13 +43,15 @@ export function ProcessSteps({ steps }: { steps: readonly { title: string; body:
             gsap.set(text, { autoAlpha: 0, y: 16 });
             if (line) gsap.set(line, { scaleY: 0 });
 
-            const at = index === 0 ? 0 : ">-0.1";
-            tl.to(paths, { strokeDashoffset: 0, duration: 0.7, stagger: 0.05 }, at)
+            const at = index === 0 || phone ? 0 : ">-0.1";
+            step
+              .to(paths, { strokeDashoffset: 0, duration: 0.7, stagger: 0.05 }, at)
               .to(text, { autoAlpha: 1, y: 0, duration: 0.8, ease: "expo.out", stagger: 0.08 }, "<0.25");
-            if (line) tl.to(line, { scaleY: 1, duration: 0.6, ease: "power1.inOut" }, "<0.2");
+            if (line) step.to(line, { scaleY: 1, duration: 0.6, ease: "power1.inOut" }, "<0.2");
+            if (phone) ScrollTrigger.create({ trigger: item, start: "top 88%", once: true, onEnter: () => step.play() });
           });
 
-          ScrollTrigger.create({ trigger: el, start: "top 85%", once: true, onEnter: () => tl.play() });
+          if (!phone) ScrollTrigger.create({ trigger: el, start: "top 85%", once: true, onEnter: () => tl.play() });
         },
         () => showNow(el),
       );

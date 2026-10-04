@@ -36,7 +36,7 @@ export function PageHero({
   heading?: ReactNode;
 }) {
   return (
-    <section data-page-hero className={cn("relative isolate flex min-h-[68svh] flex-col justify-end overflow-hidden pb-14 pt-40 md:pb-16 md:pt-48", className)}>
+    <section data-page-hero className={cn("relative isolate flex min-h-[46svh] flex-col justify-end overflow-hidden pb-10 pt-28 md:min-h-[68svh] md:pb-16 md:pt-48", className)}>
       {/* Masked to transparent at the foot so the backdrop dissolves into the page below, whatever its colour, instead of ending on a seam. */}
       <div aria-hidden className="absolute inset-0 -z-10 [mask-image:linear-gradient(180deg,#000_0%,#000_55%,transparent_100%)]">
         {image ? (

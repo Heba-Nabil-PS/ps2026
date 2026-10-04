@@ -74,7 +74,7 @@ export function PortfolioIntro({ title, footer }: PortfolioIntroProps) {
   );
 
   return (
-    <section ref={root} data-pf-exit aria-labelledby="portfolio-title" className="relative flex min-h-svh flex-col justify-end overflow-hidden pb-2 pt-28 md:pb-4 md:pt-32">
+    <section ref={root} data-pf-exit aria-labelledby="portfolio-title" className="relative flex min-h-[60svh] flex-col justify-end overflow-hidden pb-2 pt-28 md:min-h-svh md:pb-4 md:pt-32">
       <div
         data-glow
         aria-hidden
@@ -86,7 +86,7 @@ export function PortfolioIntro({ title, footer }: PortfolioIntroProps) {
             id="portfolio-title"
             className={cn(
               "stretch",
-              locale === "ar" ? "text-[clamp(1.5rem,5vw,5.5rem)]" : "text-[clamp(1.2rem,6vw,6.5rem)]",
+              locale === "ar" ? "text-[clamp(1.25rem,5vw,5.5rem)]" : "text-[clamp(1.2rem,6vw,6.5rem)]",
               "leading-[0.88]",
             )}
           >

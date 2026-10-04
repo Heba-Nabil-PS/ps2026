@@ -11,7 +11,7 @@ export async function StartView() {
 
   return (
     <>
-      <PageHero title={page.hero.title} intro={page.hero.intro} image="/images/site/contact.webp" className="min-h-[70svh]" />
+      <PageHero title={page.hero.title} intro={page.hero.intro} image="/images/site/contact.webp" className="md:min-h-[70svh]" />
       <Suspense fallback={null}>
         <BriefForm aside={<ProcessSteps steps={site.process} />} />
       </Suspense>

@@ -1,10 +1,8 @@
 "use client";
 
-import { useLocale } from "@/i18n/locale-context";
 import { portfolioHref } from "@/data/portfolio";
 import { useContent } from "@/versions/main/portfolio/content";
 import { useCopy } from "@/versions/main/use-copy";
-import { versionHref, versions } from "@/versions/registry";
 import { ease } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import { LanguageSwitch } from "@/versions/main/shell/LanguageSwitch";
@@ -27,7 +25,6 @@ const isActive = (pathname: string, href: string) => pathname === href || pathna
 export function MobileMenu({ pathname, onClose }: { pathname: string; onClose: () => void }) {
   const { copy, site } = useCopy();
   const { portfolio, t } = useContent();
-  const locale = useLocale();
   const lenis = useLenis();
   const panel = useRef<HTMLDivElement>(null);
   const items = [...copy.nav.primary, copy.nav.contact, copy.nav.start];
@@ -67,7 +64,7 @@ export function MobileMenu({ pathname, onClose }: { pathname: string; onClose: (
       role="dialog"
       aria-modal="true"
       aria-label={copy.ui.menu}
-      className="fixed inset-0 z-40 flex flex-col overflow-y-auto bg-ink-950/95 px-[clamp(1rem,3.2vw,3rem)] pb-10 pt-28"
+      className="fixed inset-0 z-40 flex flex-col overflow-y-auto overflow-x-hidden bg-ink-950 px-[clamp(1rem,3.2vw,3rem)] pb-10 pt-28"
       initial={{ clipPath: "inset(0 0 100% 0)" }}
       animate={{ clipPath: "inset(0 0 0% 0)" }}
       exit={{ clipPath: "inset(0 0 100% 0)" }}
@@ -86,7 +83,7 @@ export function MobileMenu({ pathname, onClose }: { pathname: string; onClose: (
 
       <div className="relative grid grid-cols-1 gap-12 md:grid-cols-12">
       <nav aria-label={copy.ui.mainNav} className="md:col-span-7">
-        <ul className="flex flex-col gap-1">
+        <ul className="flex flex-col gap-0.5">
           {items.map((item, index) => (
             <li key={item.href} className="overflow-hidden">
               <motion.div
@@ -101,11 +98,10 @@ export function MobileMenu({ pathname, onClose }: { pathname: string; onClose: (
                   onClick={onClose}
                   aria-current={isActive(pathname, item.href) ? "page" : undefined}
                   className={cn(
-                    "group stretch flex items-baseline gap-4 py-1 text-[clamp(2.4rem,11vw,5rem)] leading-[0.95] transition-colors",
+                    "group stretch flex items-baseline py-1.5 text-[clamp(1.25rem,5.6vw,3.5rem)] leading-[1.05] transition-colors",
                     isActive(pathname, item.href) ? "text-sky" : "text-fg",
                   )}
                 >
-                  <span className="font-sans text-xs font-normal tracking-normal text-subtle normal-case tabular-nums">{String(index + 1).padStart(2, "0")}</span>
                   <span
                     data-line
                     className="transition-transform duration-700 ease-expo group-hover:translate-x-4 group-focus-visible:translate-x-4 rtl:group-hover:-translate-x-4 rtl:group-focus-visible:-translate-x-4"
@@ -151,22 +147,6 @@ export function MobileMenu({ pathname, onClose }: { pathname: string; onClose: (
         </motion.aside>
       </div>
 
-      {/* Design versions: other versions load as a fresh page (separate root layouts). */}
-      <motion.ul
-        className="relative mt-10 flex flex-wrap gap-2"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1, transition: { delay: 0.45 } }}
-        exit={{ opacity: 0 }}
-      >
-        {versions.slice(1).map((version) => (
-          <li key={version.id}>
-            <a href={versionHref("/", version.id, locale)} className="glass inline-flex flex-col rounded-2xl px-4 py-3">
-              <span className="text-sm text-fg">{version.label[locale]}</span>
-              <span className="text-xs text-subtle">{version.description[locale]}</span>
-            </a>
-          </li>
-        ))}
-      </motion.ul>
 
       <motion.div
         className="relative mt-auto flex flex-wrap items-end justify-between gap-6 pt-12 text-sm text-muted"

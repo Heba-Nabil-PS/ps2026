@@ -15,9 +15,10 @@ type ShowreelProps = {
   slides: readonly { image: string; alt: string }[];
 };
 
-const insetFor = (size: number, radius: number) => {
-  const edge = ((1 - size) / 2) * 100;
-  return `inset(${edge.toFixed(3)}% ${edge.toFixed(3)}% ${edge.toFixed(3)}% ${edge.toFixed(3)}% round ${radius.toFixed(1)}px)`;
+const insetFor = (w: number, h: number, radius: number) => {
+  const x = ((1 - w) / 2) * 100;
+  const y = ((1 - h) / 2) * 100;
+  return `inset(${y.toFixed(3)}% ${x.toFixed(3)}% ${y.toFixed(3)}% ${x.toFixed(3)}% round ${radius.toFixed(1)}px)`;
 };
 
 /**
@@ -50,11 +51,13 @@ export function Showreel({ label, year, play, reel, video, slides }: ShowreelPro
         },
         (context) => {
           const { phone } = context.conditions as { phone: boolean; wide: boolean };
-          const shape = { size: phone ? REEL_START_SIZE.phone : REEL_START_SIZE.wide, radius: REEL_START_RADIUS };
+          const start = phone ? REEL_START_SIZE.phone : REEL_START_SIZE.wide;
+          const shape = { w: start.w, h: start.h, radius: REEL_START_RADIUS };
           // The media grows with the frame: at any size it shows the whole picture, as the positioning frame did.
           const apply = () => {
-            box.style.clipPath = insetFor(shape.size, shape.radius);
-            inner.style.transform = `scale(${shape.size.toFixed(4)})`;
+            box.style.clipPath = insetFor(shape.w, shape.h, shape.radius);
+            // Scaled to cover the frame, as the positioning frame shows it.
+            inner.style.transform = `scale(${Math.max(shape.w, shape.h).toFixed(4)})`;
           };
           apply();
 
@@ -77,7 +80,7 @@ export function Showreel({ label, year, play, reel, video, slides }: ShowreelPro
             // "Play" / "Reel" come in beside the frame.
             .fromTo("[data-reel-label]", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, 0)
             // The pull into the reel: it opens straight away, quick at first, easing into the full screen.
-            .to(shape, { size: 1, radius: 0, duration: 1.1, ease: "power2.out" }, 0.1)
+            .to(shape, { w: 1, h: 1, radius: 0, duration: 1.1, ease: "power2.out" }, 0.1)
             .fromTo("[data-reel-shade]", { opacity: 0 }, { opacity: 1, duration: 0.9 }, 0.1)
             .fromTo("[data-reel-label='left']", { xPercent: 0 }, { xPercent: -40, duration: 1.1, ease: "power2.in" }, 0.1)
             .fromTo("[data-reel-label='right']", { xPercent: 0 }, { xPercent: 40, duration: 1.1, ease: "power2.in" }, 0.1)
@@ -93,7 +96,7 @@ export function Showreel({ label, year, play, reel, video, slides }: ShowreelPro
         },
       );
       mm.add("(prefers-reduced-motion: reduce)", () => {
-        box.style.clipPath = insetFor(1, 0);
+        box.style.clipPath = insetFor(1, 1, 0);
       });
 
       return () => mm.revert();
@@ -105,7 +108,7 @@ export function Showreel({ label, year, play, reel, video, slides }: ShowreelPro
     // Pulled up over the positioning section's last screen, where its frame hands over (only when that section animates).
     <section aria-label={label} ref={track} className="relative h-[200vh] motion-safe:mt-[-100svh]">
       <div ref={stage} className="sticky top-0 flex h-svh items-center justify-center overflow-hidden">
-        <div ref={frame} className="absolute inset-0 overflow-hidden bg-ink-950" style={{ clipPath: insetFor(REEL_START_SIZE.wide, REEL_START_RADIUS) }}>
+        <div ref={frame} className="absolute inset-0 overflow-hidden bg-ink-950" style={{ clipPath: insetFor(REEL_START_SIZE.wide.w, REEL_START_SIZE.wide.h, REEL_START_RADIUS) }}>
           <div ref={media} className="absolute inset-0 will-change-transform">
             {video ? (
               <video
@@ -127,7 +130,7 @@ export function Showreel({ label, year, play, reel, video, slides }: ShowreelPro
 
         <div
           aria-hidden
-          className="gutter pointer-events-none relative flex w-full items-center justify-between font-display font-medium tracking-[-0.05em] text-white mix-blend-difference text-[clamp(2.25rem,6vw,6.5rem)]"
+          className="gutter pointer-events-none relative flex w-full items-center justify-between font-display font-medium tracking-[-0.05em] text-white mix-blend-difference text-[clamp(1.8rem,6vw,6.5rem)]"
         >
           <span data-reel-label="left">{play}</span>
           <span data-reel-label="right">{reel}</span>

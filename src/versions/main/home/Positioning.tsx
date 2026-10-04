@@ -26,7 +26,7 @@ export async function Positioning() {
       <ScrollHighlight
         text={section.statement}
         highlight={section.pillars.map((pillar) => pillar.title)}
-        className="text-[clamp(1.4rem,2.5vw,2.5rem)] font-medium leading-[1.12] tracking-[-0.025em]"
+        className="text-[clamp(1.25rem,2.5vw,2.5rem)] font-medium leading-[1.12] tracking-[-0.025em]"
       />
       <Reveal as="dl" className="mt-12 grid gap-8 sm:grid-cols-3" stagger={0.1}>
         {section.pillars.map((pillar, index) => (

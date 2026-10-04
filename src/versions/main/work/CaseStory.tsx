@@ -17,7 +17,7 @@ export function CaseChallenge({ label, text }: { label: string; text: string }) 
       <Label className="self-start md:col-span-3 md:pt-3">
         {label}
       </Label>
-      <ScrollHighlight text={text} className="text-[clamp(1.6rem,3vw,3rem)] font-medium leading-[1.15] tracking-[-0.025em] md:col-span-8 md:col-start-5" />
+      <ScrollHighlight text={text} className="text-[clamp(1.28rem,3vw,3rem)] font-medium leading-[1.15] tracking-[-0.025em] md:col-span-8 md:col-start-5" />
     </section>
   );
 }
@@ -69,7 +69,7 @@ export function CaseApproach({
       <Reveal as="ol" className="md:col-span-8" stagger={0.12}>
         {steps.map((step, i) => (
           <li key={step.title} data-reveal-item className="grid gap-4 border-t border-line py-10 first:border-t-0 first:pt-0 sm:grid-cols-[8rem_1fr] md:py-12">
-            <span className="stretch text-[clamp(2.5rem,4.5vw,4rem)] leading-none text-sky tabular-nums">{pad(i + 1)}</span>
+            <span className="stretch text-[clamp(2rem,4.5vw,4rem)] leading-none text-sky tabular-nums">{pad(i + 1)}</span>
             <div>
               <h3 className="text-title font-medium">{step.title}</h3>
               <p className="mt-4 max-w-xl text-lead text-muted">{step.body}</p>
@@ -116,7 +116,7 @@ export function CaseReview({ label, review }: { label: string; review: NonNullab
       <figure data-reveal-item className="glass relative overflow-hidden rounded-card p-8 md:p-16">
         <Quote aria-hidden className="absolute -end-6 -top-6 size-48 text-sky/10 md:size-72 rtl:-scale-x-100" />
         <Label className="mb-10">{label}</Label>
-        <blockquote className="relative max-w-4xl text-[clamp(1.5rem,3vw,2.75rem)] font-medium leading-[1.2] tracking-[-0.02em]">“{review.quote}”</blockquote>
+        <blockquote className="relative max-w-4xl text-[clamp(1.25rem,3vw,2.75rem)] font-medium leading-[1.2] tracking-[-0.02em]">“{review.quote}”</blockquote>
         <figcaption className="relative mt-12 flex items-center gap-4">
           <span aria-hidden className="grid size-12 place-items-center rounded-full bg-sky text-sm font-semibold text-ink-900">
             {initials}

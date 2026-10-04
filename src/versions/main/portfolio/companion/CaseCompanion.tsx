@@ -1,6 +1,6 @@
 "use client";
 
-import { usePrefersReducedMotion } from "@/lib/hooks";
+import { useMediaQuery, usePrefersReducedMotion } from "@/lib/hooks";
 import dynamic from "next/dynamic";
 import { useEffect, useState, type ComponentProps } from "react";
 import { companionOf, companions } from "./registry";
@@ -19,15 +19,17 @@ function supportsWebGL() {
 /**
  * The project's 3D companion (see registry). A swimmer starts on the artwork marked
  * `data-companion-emerge`; everything else rises from below as the story starts. Nothing is shown under
- * reduced motion or without WebGL — the page reads exactly as before.
+ * reduced motion, without WebGL or below 64rem (where the copy spans the screen, so the companion could only
+ * float over it, and phones are spared the three.js download) — the page reads exactly as before.
  */
 export function CaseCompanion({ slug }: { slug: string }) {
   const reduced = usePrefersReducedMotion();
+  const wide = useMediaQuery("(min-width: 64rem)");
   const [scene, setScene] = useState<ComponentProps<typeof CompanionScene> | null>(null);
   const key = companionOf[slug];
 
   useEffect(() => {
-    if (!key || reduced) return;
+    if (!key || reduced || !wide) return;
     const spec = companions[key];
     const emerge = spec.motion === "swim" ? document.querySelector<HTMLElement>("[data-companion-emerge]") : null;
     const until = document.querySelector<HTMLElement>("[data-case-content]");
@@ -60,7 +62,7 @@ export function CaseCompanion({ slug }: { slug: string }) {
       observer.disconnect();
       setScene(null);
     };
-  }, [key, reduced]);
+  }, [key, reduced, wide]);
 
   return scene ? <CompanionScene {...scene} /> : null;
 }

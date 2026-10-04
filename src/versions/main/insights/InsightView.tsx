@@ -102,7 +102,7 @@ export function InsightView({ lang, insight }: { lang: Locale; insight: Insight 
             }
             if (block.type === "pull" && "text" in block) {
               return (
-                <blockquote key={index} data-reveal-item className="my-4 flex gap-5 border-s border-sky ps-6 text-[clamp(1.4rem,2.4vw,2.2rem)] font-medium leading-[1.2] tracking-[-0.02em] text-sky">
+                <blockquote key={index} data-reveal-item className="my-4 flex gap-5 border-s border-sky ps-6 text-[clamp(1.25rem,2.4vw,2.2rem)] font-medium leading-[1.2] tracking-[-0.02em] text-sky">
                   {block.text}
                 </blockquote>
               );

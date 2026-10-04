@@ -166,7 +166,7 @@ export function Awards({ label, title, intro, awards }: { label: string; title: 
                       <span
                         aria-hidden
                         className={cn(
-                          "stretch hidden text-[clamp(1.4rem,2vw,2rem)] leading-none transition-colors duration-700 ease-expo lg:block",
+                          "stretch hidden text-[clamp(1.25rem,2vw,2rem)] leading-none transition-colors duration-700 ease-expo lg:block",
                           on ? "text-sky" : "text-outline",
                         )}
                       >
