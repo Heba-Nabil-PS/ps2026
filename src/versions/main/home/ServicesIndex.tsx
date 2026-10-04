@@ -171,7 +171,7 @@ export function ServicesIndex() {
                         {service.summary}
                       </p>
                       <ul aria-label={copy.services.labels.deliverables} className="mt-4 flex flex-wrap gap-2">
-                        {service.deliverables.map((item) => (
+                        {service.deliverables.map(({ title: item }) => (
                           <li key={item} data-tag className={tag} style={hidden}>
                             {item}
                           </li>
@@ -180,7 +180,7 @@ export function ServicesIndex() {
                     </div>
                     <p className="mt-2 text-sm leading-relaxed text-fg/65 md:hidden">{service.summary}</p>
                     <ul aria-label={copy.services.labels.deliverables} className="mt-3 flex flex-wrap gap-1.5 md:hidden">
-                      {service.deliverables.map((item) => (
+                      {service.deliverables.map(({ title: item }) => (
                         <li key={item} className={tag}>
                           {item}
                         </li>

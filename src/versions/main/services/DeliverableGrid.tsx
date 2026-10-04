@@ -1,55 +1,81 @@
 "use client";
 
-import { useRichInteractions } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
 import { Reveal } from "@/versions/main/motion/Reveal";
-import type { PointerEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 /**
- * "What you get": a bento of deliverables. Every card carries a slowly moving
- * line glyph, a ghosted index and a sky spotlight that follows the pointer
- * and lights the card's edge. Wide cards alternate so the grid never reads
- * as a flat spreadsheet. All motion is CSS and pauses with reduced motion.
+ * "What you get" as a scroll-driven spotlight. On desktop a sticky stage
+ * holds a large glyph, a rolling counter and a progress ring; the item that
+ * crosses the middle of the viewport (or is hovered) lights up and the stage
+ * morphs to its glyph. Phones get a plain stacked list with inline glyphs.
+ * All motion is CSS transitions and stops with reduced motion.
  */
-export function DeliverableGrid({ items }: { items: readonly string[] }) {
-  const rich = useRichInteractions();
+export function DeliverableGrid({ items }: { items: readonly { title: string; body: string }[] }) {
+  const [active, setActive] = useState(0);
+  const root = useRef<HTMLDivElement>(null);
+  const pad = (value: number) => String(value).padStart(2, "0");
 
-  const track = (event: PointerEvent<HTMLLIElement>) => {
-    if (!rich) return;
-    const el = event.currentTarget;
-    const rect = el.getBoundingClientRect();
-    el.style.setProperty("--px", `${event.clientX - rect.left}px`);
-    el.style.setProperty("--py", `${event.clientY - rect.top}px`);
-  };
+  useEffect(() => {
+    const rows = root.current?.querySelectorAll<HTMLElement>("[data-index]");
+    if (!rows?.length) return;
+    // A zero-height band across the middle of the viewport: whichever row crosses it is active.
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) if (entry.isIntersecting) setActive(Number((entry.target as HTMLElement).dataset.index));
+      },
+      { rootMargin: "-50% 0px -50% 0px" },
+    );
+    rows.forEach((row) => observer.observe(row));
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <Reveal as="ul" className="deliverables mt-14 grid gap-4 sm:grid-cols-2 md:mt-20 lg:grid-cols-3" stagger={0.08}>
-      {items.map((item, index) => {
-        const wide = index % 4 === 0 || index % 4 === 3;
-        return (
-          <li
-            key={item}
-            data-reveal-item
-            onPointerMove={track}
-            className={cn("deliverable group relative isolate flex min-h-64 flex-col overflow-hidden rounded-card p-7 md:p-8", wide && "lg:col-span-2")}
-          >
-            <span aria-hidden className="deliverable-glow" />
-            <span aria-hidden className="deliverable-index">{String(index + 1).padStart(2, "0")}</span>
+    <div ref={root} className="dlv mt-14 md:mt-20" style={{ "--i": active, "--n": items.length } as CSSProperties}>
+      <div aria-hidden className="dlv-stage">
+        <svg viewBox="0 0 120 120" className="dlv-ring">
+          <circle cx="60" cy="60" r="58" pathLength={1} className="dlv-ring-track" />
+          <circle cx="60" cy="60" r="58" pathLength={1} className="dlv-ring-fill" />
+        </svg>
+        {items.map((item, index) => (
+          <div key={item.title} className="dlv-glyph" data-on={index === active || undefined}>
+            <Glyph variant={index % 6} className="deliverable-glyph" />
+          </div>
+        ))}
+        <div className="dlv-count">
+          <span className="dlv-count-track">
+            {items.map((item, index) => (
+              <span key={item.title}>{pad(index + 1)}</span>
+            ))}
+          </span>
+          <span className="dlv-count-total">/ {pad(items.length)}</span>
+        </div>
+      </div>
 
-            <div className="flex items-start justify-between gap-6">
+      <Reveal as="ol" className="dlv-list" stagger={0.08}>
+        {items.map((item, index) => (
+          <li
+            key={item.title}
+            data-reveal-item
+            data-index={index}
+            data-on={index === active || undefined}
+            onPointerEnter={() => setActive(index)}
+            className="dlv-item"
+          >
+            <span aria-hidden className="deliverable-rule" />
+            <div className="flex items-center justify-between gap-6">
               <span className="text-label flex items-center gap-2 tabular-nums text-subtle">
                 <span className="deliverable-dot" />
-                {String(index + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
+                {pad(index + 1)} / {pad(items.length)}
               </span>
-              <Glyph variant={index % 6} className={cn("deliverable-glyph shrink-0", wide ? "size-28 md:size-32" : "size-24")} />
+              <Glyph variant={index % 6} className="deliverable-glyph dlv-item-glyph shrink-0" />
             </div>
-
-            <h3 className="text-title mt-auto max-w-[16ch] pt-12 font-medium transition-transform duration-700 ease-expo group-hover:-translate-y-1">{item}</h3>
-            <span aria-hidden className="deliverable-rule" />
+            <h3 className="dlv-title">{item.title}</h3>
+            <p className="dlv-body">{item.body}</p>
           </li>
-        );
-      })}
-    </Reveal>
+        ))}
+      </Reveal>
+    </div>
   );
 }
 

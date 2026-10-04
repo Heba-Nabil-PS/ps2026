@@ -61,7 +61,7 @@ export function ServiceStack() {
                 <div className="mt-auto pt-8">
                   <h3 className="text-label mb-4 text-subtle">{labels.deliverables}</h3>
                   <ul className="grid gap-x-6 gap-y-2 text-sm sm:grid-cols-2">
-                    {service.deliverables.map((item) => (
+                    {service.deliverables.map(({ title: item }) => (
                       <li key={item} className="flex items-center gap-2.5 border-b border-line py-2">
                         {item}
                       </li>
