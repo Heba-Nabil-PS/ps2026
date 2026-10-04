@@ -3,6 +3,7 @@ import { Counter } from "@/versions/main/motion/Counter";
 import { WordMarquee } from "@/versions/main/motion/WordMarquee";
 import { MotionBlurReveal } from "@/versions/main/motion/MotionBlurReveal";
 import { Reveal } from "@/versions/main/motion/Reveal";
+import { ScrollFrames } from "@/versions/main/motion/ScrollFrames";
 import { ScrollHighlight } from "@/versions/main/motion/ScrollHighlight";
 import { Awards } from "@/versions/main/sections/Awards";
 import { ClientsGrid } from "@/versions/main/sections/ClientsGrid";
@@ -12,7 +13,6 @@ import { ClosingCta } from "@/versions/main/ui/ClosingCta";
 import { Label } from "@/versions/main/ui/Label";
 import { PageHero } from "@/versions/main/ui/PageHero";
 import { SectionHead } from "@/versions/main/ui/SectionHead";
-import Image from "next/image";
 
 /**
  * About — the positioning in full: our story, the numbers, awards, who leads it, what we believe,
@@ -44,7 +44,7 @@ export async function AboutView() {
           </Reveal>
         </div>
         <MotionBlurReveal className="aspect-[4/5] self-end rounded-card md:col-span-4 md:col-start-9">
-          <Image data-media src="/images/site/who-we-are.webp" alt="" fill sizes="(min-width: 768px) 30vw, 100vw" quality={75} className="mono object-cover" />
+          <ScrollFrames path="/images/about/story-frames" count={158} />
         </MotionBlurReveal>
       </section>
 
