@@ -3,7 +3,7 @@
 import { gsap, useGSAP } from "@/lib/gsap";
 import { DrawableLogo } from "@/shared/brand/DrawableLogo";
 import { LOGO_DRAW, LOGO_PATHS, LOGO_VIEWBOX } from "@/shared/brand/logo-paths";
-import { INTRO_CLASS, carryIntroMark, signalIntroReveal } from "@/versions/main/intro/intro-signal";
+import { INTRO_CLASS, carryIntroMark, introCarriesMark, onIntroReplay, signalIntroReveal } from "@/versions/main/intro/intro-signal";
 import { useLenis } from "lenis/react";
 import { useEffect, useRef, useState } from "react";
 
@@ -28,6 +28,10 @@ const STEM_RIBBON = 30;
 const DRAW_AT = 0.25;
 /** When the drawn logo moves on: it is drawn (as in the header) by then. */
 const OPEN_AT = DRAW_AT + 2.45;
+/** Played a third faster than authored: the same choreography, but the page opens in about 3 s instead of 4. */
+const SPEED = 1.35;
+/** How long, in seconds, a replay holds the drawn logo for the home to render underneath before opening anyway. */
+const HOME_WAIT = 8;
 
 /**
  * Loading intro — the brand drawing itself, then opening the page.
@@ -40,23 +44,43 @@ const OPEN_AT = DRAW_AT + 2.45;
  *    On every other page, the stem's line cuts across the screen and the curtain
  *    splits open along it onto the page (as page transitions do, see RouteTransition).
  *
- * It plays on every full load, not on client-side visits (the head script in the main
- * layout decides before first paint), never with reduced motion, and any key, click
- * or tap skips straight to the opening.
+ * It plays on the first full load of a session (the head script in the main layout
+ * decides before first paint) and again on every client-side visit to the home (see
+ * replayIntro), never with reduced motion, and any key, click or tap skips straight
+ * to the opening.
  */
 export function IntroAnimation() {
-  const root = useRef<HTMLDivElement>(null);
+  const [run, setRun] = useState<{ id: number; onCovered?: () => void }>({ id: 0 });
   const [done, setDone] = useState(false);
+
+  // A visit to the home from another page plays it again, from the start.
+  useEffect(
+    () =>
+      onIntroReplay((onCovered) => {
+        setRun((current) => ({ id: current.id + 1, onCovered }));
+        setDone(false);
+      }),
+    [],
+  );
+
+  if (done) return null;
+  return <IntroPlay key={run.id} onCovered={run.onCovered} onDone={() => setDone(true)} />;
+}
+
+/** One playing of the intro. On a replay, `onCovered` runs once the curtain is up so the route can change under it. */
+function IntroPlay({ onCovered, onDone }: { onCovered?: () => void; onDone: () => void }) {
+  const root = useRef<HTMLDivElement>(null);
+  const callbacks = useRef({ onCovered, onDone });
   const lenis = useLenis();
 
   // Hold the page still while the intro plays.
   useEffect(() => {
-    if (done || !document.documentElement.classList.contains(INTRO_CLASS)) return;
+    if (!document.documentElement.classList.contains(INTRO_CLASS)) return;
     lenis?.stop();
     return () => {
       lenis?.start();
     };
-  }, [lenis, done]);
+  }, [lenis]);
 
   useGSAP(
     () => {
@@ -65,7 +89,7 @@ export function IntroAnimation() {
         html.classList.remove(INTRO_CLASS);
         carryIntroMark(false);
         signalIntroReveal();
-        setDone(true);
+        callbacks.current.onDone();
       };
 
       if (!html.classList.contains(INTRO_CLASS) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -74,25 +98,30 @@ export function IntroAnimation() {
       }
 
       window.scrollTo(0, 0);
+      // On a replay the curtain is up from the first paint: the home can load underneath it now.
+      callbacks.current.onCovered?.();
       // Once a session: later full loads open straight onto the page (see the head script in the main layout).
       try {
         sessionStorage.setItem("ps-intro", "1");
       } catch {}
 
       // On the home page the logo lands on the hero mark; it stays hidden until the logo arrives and takes its place.
-      const heroMark = document.querySelector<HTMLElement>("[data-hero-mark]");
-      const heroSvg = heroMark?.querySelector<SVGSVGElement>("svg");
+      // On a replay the home is still loading underneath, so the mark is looked up again when the logo moves on.
       const introSvg = root.current?.querySelector<SVGSVGElement>("[data-intro-logo] svg");
-      const home = !!(heroMark && heroSvg && introSvg);
-      if (home) {
+      const findHero = () => {
+        const heroMark = document.querySelector<HTMLElement>("[data-hero-mark]");
+        const heroSvg = heroMark?.querySelector<SVGSVGElement>("svg");
+        return heroMark && heroSvg && introSvg ? { heroMark, heroSvg } : undefined;
+      };
+      const heroNow = findHero();
+      if (heroNow) {
         carryIntroMark();
-        gsap.set(heroMark, { autoAlpha: 0 });
+        gsap.set(heroNow.heroMark, { autoAlpha: 0 });
       }
 
       gsap.set("[data-seam]", { xPercent: -50, yPercent: -50, rotation: SEAM_ANGLE, scaleX: 0 });
-      const tl = gsap.timeline({ onComplete: finish });
-      // Played a third faster than authored: the same choreography, but the page opens in about 3 s instead of 4.
-      tl.timeScale(1.35);
+      const tl = gsap.timeline();
+      tl.timeScale(SPEED);
       // 1 — drawn like the header's DrawLogo.
       tl.to("[data-draw='main']", { strokeDashoffset: 0, duration: 1.5, ease: "power2.inOut" }, DRAW_AT)
         .to("[data-draw='stem']", { strokeDashoffset: 0, duration: 0.55, ease: "power2.inOut" }, DRAW_AT + 0.5)
@@ -101,22 +130,42 @@ export function IntroAnimation() {
         .to("[data-glyph-line]", { strokeDashoffset: 0, duration: 0.9, ease: "power2.inOut", stagger: 0.06 }, DRAW_AT + 1.1)
         .to("[data-glyph]", { opacity: 1, duration: 0.5, ease: "power1.out", stagger: 0.06 }, DRAW_AT + 1.6)
         .to("[data-glyph-line]", { opacity: 0, duration: 0.4, ease: "power1.out", stagger: 0.06 }, DRAW_AT + 1.8)
-        .addLabel("open", OPEN_AT);
+        .call(open, [], OPEN_AT);
 
-      if (home) {
-        // 2a — the mark rises and shrinks into the hero, where it stays as the hero's own mark.
+      let waited = 0;
+      let opening: gsap.core.Animation | undefined;
+
+      /** 2 — the drawn logo moves on: into the hero on the home, or the curtain splits open anywhere else. */
+      function open() {
+        const hero = findHero();
+        // A replay whose home has not rendered yet holds the drawn logo until it has.
+        if (!hero && introCarriesMark() && waited < HOME_WAIT) {
+          waited += 0.1;
+          opening = gsap.delayedCall(0.1, open);
+          return;
+        }
+        const ot = gsap.timeline({ onComplete: finish }).timeScale(SPEED).addLabel("open", 0);
+        opening = ot;
+        if (hero) flyIntoHero(ot, hero.heroMark, hero.heroSvg);
+        else splitOpen(ot);
+      }
+
+      /** 2a — the mark rises and shrinks into the hero, where it stays as the hero's own mark. */
+      function flyIntoHero(ot: gsap.core.Timeline, heroMark: HTMLElement, heroSvg: SVGSVGElement) {
+        carryIntroMark();
+        gsap.set(heroMark, { autoAlpha: 0 });
         // Both artworks start at the same corner and share a width (the intro's adds the wordmark
         // below), so lining up their top-left corners and widths lines up the marks.
         let flight: { x: number; y: number; scale: number } | undefined;
         const flightTo = () => {
           if (!flight) {
             const from = introSvg!.getBoundingClientRect();
-            const to = heroSvg!.getBoundingClientRect();
+            const to = heroSvg.getBoundingClientRect();
             flight = { x: to.left - from.left, y: to.top - from.top, scale: to.width / from.width };
           }
           return flight;
         };
-        tl.to("[data-glyph], [data-glyph-line]", { opacity: 0, y: 14, duration: 0.4, ease: "power2.in", stagger: 0.02 }, "open")
+        ot.to("[data-glyph], [data-glyph-line]", { opacity: 0, y: 14, duration: 0.4, ease: "power2.in", stagger: 0.02 }, "open")
           .to(
             introSvg!,
             {
@@ -132,11 +181,14 @@ export function IntroAnimation() {
           // The home comes through behind it and the hero starts its entrance as the mark settles.
           .to("[data-panel]", { opacity: 0, duration: 1, ease: "power2.inOut" }, "open+=0.55")
           .call(signalIntroReveal, [], "open+=0.6")
-          .set(heroMark!, { autoAlpha: 1 })
+          .set(heroMark, { autoAlpha: 1 })
           .set("[data-intro-logo]", { autoAlpha: 0 });
-      } else {
-        // 2b — the stem's line crosses the screen and the page opens along it.
-        tl.call(splitAlongStem, [], "open")
+      }
+
+      /** 2b — the stem's line crosses the screen and the page opens along it. */
+      function splitOpen(ot: gsap.core.Timeline) {
+        carryIntroMark(false);
+        ot.call(splitAlongStem, [], "open")
           .to("[data-seam]", { scaleX: 1, duration: 0.5, ease: "power3.inOut" }, "open")
           .to("[data-intro-logo]", { scale: 0.92, opacity: 0, filter: "blur(10px)", duration: 0.55, ease: "power3.in" }, "open+=0.2")
           .call(signalIntroReveal, [], "open+=0.45")
@@ -155,6 +207,7 @@ export function IntroAnimation() {
       return () => {
         window.removeEventListener("keydown", skip);
         window.removeEventListener("pointerdown", skip);
+        opening?.kill();
       };
 
       /** Far enough that each half clears every corner of the viewport. */
@@ -182,8 +235,6 @@ export function IntroAnimation() {
     { scope: root },
   );
 
-  if (done) return null;
-
   return (
     <div ref={root} aria-hidden className="intro fixed inset-0 z-90 overflow-hidden">
       {/* The curtain, in two halves that are cut along the stem only when a page splits it open. */}
@@ -194,7 +245,7 @@ export function IntroAnimation() {
         <div data-intro-logo className="text-paper">
           <DrawableLogo
             variant="full"
-            className="h-auto w-[min(40.6vw,15.4rem)]"
+            className="h-auto w-[min(32.5vw,12.3rem)]"
             renderStroke={(stroke) => <path {...stroke} pathLength={1} strokeDasharray="1 2" strokeDashoffset={1} />}
           >
             <g fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinejoin="round">

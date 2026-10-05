@@ -49,7 +49,7 @@ export function CareersBoard() {
       <section className="gutter section-y" aria-labelledby="roles-title">
         <div className="grid gap-8 md:grid-cols-12 md:items-end">
           <div className="md:col-span-7">
-            <p className="text-label mb-6 text-muted">{labels.label}</p>
+            <p className="text-label mb-6 text-eyebrow">{labels.label}</p>
             <h2 id="roles-title" className="stretch text-headline">
               {labels.title.map((line, index) => (
                 <span key={line} data-line className="block ar:inline">

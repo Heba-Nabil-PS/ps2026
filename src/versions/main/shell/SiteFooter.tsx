@@ -2,6 +2,7 @@
 
 import { useCopy } from "@/versions/main/use-copy";
 import { AppLink } from "@/versions/main/ui/AppLink";
+import { SocialLinks } from "@/versions/main/ui/SocialLinks";
 import { industryHref, serviceHref } from "@/versions/main/data/routes";
 import { LOGO_PATHS, LOGO_VIEWBOX, viewBoxOf } from "@/shared/brand/logo-paths";
 import { DrawableLogo } from "@/shared/brand/DrawableLogo";
@@ -65,9 +66,9 @@ export function SiteFooter() {
     <footer className="gutter relative pb-8 pt-6">
       {/* The ground is its own layer under the content, so the home page's thread (LogoThread) can draw between them. */}
       <div aria-hidden className="absolute inset-0 -z-10 bg-navy-800" />
-      <div className="grid gap-10 pt-4 text-sm sm:gap-12 sm:pt-10 md:grid-cols-12">
+      <div className="grid gap-10 pt-4 text-sm sm:gap-12 sm:pt-6 md:grid-cols-12 xl:pb-12">
         {/* Phones: each column folds behind its title, so the footer opens on the studios rather than three long lists. */}
-        <nav aria-label={copy.footer.sitemap} className="grid border-b border-line sm:gap-12 sm:border-0 sm:grid-cols-3 md:col-span-8">
+        <nav aria-label={copy.footer.sitemap} className="grid border-b border-line sm:gap-12 sm:border-0 sm:grid-cols-3 md:col-span-8 xl:col-span-6">
           {columns.map((column, index) => {
             const expanded = openColumn === column.title;
             const list = `footer-column-${index}`;
@@ -99,7 +100,7 @@ export function SiteFooter() {
             );
           })}
         </nav>
-        <div className="flex flex-col gap-8 sm:gap-10 md:col-span-4 md:row-span-2">
+        <div className="flex flex-col gap-8 sm:gap-10 md:col-span-4 md:row-span-2 xl:row-span-1">
           <div>
             <h2 className="text-label mb-5 text-subtle">{copy.footer.studios}</h2>
             <ul className="grid grid-cols-2 gap-x-4 gap-y-5">
@@ -123,27 +124,15 @@ export function SiteFooter() {
             </ul>
           </div>
           <div>
-            <h2 className="text-label mb-5 text-subtle">{copy.footer.write}</h2>
-            <a href={`mailto:${site.email}`} className="-my-3 inline-block py-3 text-fg transition-colors hover:text-sky">
-              {site.email}
-            </a>
-          </div>
-          <div>
-            <h2 className="text-label mb-5 text-subtle">{copy.footer.awards}</h2>
-            <ul className="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
-              {site.awards.map((award) => (
-                <li key={award.file} className="flex h-14 items-center sm:h-16 sm:w-28 justify-center overflow-hidden rounded-md p-1.5" style={{ backgroundColor: award.surface }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element -- small static SVG badge, nothing to optimize */}
-                  <img src={`/images/awards/${award.file}.svg`} alt={`${award.title}, ${award.issuer}`} title={`${award.title}, ${award.issuer}`} className="h-full w-full object-contain" loading="lazy" />
-                </li>
-              ))}
-            </ul>
+            <h2 className="text-label mb-3 text-subtle">{copy.footer.follow}</h2>
+            <SocialLinks />
           </div>
         </div>
         {/* Room for the home page's thread to draw the mark again (LogoThread); on pages without it, the footer
-            draws it itself. Under the sitemap, beside the studio column, so it adds no height. The mark is
-            always drawn left to right, so on Arabic pages it is pushed to the right edge, where reading starts. */}
-        <div ref={markRef} aria-hidden data-footer-mark dir="ltr" className="footer-mark md:col-span-8 md:self-end ar:justify-end">
+            draws it itself. Under the sitemap, beside the studio column, so it adds no height; on wide screens it
+            leads the row as the brand column, centred in it. The mark is always drawn left to right, so on Arabic
+            pages it is pushed to the right edge, where reading starts. */}
+        <div ref={markRef} aria-hidden data-footer-mark dir="ltr" className="footer-mark md:col-span-8 md:self-end ar:justify-end xl:order-first xl:col-span-2 xl:self-center xl:justify-center">
           <span data-footer-mark-logo className="footer-mark-logo" style={{ aspectRatio: `${LOGO_VIEWBOX.mark.width} / ${LOGO_VIEWBOX.mark.height}` }}>
             <DrawableLogo className="block h-full w-full text-paper" renderStroke={(stroke) => <path {...stroke} pathLength={1} />} />
             {/* The name rises in once the mark is mostly drawn, letter by letter, where and as large as it sits in
@@ -163,7 +152,19 @@ export function SiteFooter() {
         <p>
           © {new Date().getFullYear()} {site.name}. {copy.ui.copyright}
         </p>
-        <div className="flex items-center gap-6">
+        <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+          {/* Awards sit in the closing bar as a quiet trust strip, so they cost no height of their own. */}
+          <div>
+            <h2 className="sr-only">{copy.footer.awards}</h2>
+            <ul className="flex flex-wrap items-center gap-2">
+              {site.awards.map((award) => (
+                <li key={award.file} className="flex h-11 w-24 items-center justify-center overflow-hidden rounded-md p-1" style={{ backgroundColor: award.surface }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element -- small static SVG badge, nothing to optimize */}
+                  <img src={`/images/awards/${award.file}.svg`} alt={`${award.title}, ${award.issuer}`} title={`${award.title}, ${award.issuer}`} className="h-full w-full object-contain" loading="lazy" />
+                </li>
+              ))}
+            </ul>
+          </div>
           <button
             type="button"
             aria-label={copy.ui.backToTop}

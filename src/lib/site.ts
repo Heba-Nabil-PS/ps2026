@@ -1,5 +1,16 @@
 import { parseRoute } from "@/versions/registry";
 
+/**
+ * PSdigital's own accounts, shown as icons in the footer and on the contact page. Kept out of `siteConfig`
+ * so the brand names and `kind`s stay the same in every language. Add X here once it has a URL.
+ */
+export const socials: { kind: "facebook" | "instagram" | "linkedin" | "x" | "youtube"; label: string; href: string }[] = [
+  { kind: "facebook", label: "Facebook", href: "https://www.facebook.com/share/1BwhquBJPz/" },
+  { kind: "instagram", label: "Instagram", href: "https://www.instagram.com/psdigital.me" },
+  { kind: "linkedin", label: "LinkedIn", href: "https://www.linkedin.com/company/paradigm-solutions-llc/" },
+  { kind: "youtube", label: "YouTube", href: "https://www.youtube.com/@psdigital." },
+];
+
 export const siteConfig = {
   name: "PSdigital",
   shortName: "PSdigital",
@@ -33,8 +44,6 @@ export const siteConfig = {
   ],
   /** Routes rendered inside the immersive studio shell (own header, preloader and footer). */
   studioRoutes: ["/", "/services", "/case-studies", "/team", "/careers", "/contact"],
-  /** Add the real handles here — the profile deck lists only the website and email. */
-  socials: [] as { label: string; href: string }[],
   services: [
     {
       title: "Branding",
@@ -96,23 +105,23 @@ export const siteConfig = {
    */
   awards: [
     {
-      file: "corporate-livewire-innovation",
-      surface: "#1e676d",
+      file: "corporate-livewire-innovation-v2",
+      surface: "#ffffff",
       kind: "Award · 2023",
       title: "Digital Agency of the Year",
       issuer: "Corporate LiveWire Innovation & Excellence Awards",
       body: "An independent jury recognized the way we work: strategy first, then brand, digital and performance built by one in-house team.",
     },
     {
-      file: "middle-east-prestige-awards",
-      surface: "#f3f6f9",
+      file: "middle-east-prestige-awards-v2",
+      surface: "#ffffff",
       kind: "Award",
       title: "CEO of the Year",
       issuer: "The Middle East Prestige Awards",
       body: "Awarded to Seif El Sawaf, our Chief Executive Officer, for building PSdigital into one team of 80+ specialists across Alexandria and Dubai.",
     },
     {
-      file: "meta-business-partner",
+      file: "meta-business-partner-v2",
       surface: "#ffffff",
       kind: "Partnership",
       title: "Meta Business Partner",
@@ -130,7 +139,7 @@ export const siteConfig = {
       { name: "Hesham Zahran", role: "Digital Director", image: "/images/team/hesham-zahran.webp" },
       { name: "Shahinaz Maher", role: "Chief Financial Officer", image: "/images/team/shahinaz-maher.webp" },
       { name: "Heba Nabil", role: "Digital Product, UI & UX Lead", image: "/images/team/heba-nabil.webp" },
-      { name: "Dina Salem", role: "Account Director", image: "/images/team/dina-salem.webp" },
+      { name: "Dina Salem", role: "Cluster Head of Client Servicing", image: "/images/team/dina-salem.webp" },
     ],
   },
   /** The four-step process from the company profile. */

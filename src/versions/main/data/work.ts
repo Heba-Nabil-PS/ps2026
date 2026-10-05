@@ -22,7 +22,7 @@ const legacyServices: Record<string, number[]> = {
   "performance-marketing": [3, 5],
 };
 
-/** Flagship cases shown on the home page, in order. Each needs a 16:11 `card.webp` in its image folder. */
+/** Flagship cases shown on the home page, in order. Each needs a 16:10 `card-v2.webp` in its image folder. */
 export const featuredSlugs = ["texas-chicken", "shark-tank-egypt", "elsewhere-developments", "physiowell"] as const;
 
 export type WorkCategory = { slug: string; title: string; count: number };

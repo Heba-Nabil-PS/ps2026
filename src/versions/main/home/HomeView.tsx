@@ -1,15 +1,13 @@
 import { getServerCopy } from "@/versions/main/server";
 import { HeroSection } from "@/versions/main/home/HeroSection";
 import { LogoThread } from "@/versions/main/home/LogoThread";
-import { StretchSectionTitles } from "@/versions/main/motion/StretchHeading";
 import { InsightsPreview } from "@/versions/main/home/InsightsPreview";
-import { Numbers } from "@/versions/main/home/Numbers";
+import { Proof } from "@/versions/main/home/Proof";
 import { ClosingCta } from "@/versions/main/ui/ClosingCta";
 import { Positioning } from "@/versions/main/home/Positioning";
 import { SelectedWork } from "@/versions/main/home/SelectedWork";
 import { ServicesIndex } from "@/versions/main/home/ServicesIndex";
 import { Showreel } from "@/versions/main/home/Showreel";
-import { Testimonials } from "@/versions/main/home/Testimonials";
 import { ClientLogoSection } from "@/versions/main/sections/ClientLogoSection";
 
 /**
@@ -22,7 +20,7 @@ export async function HomeView() {
   const home = copy.home;
 
   return (
-    <StretchSectionTitles>
+    <>
       <LogoThread />
       <HeroSection />
       {/* The client marks in a single drifting row under the hero, as on the projects page. */}
@@ -30,9 +28,8 @@ export async function HomeView() {
       <Positioning />
       <Showreel {...home.showreel} />
       <SelectedWork />
-      <Numbers />
+      <Proof />
       <ServicesIndex />
-      <Testimonials />
       <InsightsPreview />
       <ClosingCta
         label={home.closing.label}
@@ -42,6 +39,6 @@ export async function HomeView() {
         secondary={{ label: home.closing.secondary, href: "/careers" }}
         bleed={false}
       />
-    </StretchSectionTitles>
+    </>
   );
 }

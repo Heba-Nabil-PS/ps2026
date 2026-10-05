@@ -32,7 +32,7 @@ export function PointerLight({ className, rest = { x: 72, y: 30 } }: { className
     <div
       ref={light}
       aria-hidden
-      className={cn("absolute inset-0 bg-[radial-gradient(38%_55%_at_var(--lx)_var(--ly),rgb(140_196_230/0.55),transparent_70%)] transition-[background] duration-300", className)}
+      className={cn("absolute inset-0 bg-[radial-gradient(38%_55%_at_var(--lx)_var(--ly),rgb(140_196_230/0.2),transparent_70%)] transition-[background] duration-300", className)}
       style={{ ["--lx" as string]: `${rest.x}%`, ["--ly" as string]: `${rest.y}%` }}
     />
   );

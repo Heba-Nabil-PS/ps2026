@@ -215,11 +215,25 @@ export const portfolioAr: PortfolioProject[] = [
       {
         type: "posts",
         items: [
-          sharkTank.media("web-desktop", "موقع Shark Tank مصر — الصفحة الكاملة على سطح المكتب"),
-          sharkTank.media("web-mobile", "موقع Shark Tank مصر — تجربة الجوال"),
+          sharkTank.media("web-desktop", "موقع Shark Tank مصر — الصفحة الرئيسية على جهاز لوحي"),
+          sharkTank.media("web-mobile", "موقع Shark Tank مصر — الصفحة الرئيسية على الجوال"),
         ],
         shape: "screen",
         columns: 2,
+      },
+      {
+        type: "gallery",
+        title: "في الاستوديو، في الشارع، على المسرح",
+        images: [
+          sharkTank.media("set", "استوديو Shark Tank مصر والمستثمرون في مقاعدهم"),
+          sharkTank.media("shark-portrait", "أحد المستثمرين يستمع إلى عرض داخل الاستوديو"),
+          sharkTank.media("billboard", "لوحة إعلانية لـ Shark Tank مصر على كورنيش القاهرة"),
+          sharkTank.media("launch", "إطلاق الموسم بمجسّم قرش عملاق وألعاب نارية"),
+          sharkTank.media("stage", "المستثمرون على المسرح في إحدى فعاليات Shark Tank مصر"),
+          sharkTank.media("sharks", "المستثمرون في صف واحد داخل الاستوديو"),
+          sharkTank.media("business-park", "خلفية فعالية Shark Tank Business Park"),
+          sharkTank.media("rollup", "لافتة «مستعد تغطس في التانك؟»"),
+        ],
       },
     ],
   },

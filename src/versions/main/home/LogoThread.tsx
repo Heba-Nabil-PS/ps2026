@@ -35,7 +35,7 @@ const PULL = 2.4;
 /** Length between the samples the line is read at (px). */
 const SAMPLE = 8;
 /** Behind a section's content the line shows this much of itself, fading in and out over `feather` px at its edges. */
-const SHADE = { visible: 0.1, feather: 90 };
+const SHADE = { visible: 0.1, feather: 90, edge: 40 };
 /** Room the line keeps around a `[data-thread-avoid]` element (a section heading), and how many tries it gets to route clear (px). */
 const AVOID = { margin: 48, tries: 4 };
 /** Room the hero title opens around the line where it crosses a row: before it, and after it (where the thin line runs) (px). */
@@ -166,6 +166,25 @@ function tunedPage(hero: HTMLElement, box: DOMRect, foot: number) {
     [top + tunedHeight, after],
   ];
   let shift = after - (top + tunedHeight);
+
+  // The work's header: its label then sat in the heading's column, beside the intro (and the intro column ended
+  // 12px up from the foot), rather than above both; on narrow screens, where they stack, it is the same.
+  const header = document.querySelector("[data-journey-card]")?.closest("section")?.querySelector("header");
+  const headerLabel = header?.firstElementChild as HTMLElement | null | undefined;
+  const intro = headerLabel?.nextElementSibling?.lastElementChild as HTMLElement | null | undefined;
+  const heading = header?.querySelector<HTMLElement>("[data-thread-avoid]");
+  if (header && headerLabel && intro && heading && !headerLabel.contains(heading) && window.matchMedia("(min-width: 768px)").matches) {
+    const i = getComputedStyle(intro);
+    const tunedHeader = Math.max(
+      headerLabel.offsetHeight + parseFloat(getComputedStyle(headerLabel).marginBottom) + heading.offsetHeight,
+      intro.offsetHeight - parseFloat(i.paddingTop) - parseFloat(i.paddingBottom) + 12,
+    );
+    const headerTop = header.getBoundingClientRect().top - box.top;
+    // What it gained is taken at its top: below that, the line runs as it did beside the heading and on to the cards.
+    marks.push([headerTop - shift, headerTop]);
+    shift += header.offsetHeight - tunedHeader;
+    marks.push([headerTop + header.offsetHeight - tunedHeader - shift, headerTop + header.offsetHeight - tunedHeader]);
+  }
 
   // The work cards: each was as tall as it is now, less what a second line of title and the tags add.
   const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
@@ -485,11 +504,16 @@ function Thread() {
         const clear = section.hasAttribute("data-thread-hidden");
         const r = section.getBoundingClientRect();
         const css = getComputedStyle(section);
-        const from = r.top - box.top + (clear ? 0 : parseFloat(css.paddingTop));
-        const to = r.bottom - box.top - (clear ? 0 : parseFloat(css.paddingBottom));
-        if (to - from < 40) continue;
-        const feather = Math.min(SHADE.feather, (to - from) / 2);
-        const behind = clear ? 0 : SHADE.visible;
+        const top = r.top - box.top + (clear ? 0 : parseFloat(css.paddingTop));
+        const bottom = r.bottom - box.top - (clear ? 0 : parseFloat(css.paddingBottom));
+        if (bottom - top < 40) continue;
+        // A clear section hides the line across all of it, so the line fades just outside its edges and passes
+        // wholly behind it (the client row under the hero is too short to fade within); others fade inside.
+        const feather = clear ? SHADE.edge : Math.min(SHADE.feather, (bottom - top) / 2);
+        const from = clear ? top - feather : top;
+        const to = clear ? bottom + feather : bottom;
+        // `data-thread-faint` on a clear section leaves the line showing faintly behind it, rather than not at all.
+        const behind = clear && !section.hasAttribute("data-thread-faint") ? 0 : SHADE.visible;
         // Back-to-back clear sections are one stretch: the line does not come out between them.
         const joinsAbove = clear && endsClear(section.previousElementSibling);
         const joinsBelow = clear && !!section.nextElementSibling?.hasAttribute("data-thread-hidden");

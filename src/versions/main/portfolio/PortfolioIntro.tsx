@@ -5,7 +5,6 @@ import { useContent } from "@/versions/main/portfolio/content";
 import { usePrefersReducedMotion, useRichInteractions } from "@/lib/hooks";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
-import { PULL, StretchLetter, stretchLetterOf, stretchTo } from "@/versions/main/motion/StretchLetter";
 import { useRef, type ReactNode } from "react";
 
 type PortfolioIntroProps = {
@@ -22,25 +21,20 @@ export function PortfolioIntro({ title, footer }: PortfolioIntroProps) {
   const { locale } = useContent();
   // Arabic letters join, so the ripple moves whole words there instead of single letters.
   const letters = locale === "ar" ? title.split(" ").flatMap((word, i) => (i ? [" ", word] : [word])) : Array.from(title);
-  /** The letter that stretches, as in every banner title (see StretchLetter). */
-  const stretch = locale === "ar" ? undefined : stretchLetterOf(title);
 
   useGSAP(
     () => {
       const q = gsap.utils.selector(root);
-      const stretchLetters = q("[data-stretch-letter]");
       if (reduced) {
         gsap.from(q("[data-fade]"), { opacity: 0, duration: 0.5 });
-        if (stretchLetters.length) gsap.set(stretchLetters, { "--x": stretchTo("[data-chars]") });
         return;
       }
 
-      const intro = gsap
+      gsap
         .timeline({ delay: 0.15 })
         .from(q("[data-char]"), { yPercent: 120, rotate: 6, duration: 1.5, stagger: 0.045, ease: "expo.out" })
         .from(q("[data-fade]"), { y: 30, opacity: 0, duration: 1.2, stagger: 0.08, ease: "expo.out" }, 0.5)
         .from(q("[data-glow]"), { opacity: 0, scale: 0.6, duration: 2.4, ease: "expo.out" }, 0);
-      if (stretchLetters.length) intro.to(stretchLetters, { "--x": stretchTo("[data-chars]"), ...PULL }, 0.9);
 
       // Scroll: the title recedes as the work comes forward.
       gsap.to(q("[data-title]"), {
@@ -96,7 +90,7 @@ export function PortfolioIntro({ title, footer }: PortfolioIntroProps) {
                 <span key={i} data-char-wrap className="inline-block will-change-transform">
                   <span className="inline-block overflow-hidden pb-[0.04em]">
                     <span data-char className="inline-block">
-                      {char.toLowerCase() === stretch ? <StretchLetter>{char}</StretchLetter> : char}
+                      {char}
                     </span>
                   </span>
                 </span>

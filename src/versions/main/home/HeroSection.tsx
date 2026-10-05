@@ -5,7 +5,6 @@ import { DrawableLogo } from "@/shared/brand/DrawableLogo";
 import { introCarriesMark, onIntroReveal } from "@/versions/main/intro/intro-signal";
 import { replayOnReturn } from "@/versions/main/motion/StretchHeading";
 import { motionGate } from "@/versions/main/motion/useMotionGate";
-import { PULL, StretchLetter, stretchLetterOf, stretchTo } from "@/versions/main/motion/StretchLetter";
 import { FlowField } from "@/versions/main/portfolio/ui/FlowField";
 import { AppLink } from "@/versions/main/ui/AppLink";
 import { PointerLight } from "@/versions/main/ui/PointerLight";
@@ -30,14 +29,11 @@ export function HeroSection() {
   const hero = copy.home.hero;
   const isAr = locale === "ar";
   const root = useRef<HTMLElement>(null);
-  /** The headline letter that stretches, as in every banner title (see StretchLetter). */
-  const letter = isAr ? undefined : stretchLetterOf(hero.title.join(" "));
 
   useGSAP(
     () => {
       const section = root.current;
       if (!section) return;
-      const letters = section.querySelectorAll<HTMLElement>("[data-stretch-letter]");
 
       return motionGate(
         () => {
@@ -65,10 +61,7 @@ export function HeroSection() {
             { y: 0, opacity: 1, duration: 0.9, ease: "power3.out", stagger: 0.08 },
             0.9,
           );
-          // Once its word has landed, the letter pulls out long.
-          const to = stretchTo("[data-hero-line]");
-          if (letters.length) entrance.to(letters, { "--x": to, ...PULL }, 1.1);
-          // Each time the title is scrolled back to, its words rise and the letter pulls out again, as they first did.
+          // Each time the title is scrolled back to, its words rise again, as they first did.
           const replay = gsap
             .timeline({ paused: true })
             .fromTo(
@@ -77,7 +70,6 @@ export function HeroSection() {
               { y: 0, yPercent: 0, opacity: 1, duration: 1.2, ease: "power4.out", stagger: 0.09, immediateRender: false },
               0,
             );
-          if (letters.length) replay.set(letters, { "--x": 0 }, 0).to(letters, { "--x": to, ...PULL }, 0.9);
           replayOnReturn(section.querySelector("[data-hero-title]")!, () => {
             entrance.progress(1);
             replay.restart();
@@ -92,9 +84,6 @@ export function HeroSection() {
             .to("[data-hero-awards]", { yPercent: -40, opacity: 0, duration: 0.4 }, 0.15);
 
           return onIntroReveal(() => entrance.play());
-        },
-        () => {
-          if (letters.length) gsap.set(letters, { "--x": stretchTo("[data-hero-line]") });
         },
       );
     },
@@ -150,7 +139,7 @@ export function HeroSection() {
                       ) : (
                         Array.from(word, (char, at) => (
                           <span key={at} data-hero-char className="inline-block">
-                            {char.toLowerCase() === letter ? <StretchLetter>{char}</StretchLetter> : char}
+                            {char}
                           </span>
                         ))
                       )}
@@ -162,8 +151,8 @@ export function HeroSection() {
           ))}
         </h1>
 
-        {/* Proof under the promise: the awards and the Meta partnership, each badge on its own plate (third-party marks keep
-            their colours). Every chip leads to the full story on About. */}
+        {/* Proof under the promise: the awards and the Meta partnership, each badge on a white disc (third-party marks keep
+            their colours). Every disc leads to the full story on About. */}
         <ul data-hero-awards aria-label={copy.footer.awards} className="mt-10 flex flex-nowrap items-center justify-center gap-2 sm:gap-3 md:mt-14">
           {site.awards.map((award) => (
             <li key={award.file} data-hero-award>
@@ -172,8 +161,7 @@ export function HeroSection() {
                 transitionLabel={copy.meta.pages.about.title}
                 aria-label={`${award.title}, ${award.issuer}`}
                 title={`${award.title}, ${award.issuer}`}
-                className="flex h-[clamp(3.25rem,15vw,4rem)] w-[clamp(5.5rem,26vw,7rem)] items-center justify-center overflow-hidden rounded-md p-1.5 transition-[translate] duration-500 ease-expo hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky"
-                style={{ backgroundColor: award.surface }}
+                className="flex h-[clamp(3.25rem,15vw,4rem)] w-[clamp(5.5rem,26vw,7rem)] items-center justify-center overflow-hidden rounded-md bg-white p-1.5 transition-[translate] duration-500 ease-expo hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element -- third-party SVG badges, served as they are */}
                 <img src={`/images/awards/${award.file}.svg`} alt="" className="h-full w-full object-contain" />

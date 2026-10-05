@@ -1,22 +1,11 @@
 "use client";
 
 import { useLocale } from "@/i18n/locale-context";
+import { useRichInteractions } from "@/lib/hooks";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
-import { createContext, useContext, useRef, type CSSProperties, type ReactNode } from "react";
-import { PULL, stretchLetterOf, StretchText, stretchTo } from "./StretchLetter";
+import { Fragment, useRef, type CSSProperties } from "react";
 import { motionGate, showNow } from "./useMotionGate";
-
-const SectionTitlesStretch = createContext(false);
-
-/**
- * Section titles inside it stretch a letter the way banner titles do, tied to the
- * scroll: the letter pulls out as its title comes up the screen and goes back in
- * when the title is scrolled back down. The home page wraps its sections in it.
- */
-export function StretchSectionTitles({ children }: { children: ReactNode }) {
-  return <SectionTitlesStretch value>{children}</SectionTitlesStretch>;
-}
 
 /**
  * For a title that plays its entrance on its own (a banner or the home hero, not on scroll): once the title
@@ -36,6 +25,77 @@ export function replayOnReturn(trigger: Element, replay: () => void) {
   return ScrollTrigger.create({ trigger, start: "top bottom", end: "bottom 20%", onLeave: leave, onLeaveBack: leave, onEnter: back, onEnterBack: back });
 }
 
+/** How far (px) the letter under the cursor lifts, and how far (px) to either side the lift reaches. Kept light. */
+const LIFT = 7;
+const REACH = 140;
+
+/**
+ * Lets a title's letters lift gently toward the cursor while it hovers the title (the Projects ripple, softer).
+ * Each `[data-ripple]` piece rises by how close its centre is to the cursor along the line.
+ */
+function rippleOnHover(el: HTMLElement) {
+  const pieces = Array.from(el.querySelectorAll<HTMLElement>("[data-ripple]"));
+  if (!pieces.length) return;
+  const lift = pieces.map((piece) => gsap.quickTo(piece, "y", { duration: 0.9, ease: "power3" }));
+  let centres: { x: number; y: number }[] = [];
+
+  // Measured on entry, so the layout (fonts, the entrance, the page scroll) is settled.
+  const enter = () => {
+    centres = pieces.map((piece) => {
+      const box = piece.getBoundingClientRect();
+      return { x: box.left + box.width / 2, y: box.top + box.height / 2 };
+    });
+  };
+  const move = (event: PointerEvent) => {
+    if (!centres.length) enter();
+    // Only the row under the cursor moves; a row is about one letter tall.
+    const row = pieces[0].offsetHeight;
+    pieces.forEach((_, i) => {
+      const { x, y } = centres[i];
+      const near = Math.abs(y - event.clientY) < row ? Math.max(0, 1 - Math.abs(x - event.clientX) / REACH) : 0;
+      lift[i](-near * near * LIFT);
+    });
+  };
+  const leave = () => {
+    centres = [];
+    lift.forEach((to) => to(0));
+  };
+
+  el.addEventListener("pointerenter", enter);
+  el.addEventListener("pointermove", move, { passive: true });
+  el.addEventListener("pointerleave", leave);
+  return () => {
+    el.removeEventListener("pointerenter", enter);
+    el.removeEventListener("pointermove", move);
+    el.removeEventListener("pointerleave", leave);
+  };
+}
+
+/**
+ * A line split into pieces that can ripple: letters in Latin, whole words in Arabic, where letters join.
+ * Words stay on one row, so the line wraps as plain text would.
+ */
+function RippleLine({ text, words }: { text: string; words: boolean }) {
+  return text.split(" ").map((word, index) => (
+    <Fragment key={index}>
+      {index > 0 ? " " : null}
+      {words ? (
+        <span data-ripple className="inline-block">
+          {word}
+        </span>
+      ) : (
+        <span className="whitespace-nowrap">
+          {Array.from(word, (char, at) => (
+            <span key={at} data-ripple className="inline-block">
+              {char}
+            </span>
+          ))}
+        </span>
+      )}
+    </Fragment>
+  ));
+}
+
 type Tag = "h1" | "h2" | "h3" | "p";
 
 type StretchHeadingProps = {
@@ -43,7 +103,7 @@ type StretchHeadingProps = {
   /** One entry per line. */
   lines: readonly string[];
   className?: string;
-  /** Per-line classes by index, e.g. to indent the second line. Serializable, so Server Components can pass it. */
+  /** Per-line classes by index. Serializable, so Server Components can pass it. */
   lineClassNames?: readonly (string | undefined)[];
   /** Play on mount (after `delay`) instead of when scrolled into view. */
   immediate?: boolean;
@@ -55,16 +115,14 @@ type StretchHeadingProps = {
 /**
  * The stretched voice (principle P4). Each line rises out of a mask while the
  * face widens from condensed to extended, so headlines "stretch into place".
- * Arabic has no width axis: lines only rise.
- *
- * As an h1 it is the page's banner title: once the lines have landed one letter, an E where the title has one, pulls out long
- * (see StretchLetter). Section titles do the same inside StretchSectionTitles.
+ * Arabic has no width axis: lines only rise. With a fine pointer, the letters
+ * of a page's main title lift a little as the cursor passes over it.
  */
 export function StretchHeading({ as: Component = "h2", lines, className, lineClassNames, immediate = false, delay = 0, width = 125 }: StretchHeadingProps) {
   const root = useRef<HTMLHeadingElement>(null);
   const isAr = useLocale() === "ar";
-  const stretches = useContext(SectionTitlesStretch) || Component === "h1";
-  const letter = stretches && !isAr ? stretchLetterOf(lines.join(" ")) : undefined;
+  // Only a page's main title (its h1) ripples under the cursor; section titles stay still. The home hero has its own title.
+  const rich = useRichInteractions() && Component === "h1";
   // Arabic titles read as one line; the copy's line breaks are tuned to the Latin face. A title still wraps where the screen is too narrow.
   const shown = isAr ? [lines.join(" ")] : lines;
 
@@ -73,7 +131,6 @@ export function StretchHeading({ as: Component = "h2", lines, className, lineCla
       const el = root.current;
       if (!el) return;
       const inner = el.querySelectorAll<HTMLElement>("[data-line]");
-      const letters = el.querySelectorAll<HTMLElement>("[data-stretch-letter]");
 
       return motionGate(
         () => {
@@ -86,46 +143,22 @@ export function StretchHeading({ as: Component = "h2", lines, className, lineCla
           if (!isAr) {
             tl.fromTo(inner, { "--wdth": 58 }, { "--wdth": width, duration: 1.9, ease: "expo.out", stagger: 0.09 }, 0.05);
           }
-          if (letters.length) {
-            const pull = { "--x": stretchTo("[data-line]"), ...PULL };
-            if (immediate) {
-              tl.to(letters, pull, 0.7);
-            } else {
-              // On scroll the pull has its own line, higher up the screen than the one the title rises at: it plays
-              // when the title climbs past it and plays backwards when the title is scrolled back below it. The
-              // delay lets the lines land first when both lines are crossed at once (a jump, a fast scroll).
-              // Once the title is scrolled off the top the letter closes, and it pulls out afresh when the title
-              // comes back, so every pass looks like the first rather than showing a letter left stretched.
-              const out = gsap.to(letters, { ...pull, delay: 0.4, paused: true });
-              ScrollTrigger.create({
-                trigger: el,
-                start: "top 78%",
-                end: "bottom top",
-                onEnter: () => out.play(),
-                onLeaveBack: () => out.reverse(),
-                onLeave: () => out.pause(0),
-                onEnterBack: () => out.restart(),
-              });
-            }
-          }
-          // A banner title plays its whole entrance again, the rise and the pull, each time it is scrolled back to.
+          // A banner title plays its whole entrance again each time it is scrolled back to.
           if (immediate) replayOnReturn(el, () => tl.restart());
+          if (rich) return rippleOnHover(el);
         },
-        () => {
-          showNow(el);
-          if (letters.length) gsap.set(letters, { "--x": stretchTo("[data-line]") });
-        },
+        () => showNow(el),
       );
     },
-    { scope: root, dependencies: [isAr, immediate, delay, width] },
+    { scope: root, dependencies: [isAr, immediate, delay, width, rich] },
   );
 
   return (
     <Component ref={root} data-reveal className={cn("stretch", className)} style={{ "--wdth": width } as CSSProperties}>
       {shown.map((line, index) => (
-        <span key={`${line}-${index}`} className="block overflow-hidden pb-[0.1em] -mb-[0.04em]">
+        <span key={`${line}-${index}`} className="block overflow-hidden pt-[0.12em] -mt-[0.12em] pb-[0.1em] -mb-[0.04em]">
           <span data-line className={cn("block origin-bottom-left will-change-transform rtl:origin-bottom-right", lineClassNames?.[index])}>
-            <StretchText text={line} letter={letter} />
+            {rich ? <RippleLine text={line} words={isAr} /> : line}
           </span>
         </span>
       ))}

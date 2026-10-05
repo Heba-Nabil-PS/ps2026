@@ -247,7 +247,7 @@ export function ClientLogoSection({ label, title, intro, clients, row }: { label
   );
 
   return (
-    <section data-thread-hidden className={row ? "mt-4 md:mt-6" : "section-y"}>
+    <section data-thread-hidden data-thread-faint={row || undefined} className={row ? "mt-4 md:mt-6" : "section-y"}>
       {label && title ? <SectionHead className="gutter" label={label} title={title} intro={intro} /> : null}
       <ul ref={field} data-reveal className={row ? "client-field client-field-row" : "client-field mt-12 md:mt-16"}>
         {clients.map((client) => {

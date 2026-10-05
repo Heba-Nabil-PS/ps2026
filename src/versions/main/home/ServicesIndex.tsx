@@ -23,16 +23,16 @@ const SLICE = 52;
 const frameOpen = () => gsap.utils.clamp(144, 224, window.innerWidth * 0.15);
 /** Gap between an open row's title and its description + tags. */
 const GAP = 18;
-/** An open frame runs the full height of its row: at least frameOpen, or as tall as the title, description and tags. */
-const openHeight = (title: HTMLElement, tags: HTMLElement) => Math.max(frameOpen(), title.offsetHeight + GAP + tags.scrollHeight);
+/** How much taller an open frame stands than its row's content. */
+const FRAME_SCALE = 1.2;
+/** An open frame is at least frameOpen or as tall as the title, description and tags, scaled by FRAME_SCALE. */
+const openHeight = (title: HTMLElement, tags: HTMLElement) => Math.max(frameOpen(), title.offsetHeight + GAP + tags.scrollHeight) * FRAME_SCALE;
 /** Closed state of a description or tag, written inline so the first paint matches the timeline's start. */
 const hidden = { opacity: 0, visibility: "hidden", transform: "translateY(-10px)" } as const;
-const MONO = "grayscale(1) contrast(1.06) brightness(0.86)";
-const LIT = "grayscale(0) contrast(1) brightness(1)";
 
 /**
  * Services index (Oddlymade reference, principle P8). Each row shows a thin slice of its
- * image; the open row slides the slice down into a full-height frame in colour and brings its
+ * image; the open row slides the slice down into a full-height frame and brings its
  * description and deliverables in. Each row opens its service page.
  *
  * On desktop only the first row opens from the scroll, as the list comes into view; the page
@@ -66,7 +66,7 @@ export function ServicesIndex() {
           return gsap
             .timeline({ paused: true, defaults: { ease: "none" } })
             .to(frame, { height: () => openHeight(title, tags), duration: MOVE, ease: glide }, 0)
-            .to(image, { filter: LIT, scale: 1, duration: MOVE, ease: glide }, 0)
+            .to(image, { scale: 1, duration: MOVE, ease: glide }, 0)
             .to(title, { "--lit": 1, duration: MOVE * 0.6 }, 0)
             .to(tags, { height: () => tags.scrollHeight, marginTop: GAP, duration: MOVE, ease: glide }, 0)
             .to(pills, { autoAlpha: 1, y: 0, duration: MOVE * 0.6, stagger: 0.05, ease: "power2.out" }, MOVE * 0.3);
@@ -117,7 +117,7 @@ export function ServicesIndex() {
       mm.add("(min-width: 768px) and (prefers-reduced-motion: reduce)", () => {
         const stageEl = stage.current;
         if (!stageEl) return;
-        gsap.set(stageEl.querySelectorAll("[data-frame] img"), { filter: LIT, scale: 1 });
+        gsap.set(stageEl.querySelectorAll("[data-frame] img"), { scale: 1 });
         gsap.set(stageEl.querySelectorAll("[data-tags]"), { height: "auto", marginTop: GAP });
         gsap.set(stageEl.querySelectorAll("[data-tag]"), { autoAlpha: 1, y: 0 });
         stageEl.querySelectorAll<HTMLElement>("[data-row]").forEach((row) => {
@@ -214,7 +214,7 @@ export function ServicesIndex() {
                       sizes="(min-width: 768px) 32vw, 1px"
                       quality={70}
                       className="object-cover"
-                      style={{ filter: MONO, transform: "scale(1.1)" }}
+                      style={{ transform: "scale(1.1)" }}
                     />
                   </div>
 

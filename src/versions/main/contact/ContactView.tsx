@@ -4,6 +4,7 @@ import { ContactForm } from "@/versions/main/contact/ContactForm";
 import { directionsHref } from "@/versions/main/sections/Offices";
 import { AppLink } from "@/versions/main/ui/AppLink";
 import { PageHero } from "@/versions/main/ui/PageHero";
+import { SocialLinks } from "@/versions/main/ui/SocialLinks";
 import { ArrowUpRight, MapPin } from "lucide-react";
 
 /** Contact — a message form (questions, problems) beside the direct email and the office addresses. */
@@ -52,6 +53,11 @@ export async function ContactView() {
                 </a>
               </address>
             ))}
+          </div>
+
+          <div data-reveal-item>
+            <p className="text-label mb-4 text-subtle">{page.follow.label}</p>
+            <SocialLinks />
           </div>
 
           <p data-reveal-item className="text-sm text-muted">

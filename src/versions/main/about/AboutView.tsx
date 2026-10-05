@@ -44,15 +44,15 @@ export async function AboutView() {
           </Reveal>
         </div>
         <MotionBlurReveal className="aspect-[4/5] self-end rounded-card md:col-span-4 md:col-start-9">
-          <ScrollFrames path="/images/about/story-frames" count={158} />
+          <ScrollFrames path="/images/about/wwa-frames" count={145} />
         </MotionBlurReveal>
       </section>
 
-      <Awards label={page.awards.label} title={page.awards.title} intro={page.awards.intro} awards={site.awards} />
+      <Awards label={page.awards.label} title={page.awards.title} awards={site.awards} />
       <Leadership />
       <DisciplineLeads />
 
-      <section className="gutter pb-[clamp(5.5rem,12vw,11rem)]">
+      <section className="gutter pb-[clamp(3rem,6vw,5.5rem)]">
         <SectionHead label={page.principles.label} title={page.principles.title} />
         <Reveal as="ol" className="mt-14 border-b border-line md:mt-20" stagger={0.08}>
           {site.reasons.map((reason, index) => (
@@ -67,7 +67,7 @@ export async function AboutView() {
         </Reveal>
       </section>
 
-      <WordMarquee items={site.services.map((service) => service.title)} className="text-mega pb-[clamp(5.5rem,12vw,11rem)] font-extrabold uppercase" />
+      <WordMarquee items={site.services.map((service) => service.title)} className="text-mega pb-[clamp(3rem,6vw,5.5rem)] font-extrabold uppercase [&>div]:text-[0.75em]" />
       <ClientsGrid label={page.clients.label} title={page.clients.title} intro={page.clients.intro} clients={site.clients} />
       <ClosingCta
         label={page.closing.label}

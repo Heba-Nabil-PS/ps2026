@@ -48,7 +48,7 @@ export function Cursor() {
           {label ? (
             <motion.span
               key={label}
-              className="text-label absolute inset-0 grid place-items-center text-fg"
+              className="text-label absolute inset-0 grid place-items-center whitespace-pre-line text-center text-[0.625rem] text-fg"
               initial={{ opacity: 0, scale: 0.6 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.6 }}

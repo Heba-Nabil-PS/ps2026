@@ -7,7 +7,6 @@ import { useContent, useLocalizeHref } from "@/versions/main/portfolio/content";
 import { usePrefersReducedMotion } from "@/lib/hooks";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
-import { PULL, stretchLetterOf, StretchText, stretchTo } from "@/versions/main/motion/StretchLetter";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,18 +18,14 @@ export function ProjectHero({ project }: { project: PortfolioProject }) {
   const reduced = usePrefersReducedMotion();
   const { locale, t } = useContent();
   const localize = useLocalizeHref();
-  /** The letter that stretches, as in every banner title (see StretchLetter). */
-  const letter = locale === "ar" ? undefined : stretchLetterOf(project.title);
 
   useGSAP(
     () => {
       const q = gsap.utils.selector(root);
       const arrived = consumeArrival(project.slug);
-      const letters = q("[data-stretch-letter]");
 
       if (reduced) {
         gsap.from(q("[data-fade]"), { opacity: 0, duration: 0.4 });
-        if (letters.length) gsap.set(letters, { "--x": stretchTo("[data-line]") });
         return;
       }
 
@@ -43,7 +38,6 @@ export function ProjectHero({ project }: { project: PortfolioProject }) {
           .from(q("[data-line]"), { yPercent: 115, duration: 1.3, ease: "expo.out" }, 0.55);
       }
       intro.from(q("[data-fade]"), { y: 24, opacity: 0, duration: 1, stagger: 0.07, ease: "expo.out" }, arrived ? 0 : 0.8);
-      if (letters.length) intro.to(letters, { "--x": stretchTo("[data-line]"), ...PULL }, arrived ? 0.1 : 1.1);
 
       // On scroll the visual sinks and fades out completely behind the title block, which sits half over it.
       gsap
@@ -119,7 +113,7 @@ export function ProjectHero({ project }: { project: PortfolioProject }) {
           >
             <span className="block overflow-hidden pb-[0.06em]">
               <span data-line className="block">
-                <StretchText text={project.title} letter={letter} />
+                {project.title}
               </span>
             </span>
           </h1>

@@ -2,8 +2,10 @@
 
 import { gsap, useGSAP } from "@/lib/gsap";
 import { usePrefersReducedMotion } from "@/lib/hooks";
+import { stripLocale } from "@/i18n/config";
 import { DrawableLogo } from "@/shared/brand/DrawableLogo";
 import { LOGO_DRAW, LOGO_PATHS, LOGO_VIEWBOX } from "@/shared/brand/logo-paths";
+import { replayIntro } from "@/versions/main/intro/intro-signal";
 import { useLenis } from "lenis/react";
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, useCallback, useContext, useEffect, useRef, useState, useTransition, type ReactNode } from "react";
@@ -51,6 +53,15 @@ export function RouteTransitionProvider({ children }: { children: ReactNode }) {
         return;
       }
       router.prefetch(href);
+      // The home always opens the way it does on first load: the full intro plays again and lands on the hero.
+      if (stripLocale(target.pathname).pathname === "/") {
+        const played = replayIntro(() => {
+          lenis?.scrollTo(0, { immediate: true, force: true });
+          window.scrollTo(0, 0);
+          startNavigation(() => router.push(href, { scroll: false }));
+        });
+        if (played) return;
+      }
       setState({ phase: "covering", href, from: window.location.pathname });
     },
     [router, lenis, reduced],
@@ -202,7 +213,7 @@ function LogoCurtain({ arrived, onCovered, onDone }: { arrived: boolean; onCover
         <div data-curtain-logo className="text-paper">
           <DrawableLogo
             variant="full"
-            className="h-auto w-[min(40.6vw,15.4rem)]"
+            className="h-auto w-[min(32.5vw,12.3rem)]"
             renderStroke={(stroke) => <path {...stroke} pathLength={1} strokeDasharray="1 2" strokeDashoffset={1} />}
           >
             <g fill="currentColor">

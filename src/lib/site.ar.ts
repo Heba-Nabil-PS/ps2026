@@ -97,7 +97,7 @@ export const siteConfigAr: Localized<typeof siteConfig> = {
       { name: "هشام زهران", role: "المدير الرقمي", image: siteConfig.team.members[4].image },
       { name: "شاهيناز ماهر", role: "المديرة المالية", image: siteConfig.team.members[5].image },
       { name: "هبة نبيل", role: "قائدة المنتجات الرقمية وواجهة وتجربة المستخدم", image: siteConfig.team.members[6].image },
-      { name: "دينا سالم", role: "مديرة الحسابات", image: siteConfig.team.members[7].image },
+      { name: "دينا سالم", role: "رئيسة قطاع خدمة العملاء", image: siteConfig.team.members[7].image },
     ],
   },
   process: [

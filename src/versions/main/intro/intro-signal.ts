@@ -47,3 +47,28 @@ export function carryIntroMark(carry = true) {
 export function introCarriesMark() {
   return markCarried;
 }
+
+/*
+ * Client-side visits to the home replay the whole intro (see RouteTransition), so the home
+ * always opens the same way. The intro listens for the request; `onCovered` runs once its
+ * curtain is up, which is when the route may change underneath it.
+ */
+let replayListener: ((onCovered: () => void) => void) | undefined;
+
+/** Called by the intro to take replay requests. Returns an unsubscribe. */
+export function onIntroReplay(listener: (onCovered: () => void) => void) {
+  replayListener = listener;
+  return () => {
+    if (replayListener === listener) replayListener = undefined;
+  };
+}
+
+/** Plays the intro again, landing on the home hero. Returns false when no intro can play (the caller navigates as usual). */
+export function replayIntro(onCovered: () => void) {
+  if (!replayListener) return false;
+  revealed = false;
+  markCarried = true;
+  document.documentElement.classList.add(INTRO_CLASS);
+  replayListener(onCovered);
+  return true;
+}

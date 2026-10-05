@@ -54,7 +54,7 @@ export function PageHero({
 
       <div className="gutter">
         {heading ?? (
-          <StretchHeading as="h1" lines={title} immediate delay={0.35} className={titleClassName ?? "text-display"} lineClassNames={titleClassName ? undefined : [undefined, "md:ps-[8vw]"]} />
+          <StretchHeading as="h1" lines={title} immediate delay={0.35} className={titleClassName ?? "text-display"} />
         )}
         <Reveal immediate delay={0.9} className="mt-6 grid gap-8 md:mt-7">
           {/* Sized in em so the measure tracks the fluid type: every intro (up to ~180 characters) sets on two balanced lines from md up. */}

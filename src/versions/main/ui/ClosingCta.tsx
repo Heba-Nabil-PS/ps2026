@@ -28,7 +28,7 @@ export function ClosingCta({ label, title, body, primary, secondary, bleed = tru
           <PointerLight className="opacity-60 [mask-image:linear-gradient(180deg,transparent,black_25%,black_75%,transparent)]" />
         </div>
       ) : null}
-      <div className={bleed ? "gutter" : "theme-dark relative isolate overflow-hidden rounded-frame border border-line px-[clamp(1rem,5vw,5rem)] py-[clamp(2.25rem,6.5vw,6rem)]"}>
+      <div className={bleed ? "gutter" : "theme-dark relative isolate overflow-hidden rounded-frame border border-line px-[clamp(1rem,4vw,4rem)] py-[clamp(1.75rem,4vw,3.5rem)]"}>
         {bleed ? null : (
           <div aria-hidden className="absolute inset-0 -z-10">
             <Image src="/images/site/cover.webp" alt="" fill sizes="100vw" quality={70} className="object-cover opacity-40" />
@@ -38,10 +38,10 @@ export function ClosingCta({ label, title, body, primary, secondary, bleed = tru
           </div>
         )}
 
-        <Label className="mb-5 md:mb-8">{label}</Label>
-        {/* Phones set the title smaller and let it run the full width, so it sits on two or three lines instead of one word a line. */}
-        <StretchHeading lines={title} className="text-display max-w-[14ch] max-sm:max-w-none max-sm:text-[1.6rem]" />
-        <Reveal className="mt-5 flex max-w-xl flex-col gap-6 md:mt-10 md:gap-7">
+        <Label className="mb-4 md:mb-6">{label}</Label>
+        {/* Headline scale keeps the closing compact: each title line sits on one row. */}
+        <StretchHeading lines={title} className="text-headline max-sm:text-[1.6rem]" />
+        <Reveal className="mt-5 flex max-w-xl flex-col gap-5 md:mt-7 md:gap-6">
           <p data-reveal-item className="text-lead text-muted">
             {body}
           </p>

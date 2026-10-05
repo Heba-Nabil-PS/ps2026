@@ -324,11 +324,25 @@ export const portfolio: PortfolioProject[] = [
       {
         type: "posts",
         items: [
-          sharkTank.media("web-desktop", "Shark Tank Egypt website — full desktop page"),
-          sharkTank.media("web-mobile", "Shark Tank Egypt website — mobile experience"),
+          sharkTank.media("web-desktop", "Shark Tank Egypt website — home page on a tablet"),
+          sharkTank.media("web-mobile", "Shark Tank Egypt website — home page on a phone"),
         ],
         shape: "screen",
         columns: 2,
+      },
+      {
+        type: "gallery",
+        title: "On set, on the street, on stage",
+        images: [
+          sharkTank.media("set", "The Shark Tank Egypt set with the sharks in their chairs"),
+          sharkTank.media("shark-portrait", "A shark listening to a pitch on set"),
+          sharkTank.media("billboard", "Shark Tank Egypt billboard over the Cairo Corniche"),
+          sharkTank.media("launch", "Season launch with a giant shark sculpture and fireworks"),
+          sharkTank.media("stage", "Sharks on stage at a Shark Tank Egypt event"),
+          sharkTank.media("sharks", "The sharks lined up on set"),
+          sharkTank.media("business-park", "Shark Tank Business Park event backdrop"),
+          sharkTank.media("rollup", "“Ready to dive into the tank?” roll-up banner"),
+        ],
       },
     ],
   },

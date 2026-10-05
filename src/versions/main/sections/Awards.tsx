@@ -74,11 +74,11 @@ export function Awards({ label, title, intro, awards }: { label: string; title: 
     <section ref={root} id="awards" className="gutter scroll-mt-24 pb-[clamp(5.5rem,12vw,11rem)]">
       <SectionHead label={label} title={title} intro={intro} />
 
-      <div className="mt-14 md:mt-20 lg:grid lg:grid-cols-12 lg:gap-x-10">
+      <div className="mt-14 md:mt-20 lg:grid lg:grid-cols-12 lg:gap-x-12 xl:gap-x-16">
         {/* The stage: decorative on lg, the rows below carry the text. */}
         <div aria-hidden className="hidden lg:col-span-5 lg:block">
-          <div data-award-stage className="sticky top-[24vh] [perspective:1200px]">
-            <div data-award-tilt className="relative aspect-[4/3] overflow-hidden rounded-frame border border-line [transform-style:preserve-3d]">
+          <div data-award-stage className="sticky top-[20vh] [perspective:1200px]">
+            <div data-award-tilt className="relative aspect-[3/2] w-full overflow-hidden rounded-frame border border-line [transform-style:preserve-3d]">
               {awards.map((award, i) => (
                 <div
                   key={award.file}
@@ -95,7 +95,7 @@ export function Awards({ label, title, intro, awards }: { label: string; title: 
                     height={240}
                     unoptimized
                     className={cn(
-                      "h-auto max-h-[52%] w-auto max-w-[56%] object-contain transition-[transform,filter,opacity] duration-[1.4s] ease-expo motion-reduce:transition-none",
+                      "h-auto max-h-[62%] w-auto max-w-[66%] object-contain transition-[transform,filter,opacity] duration-[1.4s] ease-expo motion-reduce:transition-none",
                       i === active ? "scale-100 opacity-100 blur-0" : "scale-[1.18] opacity-0 blur-sm",
                     )}
                   />
@@ -109,23 +109,6 @@ export function Awards({ label, title, intro, awards }: { label: string; title: 
                   )}
                 </div>
               ))}
-
-              {/* Counter: the active number rolls into place. */}
-              <div className="absolute start-5 bottom-5 z-20 flex items-baseline gap-2 rounded-full bg-ink-900/80 px-4 py-2 text-sm text-paper tabular-nums backdrop-blur-md">
-                <span className="relative block h-[1.25em] overflow-hidden">
-                  <span
-                    className="flex flex-col transition-transform duration-700 ease-expo motion-reduce:transition-none"
-                    style={{ transform: `translateY(${-active * 1.25}em)` }}
-                  >
-                    {awards.map((_, i) => (
-                      <span key={i} className="h-[1.25em] leading-[1.25em]">
-                        {pad(i + 1)}
-                      </span>
-                    ))}
-                  </span>
-                </span>
-                <span className="text-steel">/ {pad(awards.length)}</span>
-              </div>
             </div>
           </div>
         </div>
@@ -144,11 +127,11 @@ export function Awards({ label, title, intro, awards }: { label: string; title: 
                   data-reveal-item
                   data-award-row
                   onPointerEnter={(e) => e.pointerType === "mouse" && setActive(i)}
-                  className="group rounded-card border border-line bg-ink-850/50 p-3 lg:flex lg:min-h-[30vh] lg:py-6 lg:flex-col lg:justify-center lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:ps-10"
+                  className="group rounded-card border border-line bg-ink-850/50 p-3 lg:flex lg:min-h-[22vh] lg:py-10 lg:flex-col lg:justify-center lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:ps-10"
                 >
                   {/* Below lg each row brings its own plate. */}
                   <div
-                    className="grid aspect-[16/9] place-items-center overflow-hidden rounded-[calc(var(--radius-card)-0.75rem)] lg:hidden"
+                    className="grid aspect-[5/2] place-items-center overflow-hidden rounded-[calc(var(--radius-card)-0.75rem)] lg:hidden"
                     style={{ backgroundColor: award.surface }}
                   >
                     <Image
@@ -157,7 +140,7 @@ export function Awards({ label, title, intro, awards }: { label: string; title: 
                       width={320}
                       height={240}
                       unoptimized
-                      className="h-auto max-h-[64%] w-auto max-w-[58%] object-contain"
+                      className="h-auto max-h-[82%] w-auto max-w-[78%] object-contain"
                     />
                   </div>
 

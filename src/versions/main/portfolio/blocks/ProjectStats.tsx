@@ -47,7 +47,7 @@ export function ProjectStats({ title, items }: Omit<StatsBlock, "type">) {
   return (
     <section ref={root} className="gutter py-24 md:py-28">
       {title ? (
-        <RevealText as="h2" className="text-label mb-12 text-muted">
+        <RevealText as="h2" className="text-label mb-12 text-eyebrow">
           {title}
         </RevealText>
       ) : null}
