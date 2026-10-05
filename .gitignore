@@ -42,3 +42,13 @@ next-env.d.ts
 
 # playwright mcp output
 /.playwright-mcp/
+
+# local source assets (not used by the site)
+/.claude/
+/Logos-img/
+/img/
+/projects-img/
+/services-img/
+/video/
+/New Identity Presentation.pdf
+/drive-download-*.zip
