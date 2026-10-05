@@ -76,6 +76,8 @@ export type PortfolioProject = {
   results?: { summary: string; stats?: StatItem[] };
   /** Client testimonial — only ever a real, approved quote. */
   review?: { quote: string; author: string; role: string };
+  /** Stills for the closing horizontal slider; without it the slider gathers them from `content`. */
+  slider?: MediaRef[];
   /** Live site, app store or social accounts. */
   links?: ProjectLink[];
   content: ContentBlock[];
@@ -297,6 +299,16 @@ export const portfolio: PortfolioProject[] = [
         { value: 4, label: "Seasons" },
       ],
     },
+    slider: [
+      sharkTank.media("billboard", "Shark Tank Egypt billboard over the Cairo Corniche"),
+      sharkTank.media("set", "The Shark Tank Egypt set with the sharks in their chairs"),
+      sharkTank.media("shark-portrait", "A shark listening to a pitch on set"),
+      sharkTank.media("sharks", "The sharks lined up on set"),
+      sharkTank.media("launch", "Season launch with a giant shark sculpture and fireworks"),
+      sharkTank.media("business-park", "Shark Tank Business Park event backdrop"),
+      sharkTank.media("stage", "Sharks on stage at a Shark Tank Egypt event"),
+      sharkTank.media("rollup", "“Ready to dive into the tank?” roll-up banner"),
+    ],
     content: [
       { type: "hero", eyebrow: "Social media", title: "Built from zero. Grown season after season." },
       {
@@ -329,20 +341,6 @@ export const portfolio: PortfolioProject[] = [
         ],
         shape: "screen",
         columns: 2,
-      },
-      {
-        type: "gallery",
-        title: "On set, on the street, on stage",
-        images: [
-          sharkTank.media("set", "The Shark Tank Egypt set with the sharks in their chairs"),
-          sharkTank.media("shark-portrait", "A shark listening to a pitch on set"),
-          sharkTank.media("billboard", "Shark Tank Egypt billboard over the Cairo Corniche"),
-          sharkTank.media("launch", "Season launch with a giant shark sculpture and fireworks"),
-          sharkTank.media("stage", "Sharks on stage at a Shark Tank Egypt event"),
-          sharkTank.media("sharks", "The sharks lined up on set"),
-          sharkTank.media("business-park", "Shark Tank Business Park event backdrop"),
-          sharkTank.media("rollup", "“Ready to dive into the tank?” roll-up banner"),
-        ],
       },
     ],
   },

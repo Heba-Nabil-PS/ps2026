@@ -91,9 +91,8 @@ export const ar: Localized<typeof en> = {
       secondary: "ماذا نقدّم",
     },
     proof: {
-      label: "النتائج بكلمات عملائنا",
-      title: ["أرقام من", "مشاريع حقيقية"],
-      intro: "كل رقم هنا من عمل سلّمناه وقسناه مع العميل. اختر رقمًا لتسمعه منهم.",
+      label: "بكلمات عملائنا",
+      title: ["من الطرف", "الآخر"],
       pending: "اقتباس قيد الجمع",
       clients: "اختر نتيجة",
       previous: "النتيجة السابقة",
@@ -106,6 +105,7 @@ export const ar: Localized<typeof en> = {
           caption: "عائد على الإنفاق الإعلاني",
           client: "ZEE",
           mark: "zee",
+          viz: "multiplier",
           quote: { text: "هنا كلمات العميل: جملة واحدة عمّا تغيّر بعد إطلاق الحملة.", name: "الاسم واللقب", role: "المنصب، ZEE", pending: true },
         },
         {
@@ -113,6 +113,7 @@ export const ar: Localized<typeof en> = {
           caption: "شخص نصل إليهم كل شهر",
           client: "Pharco",
           mark: "pharco",
+          viz: "reach",
           quote: { text: "كلمات عميل ثانٍ: النتيجة التي يحكيها لزميل، بصوته هو.", name: "الاسم واللقب", role: "المنصب، Pharco", pending: true },
         },
         {
@@ -120,14 +121,8 @@ export const ar: Localized<typeof en> = {
           caption: "يومًا لتصميم وبناء موقع لخمس دول",
           client: "Burger King",
           mark: "burger-king",
+          viz: "days",
           quote: { text: "كلمات عميل ثالث: كيف كان العمل مع الفريق، من الموجز حتى يوم الإطلاق.", name: "الاسم واللقب", role: "المنصب، Burger King", pending: true },
-        },
-        {
-          value: "1 ← 15",
-          caption: "فرعًا منذ بدأنا العمل معًا",
-          client: "Beit El Gomla",
-          mark: "beit-el-gomla",
-          quote: { text: "كلمات عميل رابع: كيف كبرت الشراكة مع نمو العمل، فرعًا بعد فرع.", name: "الاسم واللقب", role: "المنصب، Beit El Gomla", pending: true },
         },
       ],
     },

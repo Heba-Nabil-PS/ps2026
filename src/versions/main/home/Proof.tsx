@@ -1,11 +1,11 @@
 import { getServerCopy } from "@/versions/main/server";
-import { ProofStage } from "@/versions/main/home/ProofStage";
+import { VoicesStage } from "@/versions/main/home/VoicesStage";
 import { SectionHead } from "@/versions/main/ui/SectionHead";
 
 /**
- * Home — "Numbers from real projects": proof placed right after the selected
- * work. Each figure is a tab that opens the client's own words about it, so the
- * number and the voice behind it read as one claim instead of two sections.
+ * Home — "Heard from the other side": proof placed right after the selected work. Each
+ * testimonial carries its own result, counted and drawn beside the quote, so the number
+ * and the voice behind it read as one claim.
  */
 export async function Proof() {
   const { copy } = await getServerCopy();
@@ -13,8 +13,8 @@ export async function Proof() {
 
   return (
     <section data-thread-hidden className="gutter section-y">
-      <SectionHead label={section.label} title={section.title} intro={section.intro} />
-      <ProofStage section={section} />
+      <SectionHead label={section.label} title={section.title} />
+      <VoicesStage section={section} />
     </section>
   );
 }

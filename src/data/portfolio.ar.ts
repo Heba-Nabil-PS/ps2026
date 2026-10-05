@@ -188,6 +188,16 @@ export const portfolioAr: PortfolioProject[] = [
         { value: 4, label: "مواسم" },
       ],
     },
+    slider: [
+      sharkTank.media("billboard", "لوحة إعلانية لـ Shark Tank مصر على كورنيش القاهرة"),
+      sharkTank.media("set", "استوديو Shark Tank مصر والمستثمرون في مقاعدهم"),
+      sharkTank.media("shark-portrait", "أحد المستثمرين يستمع إلى عرض داخل الاستوديو"),
+      sharkTank.media("sharks", "المستثمرون في صف واحد داخل الاستوديو"),
+      sharkTank.media("launch", "إطلاق الموسم بمجسّم قرش عملاق وألعاب نارية"),
+      sharkTank.media("business-park", "خلفية فعالية Shark Tank Business Park"),
+      sharkTank.media("stage", "المستثمرون على المسرح في إحدى فعاليات Shark Tank مصر"),
+      sharkTank.media("rollup", "لافتة «مستعد تغطس في التانك؟»"),
+    ],
     content: [
       { type: "hero", eyebrow: "منصات التواصل", title: "بدأنا من الصفر. ونكبر موسمًا بعد موسم." },
       {
@@ -220,20 +230,6 @@ export const portfolioAr: PortfolioProject[] = [
         ],
         shape: "screen",
         columns: 2,
-      },
-      {
-        type: "gallery",
-        title: "في الاستوديو، في الشارع، على المسرح",
-        images: [
-          sharkTank.media("set", "استوديو Shark Tank مصر والمستثمرون في مقاعدهم"),
-          sharkTank.media("shark-portrait", "أحد المستثمرين يستمع إلى عرض داخل الاستوديو"),
-          sharkTank.media("billboard", "لوحة إعلانية لـ Shark Tank مصر على كورنيش القاهرة"),
-          sharkTank.media("launch", "إطلاق الموسم بمجسّم قرش عملاق وألعاب نارية"),
-          sharkTank.media("stage", "المستثمرون على المسرح في إحدى فعاليات Shark Tank مصر"),
-          sharkTank.media("sharks", "المستثمرون في صف واحد داخل الاستوديو"),
-          sharkTank.media("business-park", "خلفية فعالية Shark Tank Business Park"),
-          sharkTank.media("rollup", "لافتة «مستعد تغطس في التانك؟»"),
-        ],
       },
     ],
   },

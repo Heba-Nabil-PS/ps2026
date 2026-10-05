@@ -51,8 +51,9 @@ function Block({ block, project }: { block: ContentBlock; project: PortfolioProj
   }
 }
 
-/** Every still the case study shows, hero first, once each — the strip for the horizontal gallery. */
+/** The project's own `slider`, else every still the case study shows, hero first, once each — the strip for the horizontal gallery. */
 function galleryImages(project: PortfolioProject, galleryImage: string): MediaRef[] {
+  if (project.slider) return project.slider;
   const found: MediaRef[] = [{ src: project.heroImage, alt: `${project.title} — ${galleryImage} 1` }];
   for (const block of project.content) {
     if (block.type === "hero" && block.image) found.push(block.image);

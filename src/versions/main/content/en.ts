@@ -93,9 +93,8 @@ export const en = {
       secondary: "What we do",
     },
     proof: {
-      label: "Results, in our clients' words",
-      title: ["Numbers from", "real projects"],
-      intro: "Every figure comes from work we delivered and measured with the client. Pick one to hear it from them.",
+      label: "In our clients' words",
+      title: ["Heard from", "the other side"],
       pending: "Quote to collect",
       clients: "Choose a result",
       previous: "Previous result",
@@ -103,7 +102,7 @@ export const en = {
       pause: "Pause rotation",
       play: "Resume rotation",
       /**
-       * Each figure carries the client's voice behind it. `mark` is the file in /public/images/clients/marks.
+       * Each quote carries the result behind it, drawn by `viz` (multiplier, reach or days). `mark` is the file in /public/images/clients/marks.
        * Quotes marked `pending` are placeholders: replace text, name and role with a real, approved quote
        * and drop the flag. Until then they render in a dashed "to collect" state.
        */
@@ -113,6 +112,7 @@ export const en = {
           caption: "return on ad spend",
           client: "ZEE",
           mark: "zee",
+          viz: "multiplier",
           quote: { text: "Your client's words go here: one sentence on what changed after the campaign went live.", name: "Name Surname", role: "Title, ZEE", pending: true },
         },
         {
@@ -120,6 +120,7 @@ export const en = {
           caption: "people reached every month",
           client: "Pharco",
           mark: "pharco",
+          viz: "reach",
           quote: { text: "A second client's words: the result they would tell a peer about, in their own voice.", name: "Name Surname", role: "Title, Pharco", pending: true },
         },
         {
@@ -127,14 +128,8 @@ export const en = {
           caption: "days to design and build a site for 5 countries",
           client: "Burger King",
           mark: "burger-king",
+          viz: "days",
           quote: { text: "A third client's words: what working with the team felt like, from brief to launch day.", name: "Name Surname", role: "Title, Burger King", pending: true },
-        },
-        {
-          value: "1 → 15",
-          caption: "branches since we started working together",
-          client: "Beit El Gomla",
-          mark: "beit-el-gomla",
-          quote: { text: "A fourth client's words: how the partnership grew with the business, branch by branch.", name: "Name Surname", role: "Title, Beit El Gomla", pending: true },
         },
       ],
     },

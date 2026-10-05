@@ -1183,30 +1183,19 @@ html {
   }
 }
 
-/* Proof (home): the beam and notch slide to the active figure; the figure echoes, outlined, behind its quote (see ProofStage). */
-.proof-beam,
-.proof-notch {
-  transform: translate(calc(var(--col2) * var(--dir) * 100%), calc(var(--row2) * 100%));
-  transition: transform 700ms var(--ease-expo);
-}
-@media (width >= 64rem) {
-  .proof-beam,
-  .proof-notch {
-    transform: translateX(calc(var(--col4) * var(--dir) * 100%));
+/* Proof (home): the reach glyph's ripple, travelling out from the centre (see VoicesStage). */
+@keyframes proof-ripple {
+  from {
+    transform: scale(0.15);
+    opacity: 0.9;
   }
-}
-@media (prefers-reduced-motion: reduce) {
-  .proof-beam,
-  .proof-notch {
-    transition: none;
+  to {
+    transform: scale(1.15);
+    opacity: 0;
   }
-}
-.proof-echo {
-  color: transparent;
-  -webkit-text-stroke: 1px color-mix(in oklab, var(--color-sky) 22%, transparent);
 }
 
-/* Proof: the active figure's rotation rail, filled over one hold. */
+/* Proof (home): the active client's progress line, filled over one hold (see VoicesStage). */
 @keyframes testimonial-progress {
   from {
     transform: scaleX(0);
