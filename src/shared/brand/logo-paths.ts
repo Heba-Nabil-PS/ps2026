@@ -11,10 +11,11 @@
  * drawn mask covers every pixel of the logo.
  */
 
-/** Artwork bounds (viewBox) with and without the wordmark. */
+/** Artwork bounds (viewBox) with and without the wordmark, and of the wordmark alone. */
 export const LOGO_VIEWBOX = {
   full: { x: 37, y: 168, width: 1006, height: 744 },
   mark: { x: 37, y: 168, width: 1006, height: 711 },
+  wordmark: { x: 480, y: 780, width: 549, height: 133 },
 } as const;
 
 export const viewBoxOf = (box: { x: number; y: number; width: number; height: number }) =>

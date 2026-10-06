@@ -1,17 +1,15 @@
 "use client";
 
-import { portfolioHref } from "@/data/portfolio";
-import { useContent } from "@/versions/main/portfolio/content";
 import { useCopy } from "@/versions/main/use-copy";
 import { ease } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import { LanguageSwitch } from "@/versions/main/shell/LanguageSwitch";
 import { ThemeSwitch } from "@/versions/main/shell/ThemeSwitch";
 import { AppLink } from "@/versions/main/ui/AppLink";
+import { ButtonLink } from "@/versions/main/ui/Button";
 import { FlutedGlass } from "@/versions/main/ui/FlutedGlass";
 import { motion } from "framer-motion";
 import { useLenis } from "lenis/react";
-import Image from "next/image";
 import { useEffect, useRef } from "react";
 
 const isActive = (pathname: string, href: string) => pathname === href || pathname.startsWith(`${href}/`);
@@ -19,15 +17,15 @@ const isActive = (pathname: string, href: string) => pathname === href || pathna
 /**
  * Full-screen menu for touch and small screens: the same order as the
  * desktop nav, set in the stretched face so it reads as a table of contents,
- * with shortcuts into the portfolio beside it.
+ * with room between the links so each is an easy tap. Start a project closes
+ * the list as the one filled action, the same button as in the header.
  * Escape closes it, focus stays inside, and scrolling is paused underneath.
  */
 export function MobileMenu({ pathname, onClose }: { pathname: string; onClose: () => void }) {
   const { copy, site } = useCopy();
-  const { portfolio, t } = useContent();
   const lenis = useLenis();
   const panel = useRef<HTMLDivElement>(null);
-  const items = [...copy.nav.primary, copy.nav.contact, copy.nav.start];
+  const items = [...copy.nav.primary, copy.nav.contact];
 
   useEffect(() => {
     lenis?.stop();
@@ -81,9 +79,8 @@ export function MobileMenu({ pathname, onClose }: { pathname: string; onClose: (
         transition={{ duration: 1.4, ease: ease.expo }}
       />
 
-      <div className="relative grid grid-cols-1 gap-12 md:grid-cols-12">
-      <nav aria-label={copy.ui.mainNav} className="md:col-span-7">
-        <ul className="flex flex-col gap-0.5">
+      <nav aria-label={copy.ui.mainNav} className="relative">
+        <ul className="flex flex-col gap-3 md:gap-2">
           {items.map((item, index) => (
             <li key={item.href} className="overflow-hidden">
               <motion.div
@@ -98,7 +95,7 @@ export function MobileMenu({ pathname, onClose }: { pathname: string; onClose: (
                   onClick={onClose}
                   aria-current={isActive(pathname, item.href) ? "page" : undefined}
                   className={cn(
-                    "group stretch flex items-baseline py-1.5 text-[clamp(1.25rem,5.6vw,3.5rem)] leading-[1.05] transition-colors",
+                    "group stretch flex items-baseline py-2 text-[clamp(1.25rem,5.6vw,3.5rem)] leading-[1.05] transition-colors",
                     isActive(pathname, item.href) ? "text-sky" : "text-fg",
                   )}
                 >
@@ -115,38 +112,17 @@ export function MobileMenu({ pathname, onClose }: { pathname: string; onClose: (
         </ul>
       </nav>
 
-        {/* Shortcuts into the portfolio. */}
-        <motion.aside
-          aria-label={t.common.projectShortcuts}
-          className="md:col-span-4 md:col-start-9"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, transition: { duration: 0.2 } }}
-          transition={{ duration: 0.9, ease: ease.expo, delay: 0.35 }}
-        >
-          <p className="text-label mb-5 text-muted">{t.common.selectedWork}</p>
-          <ul className="grid grid-cols-2 gap-4">
-            {portfolio.slice(0, 4).map((project) => (
-              <li key={project.slug}>
-                <AppLink href={portfolioHref(project.slug)} transitionLabel={project.title} onClick={onClose} className="group block">
-                  <span className="relative block aspect-[4/3] overflow-hidden rounded-xl" style={{ backgroundColor: project.color }}>
-                    <Image
-                      src={project.heroImage}
-                      alt=""
-                      fill
-                      sizes="(min-width: 768px) 16vw, 45vw"
-                      className="object-cover transition-transform duration-1000 ease-expo group-hover:scale-110"
-                    />
-                  </span>
-                  <span className="mt-2 block text-sm font-medium text-fg">{project.title}</span>
-                  <span className="text-label mt-1 block text-muted">{project.category}</span>
-                </AppLink>
-              </li>
-            ))}
-          </ul>
-        </motion.aside>
-      </div>
-
+      <motion.div
+        className="relative mt-8"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, transition: { duration: 0.2 } }}
+        transition={{ duration: 0.8, ease: ease.expo, delay: 0.2 + items.length * 0.05 }}
+      >
+        <ButtonLink href={copy.nav.start.href} transitionLabel={copy.nav.start.label} onClick={onClose} className="min-h-14 text-base">
+          {copy.nav.start.label}
+        </ButtonLink>
+      </motion.div>
 
       <motion.div
         className="relative mt-auto flex flex-wrap items-end justify-between gap-6 pt-12 text-sm text-muted"

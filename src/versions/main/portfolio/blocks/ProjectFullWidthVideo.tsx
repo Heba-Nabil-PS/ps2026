@@ -30,7 +30,7 @@ export function ProjectFullWidthVideo({ src, label, caption }: ProjectFullWidthV
   );
 
   return (
-    <figure ref={root} className="relative py-10">
+    <figure ref={root} className="relative py-6 md:py-10">
       <div data-frame className="relative h-[70svh] overflow-hidden bg-surface md:h-[100svh]">
         <div data-layer className="absolute inset-0 will-change-transform">
           <LazyVideo src={src} label={label} className="object-cover" />

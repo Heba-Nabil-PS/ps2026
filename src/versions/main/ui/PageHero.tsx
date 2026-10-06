@@ -20,9 +20,12 @@ export function PageHero({
   titleClassName,
   footer,
   heading,
+  raw = false,
+  imageClassName,
 }: {
   title: readonly string[];
-  intro: string;
+  /** Leave out for a title on its own. */
+  intro?: string;
   /** Extra content under the intro (actions, counts). */
   children?: ReactNode;
   /** `null` leaves the hero clear, for a backdrop behind the page to show through (e.g. the particle logo). */
@@ -34,6 +37,10 @@ export function PageHero({
   footer?: ReactNode;
   /** A custom h1 in place of the stretched title (e.g. the Projects ripple title). */
   heading?: ReactNode;
+  /** Shows the image in its original colours: no dimming, glass, light or tint — only the fade at the foot. */
+  raw?: boolean;
+  /** Classes for the image, e.g. an object-position that keeps the subject in frame on narrow screens. */
+  imageClassName?: string;
 }) {
   return (
     <section data-page-hero className={cn("relative isolate flex min-h-[46svh] flex-col justify-end overflow-hidden pb-10 pt-28 md:min-h-[68svh] md:pb-16 md:pt-48", className)}>
@@ -41,10 +48,14 @@ export function PageHero({
       <div aria-hidden className="absolute inset-0 -z-10 [mask-image:linear-gradient(180deg,#000_0%,#000_55%,transparent_100%)]">
         {image ? (
           <>
-            <Image src={image} alt="" fill priority sizes="100vw" quality={70} className="object-cover opacity-55" />
-            <PointerLight className="opacity-70" />
-            <FlutedGlass className="absolute inset-0" flute={34} />
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,color-mix(in_srgb,var(--color-ink-900)_20%,transparent)_0%,color-mix(in_srgb,var(--color-ink-900)_55%,transparent)_55%,var(--color-ink-900)_100%)]" />
+            <Image src={image} alt="" fill priority sizes="100vw" quality={raw ? 85 : 70} className={cn("object-cover", !raw && "opacity-55", imageClassName)} />
+            {raw ? null : (
+              <>
+                <PointerLight className="opacity-70" />
+                <FlutedGlass className="absolute inset-0" flute={34} />
+                <div className="absolute inset-0 bg-[linear-gradient(180deg,color-mix(in_srgb,var(--color-ink-900)_20%,transparent)_0%,color-mix(in_srgb,var(--color-ink-900)_55%,transparent)_55%,var(--color-ink-900)_100%)]" />
+              </>
+            )}
           </>
         ) : (
           /* Readability: a soft dark pool behind the type, fading out before the edges so the page below follows on without a seam. */
@@ -56,17 +67,21 @@ export function PageHero({
         {heading ?? (
           <StretchHeading as="h1" lines={title} immediate delay={0.35} className={titleClassName ?? "text-display"} />
         )}
+        {intro || children ? (
         <Reveal immediate delay={0.9} className="mt-6 grid gap-8 md:mt-7">
           {/* Sized in em so the measure tracks the fluid type: every intro (up to ~180 characters) sets on two balanced lines from md up. */}
-          <p data-reveal-item className="text-lead max-w-xl text-balance text-muted md:max-w-[46em]">
-            {intro}
-          </p>
+          {intro ? (
+            <p data-reveal-item className="text-lead max-w-xl text-balance text-muted md:max-w-[46em]">
+              {intro}
+            </p>
+          ) : null}
           {children ? (
             <div data-reveal-item className="max-w-xl">
               {children}
             </div>
           ) : null}
         </Reveal>
+        ) : null}
       </div>
       {footer}
     </section>

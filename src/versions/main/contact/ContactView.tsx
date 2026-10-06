@@ -14,7 +14,7 @@ export async function ContactView() {
 
   return (
     <>
-      <PageHero title={page.hero.title} intro={page.hero.intro} image="/images/site/contact.webp" />
+      <PageHero title={page.hero.title} intro={page.hero.intro} image="/images/contact/contact-banner.webp" raw />
 
       <section className="gutter grid gap-12 pb-[clamp(5.5rem,12vw,11rem)] pt-[clamp(3.5rem,8vw,7rem)] md:grid-cols-12 md:gap-8">
         <div className="md:col-span-7 md:col-start-6 md:row-start-1">

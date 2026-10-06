@@ -50,7 +50,7 @@ export function Project3D({ eyebrow, title, body, poster, tone }: Project3DProps
   const live = rich && near;
 
   return (
-    <section className="gutter grid grid-cols-1 items-center gap-12 py-24 md:grid-cols-12 md:py-28">
+    <section className="gutter grid grid-cols-1 items-center gap-8 py-14 md:grid-cols-12 md:gap-12 md:py-28">
       <div className="md:col-span-4">
         {eyebrow ? <SectionLabel className="mb-6">{eyebrow}</SectionLabel> : null}
         <RevealText as="h2" mode="words" className="text-headline font-medium">

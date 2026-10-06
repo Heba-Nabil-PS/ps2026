@@ -22,7 +22,8 @@ type BriefError = "name" | "email" | "needs" | "description";
 /**
  * Start a project: one form (your details → what you need + the project).
  * Checked on submit and again on the server; delivery is the same as the
- * contact enquiry. /start?service=branding preselects a discipline.
+ * contact enquiry. /start?service=branding preselects a discipline, and
+ * /start?industry=restaurants a sector (the industry pages link this way).
  * `aside` sits in the side column under the label (the process steps).
  */
 export function BriefForm({ aside }: { aside?: ReactNode }) {
@@ -31,6 +32,7 @@ export function BriefForm({ aside }: { aside?: ReactNode }) {
   const t = copy.start;
   const params = useSearchParams();
   const preselect = copy.services.list.find((service) => service.slug === params.get("service"))?.title;
+  const preselectIndustry = industries.find((industry) => industry.slug === params.get("industry"))?.title;
   const [state, dispatch, pending] = useActionState(submitEnquiry, initial);
   const [errors, setErrors] = useState<Partial<Record<BriefError, true>>>({});
   const [last, setLast] = useState<FormData | null>(null);
@@ -123,7 +125,7 @@ export function BriefForm({ aside }: { aside?: ReactNode }) {
 
                 {/* Your details */}
                 <fieldset className="grid gap-8 md:grid-cols-2">
-                  <legend className="mb-6 text-2xl font-medium">{t.details.title}</legend>
+                  <legend className="mb-6 w-full text-2xl font-medium">{t.details.title}</legend>
                   <TextField name="name" label={t.details.name.label} placeholder={t.details.name.placeholder} autoComplete="name" error={message("name")} onInput={clear("name")} />
                   <TextField name="company" label={t.details.company.label} placeholder={t.details.company.placeholder} autoComplete="organization" optionalLabel={copy.ui.optional} />
                   <TextField name="email" type="email" label={t.details.email.label} placeholder={t.details.email.placeholder} autoComplete="email" error={message("email")} onInput={clear("email")} />
@@ -133,7 +135,7 @@ export function BriefForm({ aside }: { aside?: ReactNode }) {
 
                 {/* What you need */}
                 <fieldset className="grid gap-8 md:grid-cols-2">
-                  <legend className="mb-6 text-2xl font-medium">{t.needs.title}</legend>
+                  <legend className="mb-6 w-full text-2xl font-medium">{t.needs.title}</legend>
                   <MultiSelect
                     name="needs"
                     label={t.needs.services.label}
@@ -148,6 +150,7 @@ export function BriefForm({ aside }: { aside?: ReactNode }) {
                     label={t.needs.industry.label}
                     placeholder={t.needs.industry.placeholder}
                     options={[...industries.map((industry) => industry.title), t.needs.industry.other]}
+                    defaultValue={preselectIndustry ? [preselectIndustry] : []}
                     optionalLabel={copy.ui.optional}
                   />
                   <TextArea

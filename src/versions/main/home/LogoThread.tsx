@@ -186,15 +186,26 @@ function tunedPage(hero: HTMLElement, box: DOMRect, foot: number) {
     marks.push([headerTop + header.offsetHeight - tunedHeader - shift, headerTop + header.offsetHeight - tunedHeader]);
   }
 
-  // The work cards: each was as tall as it is now, less what a second line of title and the tags add.
+  // The work cards: each was as tall as it is now, less what a second line of title and the tags add. The line was
+  // then settled on a page with the cards further apart and more room below them (ProjectJourney, SelectedWork):
+  // `settled` is that page, and `here` the way from it to this one, card by card.
   const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
   const ar = document.documentElement.lang === "ar";
   const label = 12 + Math.max(14, rem * (ar ? 0.9 * 1.5 : 0.72 * 1.2));
   const measure = document.createElement("canvas").getContext("2d");
-  for (const card of document.querySelectorAll<HTMLElement>("[data-journey-card]")) {
+  const cards = Array.from(document.querySelectorAll<HTMLElement>("[data-journey-card]"));
+  const vw = document.documentElement.clientWidth;
+  const settledGap = Math.min(9 * rem, Math.max(3.5 * rem, 0.09 * vw)); // clamp(3.5rem, 9vw, 9rem)
+  /** Where this page is shorter than the settled one (each gap between the cards, and the room below them): from, to, by how much. */
+  const closer: { from: number; to: number; by: number; reach: number }[] = [];
+  let settledBottom = Number.NaN;
+  let pageBottom = Number.NaN;
+  let lastHeight = 0;
+  for (const card of cards) {
     const cardTop = card.getBoundingClientRect().top - box.top;
     const cardHeight = card.offsetHeight;
     const media = card.querySelector<HTMLElement>("[data-card-media]")?.offsetHeight ?? 0;
+    const settledTop = Number.isNaN(settledBottom) ? cardTop : settledBottom + settledGap;
     const title = card.querySelector<HTMLElement>("[data-title]");
     const heading = title?.querySelector<HTMLElement>("h3");
     const tags = title?.querySelector<HTMLElement>("ul");
@@ -219,22 +230,70 @@ function tunedPage(hero: HTMLElement, box: DOMRect, foot: number) {
       const now = Math.max(1, Math.round((heading.offsetHeight - size * 0.06) / lineHeight));
       less += Math.max(0, now - lines) * lineHeight;
     }
-    const was = cardTop - shift;
-    marks.push([was, cardTop], [was + media, cardTop + media], [was + cardHeight - less, cardTop + cardHeight]);
+    const was = settledTop - shift;
+    marks.push([was, settledTop], [was + media, settledTop + media], [was + cardHeight - less, settledTop + cardHeight]);
     shift += less;
+    // The gap is taken in over the gap and the next card's picture together (see `toPage`): squeezed into the gap alone,
+    // the line turned much tighter there than it settled, and taken in across the text too, it was carried over the
+    // titles and descriptions it settled clear of. Beside each card's text, the line runs just where it settled.
+    const textAt = (title?.getBoundingClientRect().top ?? card.getBoundingClientRect().top + media) - box.top - cardTop;
+    if (!Number.isNaN(settledBottom)) closer.push({ from: settledBottom, to: settledTop + textAt, by: settledGap - (cardTop - pageBottom), reach: 0 });
+    lastHeight = cardHeight;
+    settledBottom = settledTop + cardHeight;
+    pageBottom = cardTop + cardHeight;
+  }
+  const work = cards[0]?.closest("section");
+  if (work && !Number.isNaN(settledBottom)) {
+    const settledPad = Math.min(7 * rem, Math.max(2.75 * rem, 0.07 * vw)); // section-y: clamp(2.75rem, 7vw, 7rem)
+    // Below the last card the line has faded out (`data-thread-end`), so how it is taken in there does not show.
+    const reach = lastHeight / 2;
+    closer.push({ from: settledBottom, to: settledBottom + settledPad, by: settledPad - (work.getBoundingClientRect().bottom - box.top - pageBottom), reach });
   }
 
-  const toPage = (y: number) => {
-    if (y <= marks[0][0]) return y + marks[0][1] - marks[0][0];
-    for (let i = 1; i < marks.length; i++) {
-      const [a, la] = marks[i - 1];
-      const [b, lb] = marks[i];
+  /** From one side of the pairs to the other, in straight runs between them. */
+  const through = (pairs: [number, number][]) => (y: number) => {
+    if (y <= pairs[0][0]) return y + pairs[0][1] - pairs[0][0];
+    for (let i = 1; i < pairs.length; i++) {
+      const [a, la] = pairs[i - 1];
+      const [b, lb] = pairs[i];
       if (y <= b) return b > a ? la + ((y - a) * (lb - la)) / (b - a) : lb;
     }
-    const [end, page] = marks[marks.length - 1];
+    const [end, page] = pairs[pairs.length - 1];
     return y + page - end;
   };
-  return { foot: tunedFoot, toPage };
+  /**
+   * From the settled page to this one. Each gap is taken in smoothly, over the gap and a little of the cards either
+   * side of it (and never so fast the line would turn back), rather than in straight runs: those bent the line
+   * sharply at every card's edge.
+   */
+  const toPage = (y: number) => {
+    let at = y;
+    for (const { from, to, by, reach } of closer) {
+      const half = Math.max((to - from) / 2 + reach, 1.5 * Math.abs(by));
+      at -= by * smoothstep(clamp01((y - ((from + to) / 2 - half)) / (2 * half)));
+    }
+    return at;
+  };
+  /** And back (it only ever runs downwards). */
+  const fromPage = (y: number) => {
+    let lo = y - 1;
+    let hi = y + 1;
+    while (toPage(lo) > y) lo -= (hi - lo) * 2;
+    while (toPage(hi) < y) hi += (hi - lo) * 2;
+    for (let i = 0; i < 40; i++) {
+      const mid = (lo + hi) / 2;
+      if (toPage(mid) < y) lo = mid;
+      else hi = mid;
+    }
+    return (lo + hi) / 2;
+  };
+  return {
+    foot: tunedFoot,
+    /** From the tuned page to the settled one. */
+    toSettled: through(marks),
+    toPage,
+    fromPage,
+  };
 }
 
 /**
@@ -377,13 +436,14 @@ function Thread() {
       // The swings are tuned to the page's layout (they run in the gaps beside the work cards); a right-to-left
       // page mirrors that layout, so the swings mirror with it, or they would cut through the text.
       const rtl = getComputedStyle(el).direction === "rtl";
-      // They are laid out on the page they were tuned on (see `tunedPage`) and carried over to this one.
+      // They are laid out on the page they were tuned on (see `tunedPage`), and the line settled on the page that
+      // followed (the cards further apart than here); it is carried over to this one once drawn, below.
       const tuned = tunedPage(hero, box, foot.y);
       let y = tuned.foot + (points[2].y - foot.y);
       for (let i = 0; ; i++) {
         y += STEPS[i % STEPS.length] * vh;
-        const at = tuned.toPage(y);
-        if (at > footerTop - vh * 0.35) break;
+        const at = tuned.toSettled(y);
+        if (tuned.toPage(at) > footerTop - vh * 0.35) break;
         const swing = SWINGS[i % SWINGS.length];
         points.push({ x: (rtl ? 1 - swing : swing) * vw, y: at });
       }
@@ -423,12 +483,16 @@ function Thread() {
         }
       }
       const dip = spotBox.height * 0.45;
-      points.push(
-        { x: endFoot.x + spotBox.width * 0.9, y: footerTop + (endFoot.y - footerTop) * 0.55 },
-        along(endFoot, t, dip),
-        endFoot,
-        along(endFoot, t, -120),
-      );
+      const overFooter = { x: endFoot.x + spotBox.width * 0.9, y: footerTop + (endFoot.y - footerTop) * 0.55 };
+      // The line itself is drawn on the settled page and carried over sample by sample, not just its bends: here the
+      // cards sit closer together, and a curve run afresh through the carried-over bends would bend differently
+      // between them, crossing each card somewhere other than where it settled. (The headings it keeps clear of
+      // above sit where they did, so it is kept clear of them there.) Its run over the footer into the mark is carried
+      // with it: joined on afterwards, the two met at a sharp corner above the footer.
+      const intoMark = [overFooter, along(endFoot, t, dip), endFoot, along(endFoot, t, -120)];
+      const settled = smoothPath([...points.slice(0, swingsTo), ...intoMark.map((p) => ({ x: p.x, y: tuned.fromPage(p.y) }))]);
+      const carried = walk(settled.curves, 16).samples.map(({ point }) => ({ x: point.x, y: tuned.toPage(point.y) }));
+      points.splice(1, points.length - 1, ...carried, endFoot, intoMark[3]);
 
       el.style.height = `${height}px`;
       page = { width: vw, height, view: vh };

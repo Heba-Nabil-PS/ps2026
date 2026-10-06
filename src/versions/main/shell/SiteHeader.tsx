@@ -1,6 +1,7 @@
 "use client";
 
 import { DrawLogo } from "@/shared/brand/DrawLogo";
+import { DrawWordmark } from "@/shared/brand/DrawWordmark";
 import { stripLocale } from "@/i18n/config";
 import { useCopy } from "@/versions/main/use-copy";
 import { ease } from "@/lib/motion";
@@ -40,6 +41,10 @@ export function SiteHeader() {
     const nextScrolled = current > 40;
     if (nextScrolled !== scrolled) setScrolled(nextScrolled);
   });
+
+  // At the top of the home page the hero carries the mark, so the header shows the name alone (one mark per view).
+  // Once the bar tightens into the capsule, the full logo draws itself in.
+  const wordmarkOnly = pathname === "/" && !scrolled;
 
   const links = [...copy.nav.primary, copy.nav.contact];
   const highlighted = hovered ?? links.find((item) => isActive(pathname, item.href))?.href ?? null;
@@ -84,15 +89,19 @@ export function SiteHeader() {
         >
           <Magnetic strength={0.2} className="relative z-10 shrink-0">
             <AppLink href="/" transitionLabel={copy.ui.home} aria-label={copy.ui.homeLabel} onClick={() => setMenuOpen(false)}>
-              <DrawLogo
-                title=""
-                delay={0.3}
-                redrawEvery={30}
-                className={cn(
-                  "w-auto transition-[height] duration-700 ease-expo",
-                  scrolled ? "h-10 md:h-12" : "h-14 md:h-18",
-                )}
-              />
+              {wordmarkOnly ? (
+                <DrawWordmark delay={0.3} className="block h-5 w-auto md:h-6" />
+              ) : (
+                <DrawLogo
+                  title=""
+                  delay={pathname === "/" ? 0 : 0.3}
+                  redrawEvery={30}
+                  className={cn(
+                    "w-auto transition-[height] duration-700 ease-expo",
+                    scrolled ? "h-10 md:h-12" : "h-14 md:h-18",
+                  )}
+                />
+              )}
             </AppLink>
           </Magnetic>
 

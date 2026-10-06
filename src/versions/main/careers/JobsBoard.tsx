@@ -198,11 +198,20 @@ export function JobsBoard() {
         </div>
       </div>
 
-      <p aria-live="polite" className="mt-8 text-sm text-muted">
-        {before}
-        <strong className="font-semibold tabular-nums text-fg">{visible.length}</strong>
-        {after}
-      </p>
+      {/* The count, with the way back to every role beside it while anything narrows the list. */}
+      <div className="mt-8 flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
+        <p aria-live="polite" className="text-sm text-muted">
+          {before}
+          <strong className="font-semibold tabular-nums text-fg">{visible.length}</strong>
+          {after}
+        </p>
+        {filtered ? (
+          <button type="button" onClick={reset} className="inline-flex items-center gap-1.5 text-sm text-muted underline decoration-line-strong underline-offset-8 transition-colors hover:text-fg hover:decoration-sky">
+            <X aria-hidden className="size-3.5" />
+            {labels.clear}
+          </button>
+        ) : null}
+      </div>
 
       <ul className="mt-8 grid gap-4 md:mt-10 md:grid-cols-2 xl:grid-cols-3">
         <AnimatePresence initial={false} mode="popLayout">
@@ -238,11 +247,6 @@ export function JobsBoard() {
         </AnimatePresence>
       </ul>
 
-      {filtered ? (
-        <button type="button" onClick={reset} className="mt-8 text-sm text-muted underline decoration-line-strong underline-offset-8 transition-colors hover:text-fg hover:decoration-sky">
-          {labels.clear}
-        </button>
-      ) : null}
     </section>
   );
 }

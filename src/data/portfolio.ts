@@ -10,7 +10,8 @@
  *   2. Append an object to `portfolio` below — cards, case study, metadata and sitemap update automatically.
  */
 
-export type MediaRef = { src: string; alt: string };
+/** `ratio` (width / height) lets a frame keep the image uncropped where a block supports it. */
+export type MediaRef = { src: string; alt: string; ratio?: number };
 
 export type StatItem = { value: number; prefix?: string; suffix?: string; decimals?: number; label: string };
 
@@ -87,7 +88,7 @@ export type PortfolioProject = {
 export const assets = (slug: string) => ({
   image: (name: string) => `/images/projects/${slug}/${name}.webp`,
   video: (name: string) => `/videos/projects/${slug}/${name}.webm`,
-  media: (name: string, alt: string): MediaRef => ({ src: `/images/projects/${slug}/${name}.webp`, alt }),
+  media: (name: string, alt: string, ratio?: number): MediaRef => ({ src: `/images/projects/${slug}/${name}.webp`, alt, ...(ratio ? { ratio } : {}) }),
 });
 
 /**
@@ -139,11 +140,11 @@ export const portfolio: PortfolioProject[] = [
       "Since partnering with PSdigital, Texas Chicken’s Middle East and Africa business has run through a single agency of record: brand identity, mobile app, e-commerce, loyalty, in-store kiosks, SEO and social, unified across 16 countries under one bilingual brand system.",
     client: "Texas Chicken — Middle East & Africa",
     services: ["Branding", "Website & App Development", "Social Media Management", "SEO", "Production"],
-    deliverables: ["Brand identity", "Regional ordering app", "E-commerce & loyalty", "In-store kiosks", "Always-on social"],
+    deliverables: ["Brand identity", "Regional ordering app", "E-commerce & loyalty", "In-store kiosks", "Content management system", "Always-on social"],
     links: projectLinks["texas-chicken"],
     tags: ["QSR", "Bilingual", "Flagship"],
     color: "#1a0f08",
-    heroImage: texas.image("hero"),
+    heroImage: texas.image("card"),
     challenge: "Sixteen countries were running sixteen separate digital experiences — different apps, different checkouts, different voices. Every market solved the same problems on its own, and the brand read differently from one border to the next.",
     approach: [
       { title: "One bilingual brand system", body: "A single identity built to work in Arabic and English from the first sketch, so every market speaks with the same voice." },
@@ -168,11 +169,39 @@ export const portfolio: PortfolioProject[] = [
       { type: "hero", eyebrow: "Flagship partnership", title: "Sixteen markets. One brand system. No hand-offs." },
       {
         type: "twoColumn",
-        eyebrow: "The build",
+        eyebrow: "Mobile app",
         title: "One regional app. 16 countries. One checkout.",
-        body: "We designed and built a single regional ordering app for Africa and the Middle East, replacing 16 fragmented, country-by-country experiences with one bilingual, market-aware journey built to drive repeat orders through customizable e-coupons.",
+        body: "We designed and built a single regional ordering app for Africa and the Middle East, replacing 16 fragmented, country-by-country experiences with one bilingual, market-aware journey — delivery, pick-up and dine-in — built to drive repeat orders through customizable e-coupons and loyalty.",
         image: texas.media("app", "Texas Chicken ordering app — home screen with delivery, pick-up and dine-in"),
         reverse: true,
+      },
+      {
+        type: "posts",
+        items: [
+          texas.media("app-02", "Texas Chicken app — menu with sandwiches, wraps and chicken"),
+          texas.media("app-03", "Texas Chicken app — Maxi Cheesy product page with flavor and extras"),
+          texas.media("app-04", "Texas Chicken app — order summary with an applied e-coupon and reward points"),
+        ],
+      },
+      {
+        type: "text",
+        eyebrow: "Kiosk",
+        title: "From phone to counter, the same journey",
+        body: "In-store self-ordering kiosks run on the same platform as the app: the same menu, the same offers and the same bilingual experience, so customers order at their own pace and queues move faster at the counter.",
+      },
+      {
+        type: "posts",
+        items: [
+          texas.media("kiosk-01", "Texas Chicken self-ordering kiosk — touch to order, in English or Arabic"),
+          texas.media("kiosk-02", "Kiosk menu screen — sandwiches, wraps, chicken and dips"),
+          texas.media("kiosk-03", "Kiosk checkout — order review, rewards scan and payment"),
+        ],
+      },
+      {
+        type: "text",
+        eyebrow: "CMS",
+        title: "One dashboard behind every screen",
+        body: "A central content management system lets each market update its menu, prices, offers and banners in Arabic and English, and publish once to the app, the website and the in-store kiosks.",
       },
       {
         type: "posts",
@@ -199,6 +228,81 @@ export const portfolio: PortfolioProject[] = [
           texas.media("post-05", "A chicken lover once said — flavor box"),
           texas.media("post-06", "Crunchhhh — hero food photography"),
         ],
+      },
+    ],
+  },
+  {
+    id: "03",
+    slug: "shark-tank-egypt",
+    title: "Shark Tank Egypt",
+    category: "Social Media · Website",
+    market: "Egypt",
+    description: "Accounts built from zero and a bilingual home for the show — episodes, sharks and the pitch application.",
+    intro:
+      "Shark Tank Egypt’s social accounts were built from zero and grown season after season, alongside a bilingual website where viewers watch episodes, meet the sharks and entrepreneurs apply to pitch.",
+    client: "Shark Tank Egypt",
+    services: ["Social Media Management", "Website & App Development", "Production", "Digital Campaigns"],
+    deliverables: ["Always-on social", "Episode campaigns", "Bilingual website", "Applications journey"],
+    links: projectLinks["shark-tank-egypt"],
+    tags: ["Entertainment", "Bilingual", "Broadcast"],
+    color: "#071426",
+    heroImage: sharkTank.image("card"),
+    challenge: "A new broadcast format needed an audience online before the first episode aired — and a way to turn viewers into entrepreneurs who apply to pitch.",
+    approach: [
+      { title: "Social built from zero", body: "We opened the accounts and grew them season after season, with episode drops published to the minute in Arabic and English." },
+      { title: "Campaigns and partner formats", body: "Special episodes, teasers and partner formats like She's Next with Visa, each with its own campaign." },
+      { title: "A bilingual home for the show", body: "A website to watch every season, meet the sharks and apply to pitch — without leaving the page." },
+    ],
+    results: {
+      summary: "Four seasons in, the show has a following of its own and a steady pipeline of founders applying to pitch.",
+      stats: [
+        { value: 900, suffix: "M+", label: "Viewership" },
+        { value: 170, suffix: "+", label: "Companies pitched" },
+        { value: 4, label: "Seasons" },
+      ],
+    },
+    slider: [
+      sharkTank.media("billboard", "Shark Tank Egypt billboard over the Cairo Corniche", 2200 / 1375),
+      sharkTank.media("set", "The Shark Tank Egypt set with the sharks in their chairs", 1759 / 2200),
+      sharkTank.media("shark-portrait", "A shark listening to a pitch on set", 1649 / 2200),
+      sharkTank.media("sharks", "The sharks lined up on set", 2200 / 1374),
+      sharkTank.media("launch", "Season launch with a giant shark sculpture and fireworks", 1771 / 2200),
+      sharkTank.media("business-park", "Shark Tank Business Park event backdrop", 1803 / 2200),
+      sharkTank.media("stage", "Sharks on stage at a Shark Tank Egypt event", 1803 / 2200),
+      sharkTank.media("rollup", "“Ready to dive into the tank?” roll-up banner", 2200 / 1237),
+    ],
+    content: [
+      { type: "hero", eyebrow: "Social media", title: "Built from zero. Grown season after season." },
+      {
+        type: "posts",
+        eyebrow: "Campaign",
+        title: "A feed that runs on broadcast time",
+        body: "Episode drops, special episodes and partner formats like She’s Next — published to the minute, in Arabic and English.",
+        items: [
+          sharkTank.media("post-02", "The rise begins — season teaser"),
+          sharkTank.media("post-01", "Meet She's Next — 9 finalists, with Visa"),
+          sharkTank.media("post-03", "Special episode 2 — today 9:00 PM"),
+          sharkTank.media("post-04", "Episode 10 — today at 9 PM"),
+          sharkTank.media("post-05", "Innovation is in our DNA"),
+          sharkTank.media("post-06", "Wednesday 9PM — the sharks"),
+        ],
+        emerge: 0,
+      },
+      {
+        type: "text",
+        eyebrow: "Website",
+        title: "One place to watch, and one place to apply",
+        body: "The site carries the show’s numbers up front, keeps every season a click away, introduces the sharks, and turns a viewer into an applicant without leaving the page — in both languages.",
+      },
+      { type: "fullWidthImage", image: sharkTank.media("web-hero", "Shark Tank Egypt website — welcome to season 4"), caption: "Season 4 — desktop" },
+      {
+        type: "posts",
+        items: [
+          sharkTank.media("web-desktop", "Shark Tank Egypt website — home page on a tablet"),
+          sharkTank.media("web-mobile", "Shark Tank Egypt website — home page on a phone"),
+        ],
+        shape: "screen",
+        columns: 2,
       },
     ],
   },
@@ -270,81 +374,6 @@ export const portfolio: PortfolioProject[] = [
     ],
   },
   {
-    id: "03",
-    slug: "shark-tank-egypt",
-    title: "Shark Tank Egypt",
-    category: "Social Media · Website",
-    market: "Egypt",
-    description: "Accounts built from zero and a bilingual home for the show — episodes, sharks and the pitch application.",
-    intro:
-      "Shark Tank Egypt’s social accounts were built from zero and grown season after season, alongside a bilingual website where viewers watch episodes, meet the sharks and entrepreneurs apply to pitch.",
-    client: "Shark Tank Egypt",
-    services: ["Social Media Management", "Website & App Development", "Production", "Digital Campaigns"],
-    deliverables: ["Always-on social", "Episode campaigns", "Bilingual website", "Applications journey"],
-    links: projectLinks["shark-tank-egypt"],
-    tags: ["Entertainment", "Bilingual", "Broadcast"],
-    color: "#071426",
-    heroImage: sharkTank.image("hero"),
-    challenge: "A new broadcast format needed an audience online before the first episode aired — and a way to turn viewers into entrepreneurs who apply to pitch.",
-    approach: [
-      { title: "Social built from zero", body: "We opened the accounts and grew them season after season, with episode drops published to the minute in Arabic and English." },
-      { title: "Campaigns and partner formats", body: "Special episodes, teasers and partner formats like She's Next with Visa, each with its own campaign." },
-      { title: "A bilingual home for the show", body: "A website to watch every season, meet the sharks and apply to pitch — without leaving the page." },
-    ],
-    results: {
-      summary: "Four seasons in, the show has a following of its own and a steady pipeline of founders applying to pitch.",
-      stats: [
-        { value: 900, suffix: "M+", label: "Viewership" },
-        { value: 170, suffix: "+", label: "Companies pitched" },
-        { value: 4, label: "Seasons" },
-      ],
-    },
-    slider: [
-      sharkTank.media("billboard", "Shark Tank Egypt billboard over the Cairo Corniche"),
-      sharkTank.media("set", "The Shark Tank Egypt set with the sharks in their chairs"),
-      sharkTank.media("shark-portrait", "A shark listening to a pitch on set"),
-      sharkTank.media("sharks", "The sharks lined up on set"),
-      sharkTank.media("launch", "Season launch with a giant shark sculpture and fireworks"),
-      sharkTank.media("business-park", "Shark Tank Business Park event backdrop"),
-      sharkTank.media("stage", "Sharks on stage at a Shark Tank Egypt event"),
-      sharkTank.media("rollup", "“Ready to dive into the tank?” roll-up banner"),
-    ],
-    content: [
-      { type: "hero", eyebrow: "Social media", title: "Built from zero. Grown season after season." },
-      {
-        type: "posts",
-        eyebrow: "Campaign",
-        title: "A feed that runs on broadcast time",
-        body: "Episode drops, special episodes and partner formats like She’s Next — published to the minute, in Arabic and English.",
-        items: [
-          sharkTank.media("post-02", "The rise begins — season teaser"),
-          sharkTank.media("post-01", "Meet She's Next — 9 finalists, with Visa"),
-          sharkTank.media("post-03", "Special episode 2 — today 9:00 PM"),
-          sharkTank.media("post-04", "Episode 10 — today at 9 PM"),
-          sharkTank.media("post-05", "Innovation is in our DNA"),
-          sharkTank.media("post-06", "Wednesday 9PM — the sharks"),
-        ],
-        emerge: 0,
-      },
-      {
-        type: "text",
-        eyebrow: "Website",
-        title: "One place to watch, and one place to apply",
-        body: "The site carries the show’s numbers up front, keeps every season a click away, introduces the sharks, and turns a viewer into an applicant without leaving the page — in both languages.",
-      },
-      { type: "fullWidthImage", image: sharkTank.media("web-hero", "Shark Tank Egypt website — welcome to season 4"), caption: "Season 4 — desktop" },
-      {
-        type: "posts",
-        items: [
-          sharkTank.media("web-desktop", "Shark Tank Egypt website — home page on a tablet"),
-          sharkTank.media("web-mobile", "Shark Tank Egypt website — home page on a phone"),
-        ],
-        shape: "screen",
-        columns: 2,
-      },
-    ],
-  },
-  {
     id: "04",
     slug: "million-pound-menu",
     title: "Million Pound Menu",
@@ -408,7 +437,7 @@ export const portfolio: PortfolioProject[] = [
     deliverables: ["Always-on paid media", "Creative testing", "Lead generation", "Content production"],
     tags: ["Healthcare", "Performance", "Lead gen"],
     color: "#141a1c",
-    heroImage: physiowell.image("hero"),
+    heroImage: physiowell.image("card"),
     challenge: "A Dubai physiotherapy and chiropractic clinic had the clinical reputation, but needed a predictable flow of new patients — and proof of what paid media was actually returning.",
     approach: [
       { title: "Symptom-led creative", body: "Hooks built around what patients actually search for — frozen shoulder, scoliosis, pregnancy support." },
@@ -586,7 +615,7 @@ export const portfolio: PortfolioProject[] = [
     deliverables: ["Brand-led social", "Launch campaigns", "Content production"],
     tags: ["Real estate", "Lifestyle", "Egypt"],
     color: "#141015",
-    heroImage: elsewhere.image("hero"),
+    heroImage: elsewhere.image("card"),
     challenge: "One developer, several very different destinations — a coastal community, residences and offices — each needing its own voice without splitting the brand.",
     approach: [
       { title: "One system, several voices", body: "Ajaza, The One residences and The One offices each get their own tone inside a shared visual system." },

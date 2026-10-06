@@ -130,7 +130,7 @@ export const siteConfig = {
     },
   ],
   team: {
-    lead: { name: "Seif El Sawaf", role: "Chief Executive Officer", image: "/images/site/ceo.webp" },
+    lead: { name: "Seif El Sawaf", role: "Chief Executive Officer", image: "/images/site/ceo-seif.webp" },
     members: [
       { name: "Lubna El Banan", role: "Managing Director", image: "/images/team/lubna-el-banan.webp" },
       { name: "Ahmed Khalil", role: "Creative Director", image: "/images/team/ahmed-khalil.webp" },

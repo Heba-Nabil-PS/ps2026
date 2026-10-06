@@ -64,8 +64,10 @@ function coverCrop(image: HTMLImageElement, W: number, H: number, ix: number, iy
 export function PositioningStage({ media, children }: { media: ReactNode; children: ReactNode }) {
   const root = useRef<HTMLElement>(null);
   const frame = useRef<HTMLDivElement>(null);
+  const nudge = useRef<HTMLDivElement>(null);
   const flyer = useRef<HTMLDivElement>(null);
   const hover = useRef<HTMLDivElement>(null);
+  const stage = useRef<HTMLDivElement>(null);
   const copy = useRef<HTMLDivElement>(null);
   const screen = useRef<HTMLDivElement>(null);
   const quick = useRef<Record<string, gsap.QuickToFunc>>({});
@@ -76,8 +78,8 @@ export function PositioningStage({ media, children }: { media: ReactNode; childr
       if (!rich) return;
       const opts = { duration: 0.9, ease: "power3" };
       quick.current = {
-        rootX: gsap.quickTo(frame.current, "x", opts),
-        rootY: gsap.quickTo(frame.current, "y", opts),
+        rootX: gsap.quickTo(nudge.current, "x", opts),
+        rootY: gsap.quickTo(nudge.current, "y", opts),
         mediaX: gsap.quickTo(hover.current, "xPercent", opts),
         mediaY: gsap.quickTo(hover.current, "yPercent", opts),
       };
@@ -119,11 +121,13 @@ export function PositioningStage({ media, children }: { media: ReactNode; childr
     () => {
       const section = root.current;
       const slot = frame.current;
+      const wrap = nudge.current;
       const box = flyer.current;
       const layer = hover.current;
       const text = copy.current;
       const probe = screen.current;
-      if (!section || !slot || !box || !layer || !text || !probe) return;
+      const pinned = stage.current;
+      if (!section || !slot || !wrap || !box || !layer || !text || !probe || !pinned) return;
 
       const mm = gsap.matchMedia();
       mm.add(
@@ -138,7 +142,14 @@ export function PositioningStage({ media, children }: { media: ReactNode; childr
           const state = { y: 0, x: 0, s: 0, rv: 0, speed: 0, phase: 0 };
           // Geometry, in the section's own coordinates. Re-measured on every refresh (resize, fonts, images).
           const geo = { W: 1, H: 1, left: 0, top: 0, cx0: 0, cy0: 0, w0: 1, h0: 1, r0: 0, cx1: 0, cy1: 0, w1: 1, h1: 1 };
-          const plane = new WavePlane(section);
+          // The frame (and its wave) ride a sticky, screen-sized stage: the browser holds it on screen while the
+          // section scrolls, so while the frame is held at the centre it does not move at all. Positioned by script
+          // against the page instead, it trailed the scroll by a frame wherever scrolling runs off the main
+          // thread (Safari, every touch screen) and shook as it went.
+          pinned.appendChild(wrap);
+          wrap.style.pointerEvents = "none";
+          box.style.pointerEvents = "auto";
+          const plane = new WavePlane(pinned);
           let image: HTMLImageElement | null = null;
           let frames = 0;
 
@@ -170,8 +181,11 @@ export function PositioningStage({ media, children }: { media: ReactNode; childr
 
           const apply = () => {
             const cx = lerp(geo.cx0, geo.cx1, state.x);
+            const top0 = section.getBoundingClientRect().top;
+            // Where the sticky stage sits in the section right now (0 until it sticks): the frame is drawn relative to it.
+            const held = pinned.getBoundingClientRect().top - top0;
             // Pulled to the centre of the screen and held there as the page scrolls (the same spot it lands on at the handoff).
-            const view = -section.getBoundingClientRect().top + geo.H / 2;
+            const view = -top0 + geo.H / 2;
             const w = lerp(geo.w0, geo.w1, state.s);
             const h = lerp(geo.h0, geo.h1, state.s);
             // On phones the frame sits under the pillars, so it only ever travels down: its top edge never rises over the copy.
@@ -179,8 +193,8 @@ export function PositioningStage({ media, children }: { media: ReactNode; childr
             const r = lerp(geo.r0, REEL_START_RADIUS, state.s);
             // A screen-sized layer, scaled to cover the frame and clipped to it: the showreel's own crop.
             const k = Math.max(w / geo.W, h / geo.H);
-            const tx = cx - (k * geo.W) / 2 - geo.left;
-            const ty = cy - (k * geo.H) / 2 - geo.top;
+            const tx = cx - (k * geo.W) / 2;
+            const ty = cy - (k * geo.H) / 2 - held;
             // The entrance, as on the portfolio cards: the frame opens from a smaller, inset window.
             const rs = lerp(0.92, 1, state.rv);
             const vw = w * rs * lerp(0.82, 1, state.rv);
@@ -200,13 +214,13 @@ export function PositioningStage({ media, children }: { media: ReactNode; childr
               const zoom =
                 Number(gsap.getProperty(layer, "scale")) * Number(media ? gsap.getProperty(media, "scale") : 1) * Number(slide ? gsap.getProperty(slide, "scale") : 1);
               // A canvas one screen wide and a little over one tall, centred on the frame.
-              const top = cy - geo.H * 0.65;
+              const top = cy - held - geo.H * 0.65;
               plane.place(0, top, geo.W, Math.round(geo.H * 1.3));
               const drawn =
                 image &&
                 plane.draw(image, {
                   cx,
-                  cy: cy - top,
+                  cy: cy - held - top,
                   w: vw,
                   h: vh,
                   radius: r,
@@ -258,7 +272,7 @@ export function PositioningStage({ media, children }: { media: ReactNode; childr
           const reveal = gsap.timeline({ scrollTrigger: { trigger: slot, start: "top 90%", once: true } });
           reveal
             .fromTo(state, { rv: 0 }, { rv: 1, duration: 1.5, ease: "power2.out", onUpdate: apply }, 0)
-            .fromTo(slot, { opacity: 0.3 }, { opacity: 1, duration: 1.5 }, 0);
+            .fromTo(wrap, { opacity: 0.3 }, { opacity: 1, duration: 1.5 }, 0);
           if (media) reveal.fromTo(media, { scale: 1.35 }, { scale: 1, duration: 1.8 }, 0);
 
           // The wave keeps moving while the section is on screen: it travels with the scroll and drifts on its own.
@@ -293,6 +307,10 @@ export function PositioningStage({ media, children }: { media: ReactNode; childr
             handover.kill();
             plane.destroy();
             layer.style.visibility = "";
+            slot.appendChild(wrap);
+            wrap.style.removeProperty("pointer-events");
+            box.style.removeProperty("pointer-events");
+            gsap.set(wrap, { clearProps: "opacity" });
             gsap.set(box, { clearProps: "visibility,opacity" });
             ["transform", "clipPath", "width", "height", "left", "top", "right", "bottom", "borderRadius"].forEach((prop) =>
               box.style.removeProperty(prop.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)),
@@ -321,9 +339,12 @@ export function PositioningStage({ media, children }: { media: ReactNode; childr
             onPointerMove={onMove}
             onPointerLeave={onLeave}
           >
-            <div ref={flyer} className="absolute inset-0 origin-top-left overflow-hidden rounded-card will-change-transform">
-              <div ref={hover} className="absolute inset-0 will-change-transform">
-                {media}
+            {/* While the scroll drives it, this moves onto the sticky stage below (it is laid out here without motion). */}
+            <div ref={nudge} className="absolute inset-0">
+              <div ref={flyer} className="absolute inset-0 origin-top-left overflow-hidden rounded-card will-change-transform">
+                <div ref={hover} className="absolute inset-0 will-change-transform">
+                  {media}
+                </div>
               </div>
             </div>
           </div>
@@ -331,6 +352,11 @@ export function PositioningStage({ media, children }: { media: ReactNode; childr
             {children}
           </div>
         </div>
+      </div>
+
+      {/* One screen, held by the browser from the moment the section reaches the top until the handoff. */}
+      <div className="pointer-events-none absolute inset-0 z-[2]">
+        <div ref={stage} className="sticky top-0 h-svh" />
       </div>
 
       {/* The room the frame is pulled down into. */}

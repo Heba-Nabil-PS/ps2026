@@ -91,11 +91,10 @@ export function Awards({ label, title, intro, awards }: { label: string; title: 
                   <Image
                     src={`/images/awards/${award.file}.svg`}
                     alt=""
-                    width={320}
-                    height={240}
+                    fill
                     unoptimized
                     className={cn(
-                      "h-auto max-h-[62%] w-auto max-w-[66%] object-contain transition-[transform,filter,opacity] duration-[1.4s] ease-expo motion-reduce:transition-none",
+                      "object-contain p-[8%] transition-[transform,filter,opacity] duration-[1.4s] ease-expo motion-reduce:transition-none",
                       i === active ? "scale-100 opacity-100 blur-0" : "scale-[1.18] opacity-0 blur-sm",
                     )}
                   />
@@ -129,18 +128,18 @@ export function Awards({ label, title, intro, awards }: { label: string; title: 
                   onPointerEnter={(e) => e.pointerType === "mouse" && setActive(i)}
                   className="group rounded-card border border-line bg-ink-850/50 p-3 lg:flex lg:min-h-[22vh] lg:py-10 lg:flex-col lg:justify-center lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:ps-10"
                 >
-                  {/* Below lg each row brings its own plate. */}
+                  {/* Below lg each row brings its own plate. The badge fills it inside a margin: a percentage height
+                      in an auto grid row overflowed the plate on iOS and clipped the mark. */}
                   <div
-                    className="grid aspect-[5/2] place-items-center overflow-hidden rounded-[calc(var(--radius-card)-0.75rem)] lg:hidden"
+                    className="relative aspect-2/1 overflow-hidden rounded-[calc(var(--radius-card)-0.75rem)] lg:hidden"
                     style={{ backgroundColor: award.surface }}
                   >
                     <Image
                       src={`/images/awards/${award.file}.svg`}
                       alt={`${award.title}, ${award.issuer}`}
-                      width={320}
-                      height={240}
+                      fill
                       unoptimized
-                      className="h-auto max-h-[82%] w-auto max-w-[78%] object-contain"
+                      className="object-contain p-[6%]"
                     />
                   </div>
 

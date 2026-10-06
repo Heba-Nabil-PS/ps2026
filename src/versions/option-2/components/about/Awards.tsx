@@ -35,7 +35,7 @@ export async function Awards() {
                 width={320}
                 height={240}
                 unoptimized
-                className="h-auto max-h-[62%] w-auto max-w-[62%] object-contain"
+                className="h-[80%] w-[86%] object-contain"
               />
             </div>
             <div className="flex flex-1 flex-col gap-3 p-6 md:p-8">

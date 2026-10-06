@@ -82,14 +82,13 @@ export function ProcessSteps({ steps }: { steps: readonly { title: string; body:
                   <Icon className="size-5" strokeWidth={1.25} />
                 </span>
               </span>
-              <div className="pt-2">
-                <p data-step-text className="text-label tabular-nums text-subtle">
-                  {String(index + 1).padStart(2, "0")}
-                </p>
-                <h3 data-step-text className="mt-2 text-xl font-medium">
-                  {step.title}
-                </h3>
-                <p data-step-text className="mt-2 text-sm leading-relaxed text-muted">
+              <div>
+                {/* Number and title share one row, centred on the icon's ring. */}
+                <div data-step-text className="flex min-h-14 items-center gap-3">
+                  <span className="text-label tabular-nums text-subtle">{String(index + 1).padStart(2, "0")}</span>
+                  <h3 className="text-xl font-medium">{step.title}</h3>
+                </div>
+                <p data-step-text className="mt-1 text-sm leading-relaxed text-muted">
                   {step.body}
                 </p>
               </div>

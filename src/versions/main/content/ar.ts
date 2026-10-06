@@ -277,7 +277,7 @@ export const ar: Localized<typeof en> = {
           { title: "الرصد والتقارير", body: "ما يقوله الناس عنك وعن مجالك، مع تقارير شهرية مقابل الأهداف التي اتفقنا عليها في البداية." },
         ],
         proof: "shark-tank-egypt",
-        image: "/images/services/social-media-v2.webp",
+        image: "/images/services/social-media-v3.webp",
       },
       {
         slug: "branding",
@@ -299,7 +299,7 @@ export const ar: Localized<typeof en> = {
           { title: "التغليف ونقاط البيع", body: "العلامة على الرفوف وفي المتاجر وقوائم الطعام، من هيكل العبوة إلى لافتات المتجر." },
         ],
         proof: "texas-chicken",
-        image: "/images/services/branding-v2.webp",
+        image: "/images/services/branding-v3.webp",
       },
       {
         slug: "website-app-design",
@@ -321,7 +321,7 @@ export const ar: Localized<typeof en> = {
           { title: "حلول مخصّصة", body: "منصات وتكاملات مخصّصة وحلول Headless حين لا يكفي قالب جاهز." },
         ],
         proof: "million-pound-menu",
-        image: "/images/services/website-app-design-v2.webp",
+        image: "/images/services/website-app-design-v3.webp",
       },
       {
         slug: "creative-production",
@@ -343,7 +343,7 @@ export const ar: Localized<typeof en> = {
           { title: "تصوير داخلي وخارجي", body: "جلسات تصوير نخطّطها وننفّذها بالكامل، في الاستوديو أو في الموقع، مع الطاقم والتصاريح والتجهيزات." },
         ],
         proof: "m-squared",
-        image: "/images/services/creative-production-v2.webp",
+        image: "/images/services/creative-production-v3.webp",
       },
       {
         slug: "digital-consultation",
@@ -365,7 +365,7 @@ export const ar: Localized<typeof en> = {
           { title: "ورش العمل", body: "جلسات مركّزة مع قيادتك وفرقك للاتفاق على الأهداف والأولويات والخطوة التالية." },
         ],
         proof: "sinclair-aesthetics",
-        image: "/images/services/digital-consultation-v2.webp",
+        image: "/images/services/digital-consultation-v3.webp",
       },
       {
         slug: "performance-marketing",
@@ -387,7 +387,7 @@ export const ar: Localized<typeof en> = {
           { title: "التقارير والتحسين", body: "تقارير واضحة عن النتائج التي تهمّك، مع تحويل الميزانية كل أسبوع نحو ما يحقّق الأداء." },
         ],
         proof: "physiowell",
-        image: "/images/services/performance-marketing-v2.webp",
+        image: "/images/services/performance-marketing-v3.webp",
       },
     ],
     process: { label: "كيف نعمل", title: ["من أول فكرة", "إلى آخر تفصيلة"] },
@@ -410,7 +410,7 @@ export const ar: Localized<typeof en> = {
     industryFilterLabel: "تصفية الأعمال حسب القطاع",
     filters: { label: "تصفية", service: "الخدمة", industry: "القطاع", clear: "مسح التصفية", results: "مشروعًا" },
     empty: "لا توجد أعمال في هذا التخصص بعد.",
-    clients: { label: "عملاؤنا", title: ["يثقون", "بنا"] },
+    clients: { label: "عملاؤنا", title: ["يثقون بنا"] },
     case: {
       client: "العميل",
       market: "السوق",
@@ -451,8 +451,14 @@ export const ar: Localized<typeof en> = {
       projects: "{count} مشاريع",
       back: "كل القطاعات",
       challenges: { label: "ما نسمعه", title: ["المشكلات", "التي نحلّها"] },
-      helps: { label: "كيف نساعد", title: ["ما نبنيه", "وندير أعماله"] },
-      work: { label: "أعمالنا", title: ["في هذا", "القطاع"] },
+      work: { label: "أعمال أخرى", title: ["المزيد في", "هذا القطاع"] },
+      proof: "عبر القطاع",
+      stages: { label: "أين أنت", title: ["أيًّا كانت", "نقطة بدايتك"], intro: "كل علامة في هذا القطاع جاءت إلينا في مرحلة مختلفة. اعثر على مرحلتك، وشاهد العمل الذي أجاب عنها." },
+      stageCase: "شاهد المشروع",
+      stageStart: "ابدأ من هنا",
+      lessons: { label: "ما تعلّمناه", title: ["ما علّمنا", "إياه القطاع"] },
+      insights: { label: "مقالات", title: ["قراءات", "لهذا القطاع"] },
+      faq: { label: "أسئلة", title: ["أسئلة", "شائعة"] },
     },
     closing: {
       label: "قطاعك",
@@ -509,7 +515,7 @@ export const ar: Localized<typeof en> = {
       title: ["لنبنِ", "ما هو قادم"],
       body: "أحضر لنا الموجز أو الإطلاق أو التحدي. وسنحضر الفريق كاملًا.",
       primary: "ابدأ مشروعًا",
-      secondary: "تعرّف على الفريق",
+      secondary: "انضم إلى الفريق",
     },
   },
 

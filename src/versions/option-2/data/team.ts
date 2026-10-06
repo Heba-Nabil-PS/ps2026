@@ -29,7 +29,7 @@ export const teamPage = {
     action: "Meet the leads",
     hello: "Say hello",
     /** Photos dealt into the hero's card stack. */
-    cards: ["/images/site/who-we-are.webp", "/images/site/ceo.webp", "/images/site/why.webp"],
+    cards: ["/images/site/who-we-are.webp", "/images/site/ceo-seif.webp", "/images/site/why.webp"],
   },
   manifesto: {
     label: "How we are built",

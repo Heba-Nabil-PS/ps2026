@@ -30,9 +30,9 @@ export function ProjectPosts({ eyebrow, title, body, items, shape = "portrait", 
   const sizes = columns === 2 ? "(min-width: 768px) 46vw, 92vw" : "(min-width: 768px) 30vw, 45vw";
 
   return (
-    <section className="gutter py-16 md:py-28">
+    <section className="gutter py-12 md:py-28">
       {eyebrow || title || body ? (
-        <div className="mb-10 grid grid-cols-1 gap-6 md:mb-16 md:grid-cols-12">
+        <div className="mb-8 grid grid-cols-1 gap-6 md:mb-16 md:grid-cols-12">
           <div className="md:col-span-7">
             {eyebrow ? <SectionLabel className="mb-5">{eyebrow}</SectionLabel> : null}
             {title ? (

@@ -8,7 +8,11 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
-const frameClass = ["aspect-[4/3] h-[62vh]", "aspect-[4/5] h-[72vh]", "aspect-square h-[56vh]", "aspect-[16/10] h-[64vh]"];
+const frameHeight = ["h-[62vh]", "h-[72vh]", "h-[56vh]", "h-[64vh]"];
+const frameAspect = ["aspect-[4/3]", "aspect-[4/5]", "aspect-square", "aspect-[16/10]"];
+
+/** An image with a known `ratio` keeps the strip's height rhythm, but its width follows its own proportions, uncropped. */
+const fit = (image: MediaRef) => (image.ratio ? { aspectRatio: image.ratio } : undefined);
 
 /**
  * The project's visuals as one horizontal strip (the option-2 case-study gallery).
@@ -25,7 +29,7 @@ export function ProjectHorizontalGallery({ images, tone, label }: { images: Medi
     body = (
       <ul className="gutter grid grid-cols-1 gap-6 md:grid-cols-2">
         {images.map((image) => (
-          <li key={image.src} className="relative aspect-[4/5] overflow-hidden rounded-card" style={{ backgroundColor: tone }}>
+          <li key={image.src} className="relative aspect-[4/5] overflow-hidden rounded-card" style={{ backgroundColor: tone, ...fit(image) }}>
             <Image src={image.src} alt={image.alt} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
           </li>
         ))}
@@ -35,7 +39,7 @@ export function ProjectHorizontalGallery({ images, tone, label }: { images: Medi
     body = (
       <ul className="gutter flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 [scrollbar-width:none]" data-lenis-prevent-horizontal>
         {images.map((image) => (
-          <li key={image.src} className="relative aspect-[4/5] w-[82vw] shrink-0 snap-center overflow-hidden rounded-card" style={{ backgroundColor: tone }}>
+          <li key={image.src} className="relative aspect-[4/5] w-[82vw] shrink-0 snap-center overflow-hidden rounded-card" style={{ backgroundColor: tone, ...fit(image) }}>
             <Image src={image.src} alt={image.alt} fill sizes="82vw" className="object-cover" />
           </li>
         ))}
@@ -46,7 +50,7 @@ export function ProjectHorizontalGallery({ images, tone, label }: { images: Medi
   }
 
   return (
-    <section aria-label={label} className="py-16 md:py-0">
+    <section aria-label={label} className="py-10 md:py-0">
       {body}
     </section>
   );
@@ -76,9 +80,13 @@ function PinnedTrack({ images, tone }: { images: MediaRef[]; tone: string }) {
   return (
     <div ref={sectionRef} className="relative" style={{ height: `calc(100vh + ${distance}px)` }}>
       <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden">
-        <motion.ul ref={trackRef} className="gutter flex w-max items-center gap-8 will-change-transform" style={{ x }}>
+        <motion.ul ref={trackRef} className="gutter flex w-max items-end gap-8 will-change-transform" style={{ x }}>
           {images.map((image, i) => (
-            <li key={image.src} className={cn("relative shrink-0 overflow-hidden rounded-card", frameClass[i % frameClass.length])} style={{ backgroundColor: tone }}>
+            <li
+              key={image.src}
+              className={cn("relative shrink-0 overflow-hidden rounded-card", frameHeight[i % frameHeight.length], !image.ratio && frameAspect[i % frameAspect.length])}
+              style={{ backgroundColor: tone, ...fit(image) }}
+            >
               <Image src={image.src} alt={image.alt} fill sizes="60vw" className="object-cover" />
             </li>
           ))}

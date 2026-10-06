@@ -29,7 +29,7 @@ export function ProjectFullWidthImage({ image, caption }: { image: MediaRef; cap
   );
 
   return (
-    <figure ref={root} className="relative py-10">
+    <figure ref={root} className="relative py-6 md:py-10">
       <div data-frame className="relative h-[70svh] overflow-hidden bg-surface md:h-[100svh]">
         <div data-layer className="absolute inset-0 will-change-transform">
           <Image src={image.src} alt={image.alt} fill sizes="100vw" className="object-cover" />

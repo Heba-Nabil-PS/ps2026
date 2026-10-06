@@ -10,7 +10,7 @@ export async function ServicesView() {
 
   return (
     <>
-      <PageHero title={page.hero.title} intro={page.hero.intro} />
+      <PageHero title={page.hero.title} intro={page.hero.intro} image="/images/services/services-banner.webp" raw />
       <ServiceStack />
       <ClosingCta
         label={page.closing.label}

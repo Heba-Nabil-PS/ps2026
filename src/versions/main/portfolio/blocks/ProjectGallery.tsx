@@ -40,9 +40,9 @@ export function ProjectGallery({ title, images }: { title?: string; images: Medi
   );
 
   return (
-    <section ref={root} className="gutter py-20 md:py-36">
+    <section ref={root} className="gutter py-14 md:py-36">
       {title ? (
-        <RevealText as="h2" className="text-label mb-12 text-eyebrow md:mb-20">
+        <RevealText as="h2" className="text-label mb-8 text-eyebrow md:mb-20">
           {title}
         </RevealText>
       ) : null}

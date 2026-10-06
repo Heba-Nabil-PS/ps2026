@@ -48,7 +48,7 @@ export async function AboutView() {
         </div>
       </section>
 
-      <ImageReveal src="/images/site/sky.webp" alt={copy.skyAlt} sizes="100vw" parallax={0.12} className="h-[46svh] md:h-[80svh]" />
+      <ImageReveal src="/images/about/about-banner.webp" alt={copy.skyAlt} sizes="100vw" parallax={0.12} className="aspect-[12/5] md:aspect-[2124/740]" />
 
       <Reasons />
 

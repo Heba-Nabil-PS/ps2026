@@ -24,7 +24,7 @@ export async function AboutView() {
 
   return (
     <>
-      <PageHero title={page.hero.title} intro={page.hero.intro} image="/images/site/sky.webp" />
+      <PageHero title={page.hero.title} image="/images/about/about-banner.webp" imageClassName="object-[76%_center] md:object-center" raw />
 
       <section className="gutter section-y grid gap-12 md:grid-cols-12">
         <div className="md:col-span-7">
@@ -74,7 +74,7 @@ export async function AboutView() {
         title={page.closing.title}
         body={page.closing.body}
         primary={{ label: page.closing.primary, href: "/start" }}
-        secondary={{ label: page.closing.secondary, href: "/team" }}
+        secondary={{ label: page.closing.secondary, href: "/careers" }}
       />
     </>
   );

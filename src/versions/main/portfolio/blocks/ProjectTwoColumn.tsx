@@ -9,7 +9,7 @@ type ProjectTwoColumnProps = { eyebrow?: string; title: string; body: string; im
 
 export function ProjectTwoColumn({ eyebrow, title, body, image, reverse }: ProjectTwoColumnProps) {
   return (
-    <section className="gutter grid grid-cols-1 items-center gap-12 py-20 md:grid-cols-12 md:py-36">
+    <section className="gutter grid grid-cols-1 items-center gap-8 py-14 md:grid-cols-12 md:gap-12 md:py-36">
       <ScrollReveal variant="clip" className={cn("md:col-span-6", reverse ? "md:order-2 md:col-start-7" : "md:order-1")}>
         <ParallaxMedia image={image} sizes="(min-width: 768px) 50vw, 100vw" speed={10} className="aspect-[4/5]" />
       </ScrollReveal>

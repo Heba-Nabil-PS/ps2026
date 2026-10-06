@@ -37,8 +37,8 @@ export function ProjectInteractive({ eyebrow, title, body, before, after }: Proj
   };
 
   return (
-    <section className="gutter py-24 md:py-28">
-      <div className="mb-12 grid grid-cols-1 gap-6 md:mb-16 md:grid-cols-12">
+    <section className="gutter py-14 md:py-28">
+      <div className="mb-8 grid grid-cols-1 gap-6 md:mb-16 md:grid-cols-12">
         <div className="md:col-span-3">{eyebrow ? <SectionLabel>{eyebrow}</SectionLabel> : null}</div>
         <div className="md:col-span-8">
           <RevealText as="h2" mode="words" className="text-headline font-medium">

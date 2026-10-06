@@ -20,7 +20,7 @@ const widths = {
 export function ProjectImage({ image, caption, aspect = "landscape", align = "center" }: ProjectImageProps) {
   const narrow = aspect !== "landscape";
   return (
-    <section className="gutter py-16 md:py-28">
+    <section className="gutter py-8 md:py-28">
       <figure className={cn(widths[align], narrow && align !== "center" && "md:w-5/12", narrow && align === "center" && "md:w-6/12")}>
         <ScrollReveal variant="clip">
           <ParallaxMedia image={image} sizes="(min-width: 768px) 60vw, 100vw" className={aspects[aspect]} />

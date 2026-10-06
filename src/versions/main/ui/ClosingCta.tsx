@@ -40,7 +40,7 @@ export function ClosingCta({ label, title, body, primary, secondary, bleed = tru
 
         <Label className="mb-4 md:mb-6">{label}</Label>
         {/* Headline scale keeps the closing compact: each title line sits on one row. */}
-        <StretchHeading lines={title} className="text-headline max-sm:text-[1.6rem]" />
+        <StretchHeading lines={title} className="text-headline max-sm:text-[min(1.6rem,6.4vw)]" />
         <Reveal className="mt-5 flex max-w-xl flex-col gap-5 md:mt-7 md:gap-6">
           <p data-reveal-item className="text-lead text-muted">
             {body}

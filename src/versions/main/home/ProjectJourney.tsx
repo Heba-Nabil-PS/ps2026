@@ -156,7 +156,7 @@ export function ProjectJourney({ projects, viewLabel }: { projects: readonly Jou
   );
 
   return (
-    <ul ref={root} className="relative isolate mt-12 flex flex-col gap-[clamp(3.5rem,9vw,9rem)] md:mt-20">
+    <ul ref={root} className="relative isolate mt-12 flex flex-col gap-[clamp(1.5rem,3vw,3rem)] md:mt-20">
       {/* Hidden on the home page: the logo's thread (LogoThread) is the one line through the page now. The cards still follow it. */}
       <svg data-journey-svg aria-hidden className="pointer-events-none invisible absolute inset-0 -z-10 size-full overflow-visible" fill="none" preserveAspectRatio="none">
         <defs>
@@ -205,8 +205,8 @@ function JourneyCard({ project, last, viewLabel }: { project: JourneyProject; la
 
       // Scrubbed by the scroll: the card rises, fades and straightens up as it comes in, and goes back down on the way up.
       gsap
-        .timeline({ scrollTrigger: { trigger: root.current, start: "top bottom", end: "top 45%", scrub: 0.8 } })
-        .fromTo(frame.current, { y: 220, opacity: 0, scale: 0.88, rotateX: 12, transformPerspective: 1200, transformOrigin: "50% 100%" }, { y: 0, opacity: 1, scale: 1, rotateX: 0, ease: "power2.out" })
+        .timeline({ scrollTrigger: { trigger: root.current, start: "top bottom", end: "top 70%", scrub: 0.8 } })
+        .fromTo(frame.current, { y: 90, opacity: 0, scale: 0.94, rotateX: 8, transformPerspective: 1200, transformOrigin: "50% 100%" }, { y: 0, opacity: 1, scale: 1, rotateX: 0, ease: "power2.out" })
         .fromTo(q("[data-media]"), { scale: 1.3 }, { scale: 1, ease: "power2.out" }, 0);
 
       const reveal = gsap.timeline({ scrollTrigger: { trigger: root.current, start: "top 75%", once: true } });

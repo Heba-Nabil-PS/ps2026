@@ -6,6 +6,10 @@ import { getServerContent } from "@/versions/main/portfolio/server";
 import { getCopy } from "@/versions/main/copy";
 import { LiveLinks, liveLinksOf } from "@/versions/main/work/CaseStory";
 
+/** Phones: one ruled row per fact, its label in a narrow column beside the values. From md up: columns. */
+const row = "grid grid-cols-[6.5rem_1fr] gap-x-5 border-b border-line py-5 md:flex md:flex-col md:border-0 md:py-0";
+const term = "text-label pt-1 text-muted md:mb-3 md:pt-0";
+
 /** Client / services / market / deliverables (and the live site or app, when there is one), followed by the editorial introduction. */
 export async function ProjectDetails({ project }: { project: PortfolioProject }) {
   const { t, locale } = await getServerContent();
@@ -19,19 +23,19 @@ export async function ProjectDetails({ project }: { project: PortfolioProject })
   ];
 
   return (
-    <section aria-labelledby="introduction" className="gutter py-24 md:py-28">
+    <section aria-labelledby="introduction" className="gutter py-14 md:py-28">
       <ScrollReveal
         as="dl"
         targets="[data-fact]"
         variant="up"
         stagger={0.07}
-        className={`grid grid-cols-2 gap-x-6 gap-y-10 border-t border-line pt-8 ${live.length ? "md:grid-cols-3 xl:grid-cols-5" : "md:grid-cols-4"}`}
+        className={`grid border-t border-line md:gap-x-6 md:gap-y-10 md:pt-8 ${live.length ? "md:grid-cols-3 xl:grid-cols-5" : "md:grid-cols-4"}`}
       >
         {facts.map((fact) => (
-          <div key={fact.label} data-fact className="flex flex-col">
-            <dt className="text-label mb-3 text-muted">{fact.label}</dt>
+          <div key={fact.label} data-fact className={row}>
+            <dt className={term}>{fact.label}</dt>
             <dd>
-              <ul className="flex flex-col gap-1">
+              <ul className="flex flex-col gap-1.5 md:gap-1">
                 {fact.value.map((item) => (
                   <li key={item}>{item}</li>
                 ))}
@@ -40,8 +44,8 @@ export async function ProjectDetails({ project }: { project: PortfolioProject })
           </div>
         ))}
         {live.length ? (
-          <div data-fact className="flex flex-col">
-            <dt className="text-label mb-3 text-muted">{labels.links}</dt>
+          <div data-fact className={row}>
+            <dt className={term}>{labels.links}</dt>
             <dd>
               <LiveLinks links={live} names={labels.linkNames} />
             </dd>
@@ -49,7 +53,7 @@ export async function ProjectDetails({ project }: { project: PortfolioProject })
         ) : null}
       </ScrollReveal>
 
-      <div className="mt-24 grid grid-cols-1 gap-8 md:mt-24 md:grid-cols-12">
+      <div className="mt-12 grid grid-cols-1 gap-6 md:mt-24 md:gap-8 md:grid-cols-12">
         <div className="md:col-span-3">
           <SectionLabel>{t.common.introduction}</SectionLabel>
         </div>

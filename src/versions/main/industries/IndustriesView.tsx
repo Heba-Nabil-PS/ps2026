@@ -20,7 +20,7 @@ export async function IndustriesView() {
         </p>
       </PageHero>
 
-      <section className="gutter pb-[clamp(5.5rem,12vw,11rem)]">
+      <section className="gutter pb-[clamp(1.5rem,3vw,2.5rem)]">
         <ul className="grid gap-x-6 gap-y-16 md:grid-cols-12 md:gap-y-24">
           {industries.map((industry, index) => (
             <li key={industry.slug} className={cn(index < 2 ? "md:col-span-6" : "md:col-span-4")}>

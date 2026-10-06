@@ -152,7 +152,7 @@ const en = {
     who: "PSdigital creates insight-driven brand experiences across the Middle East, Africa and beyond. From brand identity and UI/UX to web development and performance media, our in-house team carries every discipline under one roof: strategy, creative, web and product design, production and paid media.",
     noHandoffs:
       "No work is handed off between agencies. The same team that wins the brief builds the app, shoots the content and runs the media — which is why nothing is lost between vendors.",
-    skyAlt: "Brand key visual — connected flow",
+    skyAlt: "A figure moving through a motion-blurred blue space",
     howWeWork: "How we work",
     processTitle: "A process proven\nacross every case study",
     awardsLabel: "Awards & partnerships",
@@ -367,7 +367,7 @@ const ar: Dictionary = {
     who: "تصنع PSdigital تجارب علامات تجارية قائمة على الرؤى في الشرق الأوسط وأفريقيا وما بعدها. من الهوية التجارية وتجربة المستخدم إلى تطوير المواقع وإعلانات الأداء، يحمل فريقنا الداخلي كل التخصصات تحت سقف واحد: الاستراتيجية والإبداع وتصميم المواقع والمنتجات والإنتاج والإعلانات المدفوعة.",
     noHandoffs:
       "لا ينتقل أي عمل بين الوكالات. الفريق نفسه الذي يفوز بالموجز يبني التطبيق ويصوّر المحتوى ويدير الإعلانات — ولهذا لا يضيع شيء بين الموردين.",
-    skyAlt: "التصميم الرئيسي للعلامة — تدفّق متصل",
+    skyAlt: "شخص يتحرّك عبر مساحة زرقاء ضبابية بفعل الحركة",
     howWeWork: "كيف نعمل",
     processTitle: "منهجية مُثبتة\nفي كل دراسة حالة",
     awardsLabel: "الجوائز والشراكات",

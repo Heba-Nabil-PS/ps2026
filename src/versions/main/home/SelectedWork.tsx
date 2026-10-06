@@ -16,7 +16,7 @@ export async function SelectedWork() {
   const section = copy.home.work;
 
   return (
-    <section data-thread-visible className="gutter section-y" aria-labelledby="selected-work">
+    <section data-thread-visible className="gutter section-y relative pb-[clamp(1rem,2.5vw,2.5rem)]" aria-labelledby="selected-work">
       <header>
         <Label className="mb-6">{section.label}</Label>
         <div className="grid gap-8 md:grid-cols-12 md:items-start">

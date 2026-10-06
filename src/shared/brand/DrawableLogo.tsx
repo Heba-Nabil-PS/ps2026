@@ -25,7 +25,7 @@ export function DrawableLogo({
   title,
   children,
 }: {
-  variant?: keyof typeof LOGO_VIEWBOX;
+  variant?: "full" | "mark";
   renderStroke: (props: DrawStrokeProps) => ReactNode;
   className?: string;
   /** Tint the inner line with the brand blue (false for single-colour contexts). */

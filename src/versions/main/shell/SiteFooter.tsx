@@ -123,7 +123,8 @@ export function SiteFooter() {
               ))}
             </ul>
           </div>
-          <div>
+          {/* Pinned to the foot of the column, level with the bottom of the footer grid. */}
+          <div className="md:mt-auto">
             <h2 className="text-label mb-3 text-subtle">{copy.footer.follow}</h2>
             <SocialLinks />
           </div>

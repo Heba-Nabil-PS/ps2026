@@ -9,7 +9,7 @@ type ProjectVideoProps = { src: string; poster: string; label: string; caption?:
 export async function ProjectVideo({ src, poster, label, caption }: ProjectVideoProps) {
   const { t } = await getServerContent();
   return (
-    <figure className="py-10 md:py-16">
+    <figure className="py-6 md:py-16">
       <ScrollReveal variant="clip" duration={1.6} className="relative aspect-[4/5] overflow-hidden bg-surface sm:aspect-video">
         <Image src={poster} alt="" fill sizes="100vw" className="object-cover" />
         <LazyVideo src={src} label={label} />

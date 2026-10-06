@@ -9,7 +9,7 @@ type ProjectStatementProps = { eyebrow?: string; title: string; image?: MediaRef
 /** "hero" block — an oversized typographic beat, optionally over a dimmed image. */
 export function ProjectStatement({ eyebrow, title, image }: ProjectStatementProps) {
   return (
-    <section className={cn("relative overflow-hidden", image ? "flex min-h-[100svh] items-center py-24" : "py-28 md:py-28")}>
+    <section className={cn("relative overflow-hidden", image ? "flex min-h-[80svh] items-center py-16 md:min-h-[100svh] md:py-24" : "py-16 md:py-28")}>
       {image ? (
         <>
           <ParallaxMedia image={image} sizes="100vw" speed={12} zoom className="absolute inset-0" />

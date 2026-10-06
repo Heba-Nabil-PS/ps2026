@@ -151,6 +151,11 @@ html[data-theme="light"] {
   font-size: clamp(2rem, 6.2vw, 6.75rem);
   line-height: 0.9;
 }
+/* Display at 70%, for long titles that should not crowd the hero (industry pages). */
+@utility text-display-sm {
+  font-size: clamp(1.4rem, 4.34vw, 4.725rem);
+  line-height: 0.9;
+}
 @utility text-headline {
   font-size: clamp(1.55rem, 3.8vw, 4rem);
   line-height: 0.94;
@@ -221,10 +226,13 @@ html[data-theme="light"] {
   -webkit-backdrop-filter: blur(18px) saturate(1.25);
 }
 
-/* Black-and-white, navy-graded imagery (P5). `.is-lit` restores colour. */
+/* Black-and-white, navy-graded imagery (P5) that turns to colour on hover. Touch screens never hover,
+   so there the image stays in colour instead of grey for good. */
 @utility mono {
-  filter: grayscale(1) contrast(1.06) brightness(0.86);
   transition: filter 0.9s var(--ease-expo);
+  @media (hover: hover) and (pointer: fine) {
+    filter: grayscale(1) contrast(1.06) brightness(0.86);
+  }
 }
 
 /* Hollow type: the outlined words in the WordMarquee. Variable fonts draw
@@ -388,6 +396,9 @@ html:lang(ar) .text-mega {
 }
 html:lang(ar) .text-display {
   font-size: clamp(1.75rem, 4.7vw, 5.1rem);
+}
+html:lang(ar) .text-display-sm {
+  font-size: clamp(1.225rem, 3.29vw, 3.57rem);
 }
 html:lang(ar) .text-headline {
   font-size: clamp(1.4rem, 3vw, 3.2rem);
@@ -793,10 +804,12 @@ body:has([data-logo-thread]) .footer-mark-name {
   .js .client-field,
   .client-field[data-live] {
     --lanes: 4;
+    /* A slimmer clear band than the default (EDGE), so the wall sits close to its heading. */
+    --edge: 0.15;
     display: block;
     position: relative;
     /* Lanes at 1.7 marks apart, plus a clear band above and below (PITCH and EDGE in the component). */
-    height: calc(var(--mark) * 1.7 * (var(--lanes) + 0.7));
+    height: calc(var(--mark) * 1.7 * (var(--lanes) + 0.3));
     /* The clear band already separates the lanes from the heading. */
     margin-top: clamp(0.5rem, 2vw, 1.5rem);
     padding: 0;
