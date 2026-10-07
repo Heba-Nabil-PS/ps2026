@@ -12,7 +12,7 @@ import { useId, useState } from "react";
 const icons = [Gem, Users, ChartLine, Sprout];
 
 /**
- * Why join: a blue-duotone image panel, as tall as the list, beside four reasons. Hovering, focusing or
+ * Why join: an image panel, as tall as the list, beside four reasons. Hovering, focusing or
  * tapping a reason opens it in place and cross-fades the panel to its photo.
  * One reason is always open.
  */
@@ -47,14 +47,11 @@ export function WhyJoin({
               sizes="(min-width: 1024px) 50vw, 100vw"
               quality={75}
               className={cn(
-                "object-cover grayscale contrast-[1.1] transition-[opacity,transform] duration-[1.2s] ease-expo",
+                "object-cover transition-[opacity,transform] duration-[1.2s] ease-expo",
                 index === active ? "scale-100 opacity-100" : "scale-[1.06] opacity-0",
               )}
             />
           ))}
-          {/* Blue duotone: the grey photo takes the brand blue, then the shadows sink to navy. */}
-          <div aria-hidden className="absolute inset-0 bg-[#2f7fc1] mix-blend-color" />
-          <div aria-hidden className="absolute inset-0 bg-[#0b2a4a] mix-blend-multiply opacity-60" />
           <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,transparent_45%,rgb(3_7_13/0.8))]" />
           <AnimatePresence mode="wait" initial={false}>
             <motion.div

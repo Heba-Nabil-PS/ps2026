@@ -15,11 +15,23 @@ type ShowreelProps = {
   slides: readonly { image: string; alt: string }[];
 };
 
-const insetFor = (w: number, h: number, radius: number) => {
-  const x = ((1 - w) / 2) * 100;
-  const y = ((1 - h) / 2) * 100;
-  return `inset(${y.toFixed(3)}% ${x.toFixed(3)}% ${y.toFixed(3)}% ${x.toFixed(3)}% round ${radius.toFixed(1)}px)`;
+type Shape = { w: number; h: number; radius: number };
+
+/**
+ * The frame as a share (w, h) of the screen with corners of `radius`, in transforms alone, which
+ * every browser moves on its compositor: the screen-sized box is scaled down to the frame (its
+ * corners rounded so they come out at `radius` once scaled) and the media inside scaled back up
+ * to cover it, so the picture sits at the showreel's own scale whatever the frame's shape.
+ */
+const frameStyle = ({ w, h, radius }: Shape) => {
+  const k = Math.max(w, h);
+  return {
+    box: { transform: `scale(${w.toFixed(4)}, ${h.toFixed(4)})`, borderRadius: `${(radius / w).toFixed(2)}px / ${(radius / h).toFixed(2)}px` },
+    media: { transform: `scale(${(k / w).toFixed(4)}, ${(k / h).toFixed(4)})` },
+  };
 };
+
+const opening = frameStyle({ ...REEL_START_SIZE.wide, radius: REEL_START_RADIUS });
 
 /**
  * The showreel, pulled open by the scroll. It overlaps the positioning section's
@@ -43,6 +55,12 @@ export function Showreel({ label, year, play, reel, video, slides }: ShowreelPro
       const inner = media.current;
       if (!section || !screen || !box || !inner) return;
 
+      const shape = (next: Shape) => {
+        const style = frameStyle(next);
+        Object.assign(box.style, style.box);
+        Object.assign(inner.style, style.media);
+      };
+
       const mm = gsap.matchMedia();
       mm.add(
         {
@@ -52,20 +70,16 @@ export function Showreel({ label, year, play, reel, video, slides }: ShowreelPro
         (context) => {
           const { phone } = context.conditions as { phone: boolean; wide: boolean };
           const start = phone ? REEL_START_SIZE.phone : REEL_START_SIZE.wide;
-          const shape = { w: start.w, h: start.h, radius: REEL_START_RADIUS };
-          // The media grows with the frame: at any size it shows the whole picture, as the positioning frame did.
-          const apply = () => {
-            box.style.clipPath = insetFor(shape.w, shape.h, shape.radius);
-            // Scaled to cover the frame, as the positioning frame shows it.
-            inner.style.transform = `scale(${Math.max(shape.w, shape.h).toFixed(4)})`;
-          };
+          const current: Shape = { w: start.w, h: start.h, radius: REEL_START_RADIUS };
+          const apply = () => shape(current);
           apply();
 
-          // Hidden until the handoff: until then the positioning frame is the reel.
+          // Hidden until the handoff: until then the positioning frame is the reel. Shown to the end of the page,
+          // spelt out: "max" reads as a clamp keyword and falls back to the section's own end.
           const handover = ScrollTrigger.create({
             trigger: section,
             start: "top top",
-            end: "max",
+            end: () => ScrollTrigger.maxScroll(window),
             onToggle: (self) => gsap.set(screen, { autoAlpha: self.isActive ? 1 : 0 }),
           });
           if (!handover.isActive) gsap.set(screen, { autoAlpha: 0 });
@@ -80,7 +94,7 @@ export function Showreel({ label, year, play, reel, video, slides }: ShowreelPro
             // "Play" / "Reel" come in beside the frame.
             .fromTo("[data-reel-label]", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, 0)
             // The pull into the reel: it opens straight away, quick at first, easing into the full screen.
-            .to(shape, { w: 1, h: 1, radius: 0, duration: 1.1, ease: "power2.out" }, 0.1)
+            .to(current, { w: 1, h: 1, radius: 0, duration: 1.1, ease: "power2.out" }, 0.1)
             .fromTo("[data-reel-shade]", { opacity: 0 }, { opacity: 1, duration: 0.9 }, 0.1)
             .fromTo("[data-reel-label='left']", { xPercent: 0 }, { xPercent: -40, duration: 1.1, ease: "power2.in" }, 0.1)
             .fromTo("[data-reel-label='right']", { xPercent: 0 }, { xPercent: 40, duration: 1.1, ease: "power2.in" }, 0.1)
@@ -96,7 +110,7 @@ export function Showreel({ label, year, play, reel, video, slides }: ShowreelPro
         },
       );
       mm.add("(prefers-reduced-motion: reduce)", () => {
-        box.style.clipPath = insetFor(1, 1, 0);
+        shape({ w: 1, h: 1, radius: 0 });
       });
 
       return () => mm.revert();
@@ -106,10 +120,11 @@ export function Showreel({ label, year, play, reel, video, slides }: ShowreelPro
 
   return (
     // Pulled up over the positioning section's last screen, where its frame hands over (only when that section animates).
-    <section aria-label={label} ref={track} className="relative h-[200vh] motion-safe:mt-[-100svh]">
-      <div ref={stage} className="sticky top-0 flex h-svh items-center justify-center overflow-hidden">
-        <div ref={frame} className="absolute inset-0 overflow-hidden bg-ink-950" style={{ clipPath: insetFor(REEL_START_SIZE.wide.w, REEL_START_SIZE.wide.h, REEL_START_RADIUS) }}>
-          <div ref={media} className="absolute inset-0 will-change-transform">
+    // Until then it must not come between the pointer and that frame: only the stage, once shown, meets the pointer.
+    <section aria-label={label} ref={track} className="pointer-events-none relative h-[200vh] motion-safe:mt-[-100svh]">
+      <div ref={stage} className="pointer-events-auto sticky top-0 flex h-svh items-center justify-center overflow-hidden">
+        <div ref={frame} className="absolute inset-0 overflow-hidden bg-ink-950 will-change-transform" style={opening.box}>
+          <div ref={media} className="absolute inset-0 will-change-transform" style={opening.media}>
             {video ? (
               <video
                 className="absolute inset-0 size-full object-cover"

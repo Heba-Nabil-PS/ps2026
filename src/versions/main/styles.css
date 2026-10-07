@@ -226,15 +226,6 @@ html[data-theme="light"] {
   -webkit-backdrop-filter: blur(18px) saturate(1.25);
 }
 
-/* Black-and-white, navy-graded imagery (P5) that turns to colour on hover. Touch screens never hover,
-   so there the image stays in colour instead of grey for good. */
-@utility mono {
-  transition: filter 0.9s var(--ease-expo);
-  @media (hover: hover) and (pointer: fine) {
-    filter: grayscale(1) contrast(1.06) brightness(0.86);
-  }
-}
-
 /* Hollow type: the outlined words in the WordMarquee. Variable fonts draw
    overlapping contours (the D's stem, the A's crossbar), so a transparent fill
    shows every seam. Instead the stroke is doubled and painted under a fill in
@@ -271,11 +262,6 @@ html[data-theme="light"] {
   --color-line: #d3dde9;
   background: var(--color-bg);
   color: var(--color-fg);
-}
-
-/* A container marked lit (e.g. the service card at the top of the stack) shows its images in colour. */
-.is-lit .mono {
-  filter: none;
 }
 
 /* ------------------------------------------------------------------

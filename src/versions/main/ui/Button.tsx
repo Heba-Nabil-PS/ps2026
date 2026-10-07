@@ -36,7 +36,7 @@ function Content({ children, variant }: { children: ReactNode; variant: Variant 
         className={cn(
           "grid size-8 place-items-center rounded-full transition-[background-color,color,box-shadow] duration-300 rtl:-scale-x-100",
           variant === "line"
-            ? "bg-paper text-ink-900"
+            ? "text-paper ring-1 ring-inset ring-fg/25 group-hover:bg-paper group-hover:text-ink-900"
             : "bg-fg/10 text-paper shadow-[inset_0_1px_0_rgb(255_255_255/0.25)] ring-1 ring-inset ring-fg/15 group-hover:bg-paper group-hover:text-ink-900",
         )}
       >

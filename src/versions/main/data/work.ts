@@ -34,6 +34,13 @@ export function categoriesOf(project: PortfolioProject, serviceTitles: readonly 
     .map(([slug]) => slug);
 }
 
+/** The deck discipline an operational service name (siteConfig.services title) belongs to, if any. */
+export function disciplineOf(serviceTitle: string, serviceTitles: readonly string[]) {
+  const index = serviceTitles.indexOf(serviceTitle);
+  if (index === -1) return undefined;
+  return Object.entries(legacyServices).find(([, indexes]) => indexes.includes(index))?.[0];
+}
+
 /** Filter options: only disciplines that have at least one case, in deck order. */
 export function buildCategories(
   disciplines: readonly { slug: string; title: string }[],

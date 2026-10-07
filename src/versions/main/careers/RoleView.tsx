@@ -29,7 +29,7 @@ export function RoleView({ lang, role }: { lang: Locale; role: RoleDetail }) {
     <>
       {jsonLd ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} /> : null}
 
-      <PageHero title={[role.title]} intro={role.summary} image="/images/site/who-we-are.webp">
+      <PageHero title={[role.title]} intro={role.summary} image="/images/careers/careers-banner.webp" imageClassName="object-[72%_center] md:object-center" raw>
         <div className="flex flex-wrap items-center gap-6">
           <ButtonLink href="#apply">{copy.careers.hero.cta}</ButtonLink>
           <BackLink href="/careers" label={copy.careers.role.back} transitionLabel={copy.meta.pages.careers.title} />

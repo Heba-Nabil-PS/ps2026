@@ -18,7 +18,9 @@ const retired: { source: string; destination: string }[] = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
-    formats: ["image/avif", "image/webp"],
+    // WebP only: AVIF is smaller, but decoding a screen-wide AVIF took 60–350 ms on an ordinary laptop, against ~30 ms for
+    // WebP, and the home page decodes such pictures as it scrolls (the reel's slides, the cards): each one a dropped frame or more.
+    formats: ["image/webp"],
     qualities: [60, 70, 75, 78, 80, 85],
   },
   // The one experimental key STACK-AND-STRUCTURE.md §0 tolerates: the body limit only exists here,

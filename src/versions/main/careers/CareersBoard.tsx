@@ -1,7 +1,7 @@
 "use client";
 
 import type { Role } from "@/data/careers";
-import { fill } from "@/versions/main/copy";
+import { fill } from "@/versions/main/copy-helpers";
 import { useCopy } from "@/versions/main/use-copy";
 import { ease } from "@/lib/motion";
 import { cn } from "@/lib/utils";

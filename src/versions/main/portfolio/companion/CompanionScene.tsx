@@ -5,14 +5,21 @@ import { useEffect, useRef } from "react";
 import {
   ACESFilmicToneMapping,
   AmbientLight,
+  BackSide,
   Box3,
+  Color,
   DirectionalLight,
+  Float32BufferAttribute,
   Group,
   HemisphereLight,
+  Mesh,
+  MeshBasicMaterial,
   PerspectiveCamera,
+  PlaneGeometry,
   PMREMGenerator,
   Scene,
   Sphere,
+  SphereGeometry,
   Vector3,
   WebGLRenderer,
 } from "three";
@@ -100,7 +107,54 @@ const choreographies: Record<Motion, Choreography> = {
   },
 };
 
+/**
+ * What moonlit water reflects, for metal and gloss to catch: a bright surface overhead, a dark
+ * horizon, nothing below, and a few shafts of moonlight through the surface for the highlights.
+ */
+class DeepEnvironment extends Scene {
+  constructor() {
+    super();
+    const RADIUS = 20;
+    const sky = new SphereGeometry(RADIUS, 32, 24);
+    const position = sky.getAttribute("position");
+    const colors = new Float32Array(position.count * 3);
+    const zenith = new Color("#a8dcff").multiplyScalar(1.4);
+    const horizon = new Color("#0a2740");
+    const abyss = new Color("#010205");
+    const shade = new Color();
+    for (let i = 0; i < position.count; i++) {
+      const y = position.getY(i) / RADIUS;
+      if (y >= 0) shade.copy(horizon).lerp(zenith, y ** 1.5);
+      else shade.copy(horizon).lerp(abyss, Math.min(-y * 2, 1));
+      colors.set([shade.r, shade.g, shade.b], i * 3);
+    }
+    sky.setAttribute("color", new Float32BufferAttribute(colors, 3));
+    this.add(new Mesh(sky, new MeshBasicMaterial({ vertexColors: true, side: BackSide })));
+    const shaft = new MeshBasicMaterial({ color: new Color("#dff3ff").multiplyScalar(5) });
+    for (const [x, z, turn] of [
+      [-6, -4, 0.4],
+      [4, -7, -0.6],
+      [7, 3, 1.2],
+    ]) {
+      const beam = new Mesh(new PlaneGeometry(2, 9), shaft);
+      beam.position.set(x, 14, z);
+      beam.rotation.set(Math.PI / 2, 0, turn);
+      this.add(beam);
+    }
+  }
+
+  dispose() {
+    this.traverse((child) => {
+      if (!(child instanceof Mesh)) return;
+      child.geometry.dispose();
+      child.material.dispose();
+    });
+  }
+}
+
 function light(scene: Scene, renderer: WebGLRenderer, mood: Mood) {
+  const pmrem = new PMREMGenerator(renderer);
+  let room: DeepEnvironment | RoomEnvironment;
   if (mood === "deep") {
     // Moonlit water: a cold sky above, a near-black deep below, a hard blue rim from behind.
     scene.add(new HemisphereLight("#5fa8e6", "#02060b", 0.45), new AmbientLight("#0c2235", 0.6));
@@ -109,18 +163,18 @@ function light(scene: Scene, renderer: WebGLRenderer, mood: Mood) {
     const rim = new DirectionalLight("#4cc3ff", 4);
     rim.position.set(-3, 4, -6);
     scene.add(key, rim);
-    return () => {};
+    room = new DeepEnvironment();
+  } else {
+    // Studio: a soft room reflected in metal, glass and glaze, with a warm key and a cool rim.
+    const key = new DirectionalLight("#fff1e0", 1.6);
+    key.position.set(3, 4, 5);
+    const rim = new DirectionalLight("#b9dcff", 1.8);
+    rim.position.set(-4, 2, -5);
+    scene.add(key, rim);
+    room = new RoomEnvironment();
   }
-  // Studio: a soft room reflected in metal, glass and glaze, with a warm key and a cool rim.
-  const pmrem = new PMREMGenerator(renderer);
-  const room = new RoomEnvironment();
   const environment = pmrem.fromScene(room, 0.04).texture;
   scene.environment = environment;
-  const key = new DirectionalLight("#fff1e0", 1.6);
-  key.position.set(3, 4, 5);
-  const rim = new DirectionalLight("#b9dcff", 1.8);
-  rim.position.set(-4, 2, -5);
-  scene.add(key, rim);
   return () => {
     environment.dispose();
     room.dispose();
@@ -174,6 +228,7 @@ export default function CompanionScene({ build, motion, mood, anchor, veil, unti
     holder.rotation.order = "YXZ";
     holder.add(centred);
     scene.add(holder);
+    if (model.ambient) scene.add(model.ambient);
     const unit = 1 / Math.max(bounds.radius, 1e-3);
 
     const pose: Pose = { ...plan.pose };
@@ -245,7 +300,7 @@ export default function CompanionScene({ build, motion, mood, anchor, veil, unti
       const turning = Math.abs(pose.yaw - lastYaw) / Math.max(dt, 1e-3);
       lastYaw = pose.yaw;
       beat += dt * (2.4 + Math.min(turning * 2.2, 6));
-      model.update?.({ time: t, beat });
+      model.update?.({ time: t, beat, dt, height: renderer.domElement.height });
 
       renderer.render(scene, camera);
     };
@@ -264,6 +319,7 @@ export default function CompanionScene({ build, motion, mood, anchor, veil, unti
       if (veil) veil.style.opacity = "0";
       unlight();
       dispose(model.object);
+      if (model.ambient) dispose(model.ambient);
       renderer.dispose();
       renderer.forceContextLoss();
       renderer.domElement.remove();

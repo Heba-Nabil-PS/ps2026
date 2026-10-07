@@ -8,16 +8,23 @@ import {
   Mesh,
   MeshPhysicalMaterial,
   MeshStandardMaterial,
+  Points,
   Vector2,
   type Material,
   type MeshPhysicalMaterialParameters,
   type Object3D,
 } from "three";
 
-/** A 3D companion: the object, plus an optional per-frame hook for its own life (a tail beat, a wobble). */
+/**
+ * A 3D companion: the object, plus an optional per-frame hook for its own life (a tail beat, a wobble).
+ * `ambient` is anything it leaves in the water rather than carries (a wake, bubbles): drawn in the
+ * scene's own space, untouched by the object's pose, and freed with it.
+ */
 export type CompanionModel = {
   object: Object3D;
-  update?: (frame: { time: number; beat: number }) => void;
+  ambient?: Object3D;
+  /** `height` is the canvas height in device pixels, for anything sized in screen space (points). */
+  update?: (frame: { time: number; beat: number; dt: number; height: number }) => void;
 };
 
 type Triple = [number, number, number];
@@ -100,7 +107,7 @@ export function mottle(geometry: BufferGeometry, from: string, to: string, scale
 /** Frees every geometry, material and texture under an object. */
 export function dispose(object: Object3D) {
   object.traverse((child) => {
-    if (!(child instanceof Mesh)) return;
+    if (!(child instanceof Mesh || child instanceof Points)) return;
     child.geometry.dispose();
     for (const material of [child.material].flat() as Material[]) {
       for (const value of Object.values(material)) if (value && typeof value === "object" && "isTexture" in value) value.dispose();

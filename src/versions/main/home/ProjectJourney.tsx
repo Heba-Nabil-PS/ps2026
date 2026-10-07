@@ -13,7 +13,7 @@ import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { useRef, type PointerEvent } from "react";
 
-type JourneyProject = Pick<PortfolioProject, "slug" | "title" | "category" | "description" | "market" | "color" | "hoverVideo" | "tags"> & { image: string };
+type JourneyProject = Pick<PortfolioProject, "slug" | "title" | "description" | "market" | "color" | "hoverVideo" | "services"> & { image: string };
 
 /** Catmull-Rom through the points, as cubic Béziers: one smooth line that passes through every one of them. */
 function smoothPath(points: { x: number; y: number }[]) {
@@ -292,20 +292,16 @@ function JourneyCard({ project, last, viewLabel }: { project: JourneyProject; la
             </div>
           </div>
 
-          {/* Legibility scrim + overlay metadata */}
-          <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-bg/75 via-bg/5 to-bg/30" />
+          {/* Overlay metadata */}
           <div className="pointer-events-none absolute inset-0 flex flex-col justify-between p-5 md:p-7">
-            <div className="text-label flex items-start justify-end gap-4 text-fg/85">
-              <span data-meta className="text-end">
-                {project.category}
-                {project.market ? (
-                  <>
-                    <span className="mx-2 text-fg/40">/</span>
-                    {project.market}
-                  </>
-                ) : null}
-              </span>
-            </div>
+            {/* Only the market on the image: the services sit as pills under the card. */}
+            {project.market ? (
+              <div className="text-label flex items-start justify-end gap-4 text-fg/85">
+                <span data-meta className="text-end">
+                  {project.market}
+                </span>
+              </div>
+            ) : null}
           </div>
         </div>
 
@@ -329,8 +325,9 @@ function JourneyCard({ project, last, viewLabel }: { project: JourneyProject; la
               <ArrowRight strokeWidth={2.25} className="size-[0.85em] rtl:-scale-x-100" />
             </span>
           </div>
+          {/* The services behind the case, not its sector: the home cards answer "what did PSdigital do here". */}
           <ul data-meta className="mt-3 flex flex-wrap gap-2">
-            {project.tags.slice(0, 3).map((tag) => (
+            {project.services.slice(0, 3).map((tag) => (
               <li key={tag} className="text-label rounded-full border border-line px-3 py-1.5 text-[0.75rem] text-muted md:text-[0.65rem]">
                 {tag}
               </li>

@@ -20,7 +20,6 @@ export function InsightCard({ insight, date, viewLabel, sizes = "(min-width: 768
           quality={75}
           className="object-cover transition-transform duration-[1.4s] ease-expo group-hover:scale-[1.04] group-focus-visible:scale-[1.04]"
         />
-        <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,transparent_55%,rgb(3_7_13/0.55))] transition-opacity duration-700 group-hover:opacity-0" />
         <span className="text-label absolute start-5 top-5 rounded-full bg-ink-950/60 px-3 py-2 text-paper backdrop-blur-md">{insight.topic}</span>
       </div>
       <div className="mt-5 flex items-start justify-between gap-6">

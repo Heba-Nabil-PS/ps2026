@@ -93,8 +93,8 @@ export const en = {
       secondary: "What we do",
     },
     proof: {
-      label: "In our clients' words",
-      title: ["Heard from", "the other side"],
+      label: "Proof, not promises",
+      title: ["Heard from", "our clients"],
       pending: "Quote to collect",
       clients: "Choose a result",
       previous: "Previous result",
@@ -136,11 +136,11 @@ export const en = {
     positioning: {
       label: "Who we are",
       statement:
-        "PSdigital is a forward-thinking creative partner. We bring strategy, creativity and innovation into one room, so the idea that wins the brief is the idea that ships, and it keeps moving your numbers long after launch.",
+        "PSdigital is your creative partner. We bring strategy, creativity and innovation together, to move brands, people, and business forward.",
       pillars: [
-        { title: "Strategy", body: "A point of view before a plan." },
-        { title: "Creativity", body: "Work people stop for, and remember." },
-        { title: "Innovation", body: "Platforms built to grow with you." },
+        { title: "Strategy", body: "Moves brands. Positioning that gives every decision a direction." },
+        { title: "Creativity", body: "Moves people. Ideas and content they notice, feel and share." },
+        { title: "Innovation", body: "Moves business. Digital products and performance built to grow." },
       ],
     },
     showreel: {
@@ -158,8 +158,8 @@ export const en = {
     },
     work: {
       label: "Projects",
-      title: ["Selected", "work"],
-      intro: "Brand systems, platforms and campaigns for companies that run across markets. Every case is designed, built and measured in-house.",
+      title: ["Work that", "moves"],
+      intro: "Creative work built for brands with more than one market in mind.",
       cta: "All work",
       /** The pinned orbit of flagship cases (home/universe). One item per featured slug, in featured order. */
       universe: {
@@ -207,9 +207,9 @@ export const en = {
       },
     },
     services: {
-      label: "What we do",
-      title: ["End to end", "services"],
-      intro: "One team, no hand-offs. Pick the one you need, or let them work together.",
+      label: "Services",
+      title: ["Serving", "what you need"],
+      intro: "Everything you need to move your business forward.",
       cta: "All services",
     },
     industries: {
@@ -229,14 +229,14 @@ export const en = {
     },
     insights: {
       label: "Insights",
-      title: ["What we", "have learned"],
-      intro: "Practical notes from the brands and platforms we build and run.",
+      title: ["Learned from", "the field"],
+      intro: "What we see across markets, platforms and projects.",
       cta: "All insights",
     },
     closing: {
       label: "Next",
-      title: ["Let's build your", "brand together"],
-      body: "Tell us where you want to go. A strategist and a creative lead will reply within two working days.",
+      title: ["Let's build your", "next move"],
+      body: "Bring the brief, and we'll take it from there.",
       primary: "Start a project",
       secondary: "Join the team",
     },
@@ -254,8 +254,9 @@ export const en = {
       back: "All services",
       deliverables: { label: "What you get", title: ["What we", "deliver"] },
       work: { label: "Selected work", title: ["In", "practice"], all: "All {service} work" },
-      industries: { label: "Industries", title: ["Where it", "works"] },
+      industries: { label: "Industries", title: ["Where it", "works"], all: "All industries" },
       faq: { label: "Questions", title: ["Frequently", "asked"] },
+      numbers: "In numbers",
       closing: {
         label: "Next",
         title: ["Start with", "one discipline"],
@@ -269,7 +270,7 @@ export const en = {
         slug: "social-media",
         title: "Social Media",
         headline: ["Always", "on"],
-        summary: "Strategy, content and community for brands that publish every day, in Arabic and English.",
+        summary: "Daily content, real conversations, and a voice your audience recognises.",
         intro: "Strategy, content and community for brands that publish every day. One team plans the calendar, makes the posts and answers the comments, in Arabic and English.",
         faq: [
           { question: "Do you work in Arabic and English?", answer: "Yes. We plan, write and manage content in both, including mixed tones where the brand calls for it." },
@@ -284,6 +285,12 @@ export const en = {
           { title: "Influencer programmes", body: "Creators chosen for fit rather than follower count, then briefed, contracted and measured like any other channel." },
           { title: "Social listening & reporting", body: "What people say about you and your category, plus monthly reports against the goals we agreed at the start." },
         ],
+        numbers: [
+          { value: 900, suffix: "M+", label: "Viewership for a show whose accounts we built from zero" },
+          { value: 170, suffix: "+", label: "Companies that applied online and pitched on Shark Tank Egypt" },
+          { value: 4, suffix: "", label: "Seasons of always-on content, published with every episode" },
+          { value: 2, suffix: "", label: "Languages on every post, Arabic and English" },
+        ],
         proof: "shark-tank-egypt",
         image: "/images/services/social-media-v3.webp",
       },
@@ -291,7 +298,7 @@ export const en = {
         slug: "branding",
         title: "Branding",
         headline: ["Built", "to last"],
-        summary: "Positioning, identity and bilingual brand systems that travel across markets without losing their voice.",
+        summary: "Positioning and identity that define who you are, everywhere.",
         intro: "Positioning, identity and bilingual brand systems built to travel. We design in Arabic and English from the first sketch, so the brand reads the same in every market.",
         faq: [
           { question: "Can one brand work across many markets?", answer: "Yes. Texas Chicken runs one bilingual brand system across sixteen markets in the Middle East and Africa." },
@@ -306,6 +313,12 @@ export const en = {
           { title: "Guidelines & toolkits", body: "Clear rules, templates and asset libraries your team and partners can use without us in the room." },
           { title: "Packaging & retail", body: "The brand brought onto shelves, stores and menus, from packaging structure to in-store signage." },
         ],
+        numbers: [
+          { value: 16, suffix: "", label: "Markets running on one bilingual brand system" },
+          { value: 1, suffix: "", label: "Identity replacing sixteen country-by-country looks" },
+          { value: 2, suffix: "", label: "Languages designed together from the first sketch" },
+          { value: 3, suffix: "", label: "Sub-brands brought under one visual language" },
+        ],
         proof: "texas-chicken",
         image: "/images/services/branding-v3.webp",
       },
@@ -313,7 +326,7 @@ export const en = {
         slug: "website-app-design",
         title: "Website & App Design",
         headline: ["Designed", "& built"],
-        summary: "Websites, ordering apps, loyalty and kiosks: researched, designed and engineered under one roof.",
+        summary: "Digital experiences built around how people think, click, browse and buy.",
         intro: "Websites, ordering apps, loyalty and kiosks: researched, designed and engineered under one roof, so what is designed is what ships.",
         faq: [
           { question: "Can one platform serve several countries?", answer: "Yes. The Texas Chicken ordering app replaced sixteen country-by-country experiences with one market-aware journey." },
@@ -328,6 +341,12 @@ export const en = {
           { title: "Loyalty & ordering", body: "Ordering, payments, rewards and kiosks that bring customers back, built for one market or sixteen." },
           { title: "Headless & custom builds", body: "Custom platforms, integrations and headless setups for when an off-the-shelf template will not do the job." },
         ],
+        numbers: [
+          { value: 16, suffix: "", label: "Countries ordering through one regional app" },
+          { value: 1, suffix: "", label: "Checkout, replacing sixteen separate journeys" },
+          { value: 3, suffix: "", label: "Ways to order on one journey: delivery, pick-up and dine-in" },
+          { value: 2, suffix: "", label: "Taps from craving to checkout in a dessert app" },
+        ],
         proof: "million-pound-menu",
         image: "/images/services/website-app-design-v3.webp",
       },
@@ -335,7 +354,7 @@ export const en = {
         slug: "creative-production",
         title: "Creative Production",
         headline: ["Made", "in-house"],
-        summary: "Photography, film, motion and 3D produced by our own studio, from key visual to always-on assets.",
+        summary: "Making every frame visible with creative production, from key visuals to always-on assets.",
         intro: "Photography, film, motion and 3D produced by our own studio. The key visual and the hundredth always-on post come from the same team.",
         faq: [
           { question: "Do you shoot in-house?", answer: "Yes. Art direction, photography, film and post-production are handled by our own studio." },
@@ -350,6 +369,12 @@ export const en = {
           { title: "Post-production", body: "Editing, colour grading, retouching, sound and subtitles, finished in-house for every format and ratio." },
           { title: "Studio & location shoots", body: "Shoots planned and run end to end, in our studio or on location, with crew, permits and logistics handled." },
         ],
+        numbers: [
+          { value: 80, suffix: "+", label: "In-house specialists, so no shoot is subcontracted" },
+          { value: 4, suffix: "", label: "Seasons of Shark Tank Egypt content, live with every episode" },
+          { value: 3, suffix: "", label: "Executions carrying one line, from billboards to street posters" },
+          { value: 2, suffix: "", label: "Languages every asset is produced in from the start" },
+        ],
         proof: "m-squared",
         image: "/images/services/creative-production-v3.webp",
       },
@@ -357,7 +382,7 @@ export const en = {
         slug: "digital-consultation",
         title: "Digital Consultation",
         headline: ["Think", "first"],
-        summary: "Audits, roadmaps and a clear point of view before anything is designed or bought.",
+        summary: "Research, audits and roadmaps to point your next move.",
         intro: "Audits, roadmaps and a clear point of view before anything is designed or bought. We look at where you are, decide where to go, and plan the route.",
         faq: [
           { question: "What does a consultation produce?", answer: "A written audit, a prioritised roadmap and the budget it needs, ready for your team or ours." },
@@ -372,6 +397,12 @@ export const en = {
           { title: "Team & process design", body: "Roles, workflows and approval routes that let your in-house team move faster with fewer handovers." },
           { title: "Workshops", body: "Focused sessions with your leadership and teams to agree on goals, priorities and the next step." },
         ],
+        numbers: [
+          { value: 6, suffix: "", label: "Disciplines a roadmap can call on, all in-house" },
+          { value: 3, suffix: "", label: "Sub-brands brought under one regional strategy" },
+          { value: 2, suffix: "", label: "Audiences, consumers and clinicians, served by one plan" },
+          { value: 1, suffix: "", label: "Clinical education platform planned around a product portfolio" },
+        ],
         proof: "sinclair-aesthetics",
         image: "/images/services/digital-consultation-v3.webp",
       },
@@ -379,7 +410,7 @@ export const en = {
         slug: "performance-marketing",
         title: "Performance Marketing",
         headline: ["Measured,", "not guessed"],
-        summary: "Paid media, SEO and continuous testing, measured against revenue rather than impressions.",
+        summary: "Paid media, smart targeting and constant optimisation for real results.",
         intro: "Paid media, SEO and continuous testing, measured against revenue rather than impressions. Every creative is a test, and the winners get the budget.",
         faq: [
           { question: "How do you measure success?", answer: "By the outcome you care about: leads, bookings, orders or return on ad spend. For Physiowell that meant up to 10x ROAS." },
@@ -393,6 +424,12 @@ export const en = {
           { title: "Tracking & attribution", body: "Pixels, events and dashboards set up properly, so every lead, booking and order is traced to its source." },
           { title: "A/B testing", body: "Structured tests on ads, landing pages and offers, run until the numbers say which version wins." },
           { title: "Reporting & optimisation", body: "Clear reports on the outcomes you care about, with budget moved every week toward what performs." },
+        ],
+        numbers: [
+          { value: 10, suffix: "×", label: "Up to, return on ad spend for a Dubai clinic" },
+          { value: 3, suffix: "", label: "Always-on channels measured against real lead numbers" },
+          { value: 5, suffix: "", label: "Platforms we plan and buy on: Meta, TikTok, Snapchat, X and Google" },
+          { value: 16, suffix: "", label: "Markets where search and social run on one brand system" },
         ],
         proof: "physiowell",
         image: "/images/services/performance-marketing-v3.webp",
@@ -459,7 +496,9 @@ export const en = {
       projects: "{count} projects",
       back: "All industries",
       challenges: { label: "What we hear", title: ["The problems", "we solve"] },
-      work: { label: "More work", title: ["More in", "this sector"] },
+      work: { label: "More work", title: ["More in", "this sector"], all: "All {industry} projects" },
+      helps: { label: "How we help", title: ["What we", "bring"], service: "Service details", projects: "See projects" },
+      more: { label: "More sectors", title: ["Other", "industries"], all: "All industries" },
       proof: "Across the sector",
       stages: { label: "Where you are", title: ["Wherever", "you start"], intro: "Every brand in this sector came to us at a different point. Find yours, and see the work that answered it." },
       stageCase: "See the case",
@@ -494,13 +533,13 @@ export const en = {
   about: {
     hero: {
       label: "About",
-      title: ["Thinking", "partner"],
+      title: ["Creative", "partner"],
       intro:
         "We are a creative and digital partner for brands across MENA and beyond. Strategy, creativity and innovation work as one team in Alexandria and Dubai.",
     },
     statement: {
       label: "Our story",
-      text: "We started PSdigital to close the gap between the people who plan a brand and the people who build it. Today more than eighty specialists work as one team: strategy, design, technology and performance in the same room, on the same brief.",
+      text: "We started with one belief of getting ideas moving faster, with fewer gaps and people working as one. Today, 80+ specialists across creativity, technology and performance bring that approach to every brief.",
     },
     numbers: {
       label: "In numbers",

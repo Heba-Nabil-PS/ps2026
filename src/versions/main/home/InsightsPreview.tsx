@@ -1,4 +1,4 @@
-import { formatDate } from "@/versions/main/copy";
+import { formatDate } from "@/versions/main/copy-helpers";
 import { getServerCopy } from "@/versions/main/server";
 import { Reveal } from "@/versions/main/motion/Reveal";
 import { InsightCard } from "@/versions/main/sections/InsightCard";

@@ -9,6 +9,9 @@ import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js
  *
  * Every vertex carries `aSkin`: on the body it is how far round toward the belly it sits (-1 the
  * spine, 1 the belly), which the shader uses to paint the hide; on fins and eyes it is -2 (left as painted).
+ *
+ * The mesh is kept lean (about 8k indexed triangles, smooth-shaded): the hide shader does the detail
+ * work per pixel, so the geometry only has to hold the silhouette.
  */
 
 const BACK = new Color("#1b2736");
@@ -17,8 +20,8 @@ const FIN = new Color("#0e1620");
 const EYE = new Color("#020406");
 const NOT_SKIN = -2;
 
-const RINGS = 96;
-const SIDES = 40;
+const RINGS = 60;
+const SIDES = 26;
 
 /** Body radius at u (0 = tail, 1 = nose): a slim stock, a deep chest just behind the head, a conical snout. */
 function girth(u: number) {
@@ -86,25 +89,24 @@ function body() {
   geometry.setAttribute("aSkin", new Float32BufferAttribute(skin, 1));
   geometry.setIndex(indices);
   geometry.computeVertexNormals();
-  return geometry.toNonIndexed();
+  return geometry;
 }
 
 type Paint = Color | ((x: number, y: number, z: number, normalY: number) => Color);
 
-/** Paints a part (one colour, or per vertex) and strips what the merged body does not carry. */
+/** Paints a part (one colour, or per vertex) and strips what the merged body does not carry. Stays indexed. */
 function part(geometry: BufferGeometry, paint: Paint) {
-  const flat = geometry.index ? geometry.toNonIndexed() : geometry;
-  flat.deleteAttribute("uv");
-  const position = flat.getAttribute("position");
-  const normal = flat.getAttribute("normal");
+  geometry.deleteAttribute("uv");
+  const position = geometry.getAttribute("position");
+  const normal = geometry.getAttribute("normal");
   const colors = new Float32Array(position.count * 3);
   for (let i = 0; i < position.count; i++) {
     const c = paint instanceof Color ? paint : paint(position.getX(i), position.getY(i), position.getZ(i), normal.getY(i));
     colors.set([c.r, c.g, c.b], i * 3);
   }
-  flat.setAttribute("color", new Float32BufferAttribute(colors, 3));
-  flat.setAttribute("aSkin", new Float32BufferAttribute(new Float32Array(position.count).fill(NOT_SKIN), 1));
-  return flat;
+  geometry.setAttribute("color", new Float32BufferAttribute(colors, 3));
+  geometry.setAttribute("aSkin", new Float32BufferAttribute(new Float32Array(position.count).fill(NOT_SKIN), 1));
+  return geometry;
 }
 
 type Point = [number, number];
@@ -123,8 +125,8 @@ const curve =
  * the way back and knife-thin behind; the fin is fleshy at the root and fine at the tip, as a real one is.
  */
 function fin(lead: (t: number) => Point, trail: (t: number) => Point, thickness: number, mirror = false) {
-  const STEPS = 18;
-  const AROUND = 20;
+  const STEPS = 12;
+  const AROUND = 16;
   const positions: number[] = [];
   const indices: number[] = [];
   for (let i = 0; i <= STEPS; i++) {
@@ -228,12 +230,12 @@ export function createSharkGeometry() {
   const lowerLobe = standing(fin(curve([-0.84, -0.03], [-1.0, -0.18], lowerTip), curve([-1.08, 0], [-1.11, -0.2], lowerTip), 0.055));
 
   // The keel: a flat ridge along each side of the tail stock.
-  const keel = new SphereGeometry(1, 20, 10);
+  const keel = new SphereGeometry(1, 12, 6);
   keel.scale(0.075, 0.014, 0.13);
   keel.translate(0, section(0.075).lift, -0.85);
 
   const eyes = [1, -1].map((side) => {
-    const eye = new SphereGeometry(0.02, 12, 10);
+    const eye = new SphereGeometry(0.02, 8, 6);
     const { width, lift } = section(0.89);
     eye.translate(side * width * 0.86, lift + 0.025, 0.78);
     return part(eye, EYE);

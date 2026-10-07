@@ -3,12 +3,13 @@ import type { Insight } from "@/data/insights";
 import type { PortfolioProject } from "@/data/portfolio";
 import type { Locale } from "@/i18n/config";
 import { cn } from "@/lib/utils";
-import { formatDate, getCopy } from "@/versions/main/copy";
+import { fill, formatDate, getCopy } from "@/versions/main/copy";
 import { serviceHref } from "@/versions/main/data/routes";
 import { workHref } from "@/versions/main/data/work";
 import { FrameRise } from "@/versions/main/motion/FrameRise";
 import { Reveal } from "@/versions/main/motion/Reveal";
 import { StretchHeading } from "@/versions/main/motion/StretchHeading";
+import { IndustryCard } from "@/versions/main/sections/IndustryCard";
 import { InsightCard } from "@/versions/main/sections/InsightCard";
 import { WorkCard } from "@/versions/main/sections/WorkCard";
 import { CaseStats } from "@/versions/main/work/CaseBlocks";
@@ -25,13 +26,25 @@ import Image from "next/image";
 
 const pad = (value: number) => String(value).padStart(2, "0");
 
-/** The round arrow every link on the site ends with. */
+/** The small arrow that ends a "How we help" row action. */
+const pillArrow = "size-3.5 transition-transform duration-500 ease-expo group-hover/pill:rotate-45 rtl:group-hover/pill:-rotate-45 rtl:-scale-x-100";
+
+/** A "How we help" row's title: the link to its service, stretched over the whole row, with the focus ring drawn around the row rather than the words. */
+const rowLink =
+  "after:absolute after:-inset-x-3 after:inset-y-2 after:rounded-card md:after:-inset-x-5 focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:outline-sky";
+/** The quiet text link to the sector's projects under a row's body. */
+const rowAction = "text-label inline-flex min-h-11 items-center gap-1.5 transition-colors duration-500";
+/** Keeps the row's round arrow at rest while the secondary link is the one under the pointer. */
+const rowArrowRest =
+  "group-has-[[data-secondary]:hover]:rotate-0 group-has-[[data-secondary]:hover]:border-line-strong group-has-[[data-secondary]:hover]:bg-transparent group-has-[[data-secondary]:hover]:text-current";
+
+/** The round arrow every link on the site ends with. In RTL the mirror is applied before the turn, so the hover rotation runs the other way to keep pointing along the reading direction. */
 function Arrow({ className }: { className?: string }) {
   return (
     <span
       aria-hidden
       className={cn(
-        "grid size-10 shrink-0 place-items-center rounded-full border border-line-strong transition-all duration-700 ease-expo group-hover:rotate-45 group-hover:border-sky group-hover:bg-sky group-hover:text-ink-900 rtl:-scale-x-100",
+        "grid size-10 shrink-0 place-items-center rounded-full border border-line-strong transition-all duration-700 ease-expo group-hover:rotate-45 rtl:group-hover:-rotate-45 group-hover:border-sky group-hover:bg-sky group-hover:text-ink-900 rtl:-scale-x-100",
         className,
       )}
     >
@@ -40,7 +53,7 @@ function Arrow({ className }: { className?: string }) {
   );
 }
 
-type IndustryViewProps = { lang: Locale; industry: Industry; index: number };
+type IndustryViewProps = { lang: Locale; industry: Industry };
 
 /**
  * An industry, paced so no two sections look alike: the numbers, the
@@ -49,15 +62,23 @@ type IndustryViewProps = { lang: Locale; industry: Industry; index: number };
  * cases left over, the lessons, the reading, questions, and one call to
  * action that carries the sector into the brief.
  */
-export function IndustryView({ lang, industry, index }: IndustryViewProps) {
-  const { copy, work, insights, industries: list } = getCopy(lang);
+export function IndustryView({ lang, industry }: IndustryViewProps) {
+  const { copy, work, insights, industries: list, categoriesOf } = getCopy(lang);
   const labels = copy.industries.labels;
   const services = copy.services.list;
   const findCase = (slug: string) => work.find((project) => project.slug === slug);
   const staged = new Set(industry.stages.map((stage) => stage.work));
   const more = industry.work.filter((slug) => !staged.has(slug)).map(findCase).filter((project): project is PortfolioProject => Boolean(project));
   const reading = industry.insights.map((slug) => insights.find((insight) => insight.slug === slug)).filter((insight): insight is Insight => Boolean(insight));
+  const others = list.filter((item) => item.slug !== industry.slug);
   const start = `/start?industry=${industry.slug}`;
+  const allProjects = `/portfolio?industry=${industry.slug}`;
+  /** Whether one of this sector's cases used the discipline, so a "See projects" link never opens an empty grid. */
+  const hasWork = (serviceSlug: string) =>
+    industry.work.some((slug) => {
+      const project = findCase(slug);
+      return project ? categoriesOf(project).includes(serviceSlug) : false;
+    });
 
   const faqJsonLd = {
     "@context": "https://schema.org",
@@ -70,12 +91,7 @@ export function IndustryView({ lang, industry, index }: IndustryViewProps) {
       {industry.faq.length ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} /> : null}
 
       <PageHero title={industry.headline} intro={industry.intro} image={industry.image} titleClassName="text-display-sm">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <BackLink href="/industries" label={labels.back} transitionLabel={copy.meta.pages.industries.title} />
-          <p className="text-label tabular-nums text-subtle">
-            {pad(index + 1)} / {pad(list.length)}
-          </p>
-        </div>
+        <BackLink href="/industries" label={labels.back} transitionLabel={copy.meta.pages.industries.title} />
       </PageHero>
 
       {industry.proof?.length ? (
@@ -111,9 +127,64 @@ export function IndustryView({ lang, industry, index }: IndustryViewProps) {
         </Reveal>
       </section>
 
+      {/* How we answer those problems: every row is one tap to its service page, with the sector's projects in that discipline a quieter second tap away. */}
+      {industry.helps.length ? (
+        <section className="gutter pb-[clamp(5.5rem,12vw,11rem)]">
+          <SectionHead label={labels.helps.label} title={labels.helps.title} />
+          <Reveal as="ol" className="mt-14 border-b border-line md:mt-20" stagger={0.08}>
+            {industry.helps.map((help, helpIndex) => {
+              const service = services.find((item) => item.slug === help.service);
+              const projects = service && hasWork(service.slug) ? `${allProjects}&service=${service.slug}` : null;
+              return (
+                <li
+                  key={help.title}
+                  data-reveal-item
+                  className="group relative isolate grid grid-cols-[auto_1fr_auto] gap-x-5 gap-y-4 border-t border-line py-8 md:grid-cols-12 md:gap-x-8 md:py-10"
+                >
+                  <span className="text-label pt-1.5 tabular-nums text-subtle transition-colors duration-500 group-hover:text-sky md:col-span-1 md:pt-2">{pad(helpIndex + 1)}</span>
+                  <div className="md:col-span-4">
+                    <h3 className="text-title font-medium">
+                      {service ? (
+                        <AppLink href={serviceHref(service.slug)} transitionLabel={service.title} className={rowLink}>
+                          <span className="inline-block transition-transform duration-700 ease-expo group-hover:translate-x-1 rtl:group-hover:-translate-x-1">{help.title}</span>
+                          <span className="sr-only">: {labels.helps.service}</span>
+                        </AppLink>
+                      ) : (
+                        help.title
+                      )}
+                    </h3>
+                    {service ? <p className="text-label mt-2 text-sky">{service.title}</p> : null}
+                  </div>
+                  {service ? <Arrow className={cn("-mt-1 self-start md:order-last md:col-span-1 md:justify-self-end", rowArrowRest)} /> : null}
+                  <div className="col-span-2 col-start-2 md:col-span-6 md:col-start-auto">
+                    <p className="text-muted">{help.body}</p>
+                    {service && projects ? (
+                      <AppLink href={projects} transitionLabel={service.title} data-secondary className={cn(rowAction, "group/pill relative z-10 mt-3 text-subtle hover:text-sky")}>
+                        {labels.helps.projects}
+                        <span className="sr-only">: {service.title}</span>
+                        <ArrowUpRight aria-hidden className={pillArrow} />
+                      </AppLink>
+                    ) : null}
+                  </div>
+                </li>
+              );
+            })}
+          </Reveal>
+        </section>
+      ) : null}
+
       {/* Chapters: the case image leads, the stage reads beside it, sides alternate. */}
       <section className="gutter pb-[clamp(5.5rem,12vw,11rem)]">
-        <SectionHead label={labels.stages.label} title={labels.stages.title} intro={labels.stages.intro} />
+        <SectionHead
+          label={labels.stages.label}
+          title={labels.stages.title}
+          intro={labels.stages.intro}
+          action={
+            <ButtonLink href={allProjects} variant="glass" transitionLabel={copy.meta.pages.work.title}>
+              {fill(labels.work.all, { industry: industry.title })}
+            </ButtonLink>
+          }
+        />
         <ol className="mt-16 grid gap-[clamp(4.5rem,10vw,10rem)] md:mt-24">
           {industry.stages.map((stage, stageIndex) => {
             const project = findCase(stage.work);
@@ -166,13 +237,9 @@ export function IndustryView({ lang, industry, index }: IndustryViewProps) {
                       {labels.stageStart}
                     </ButtonLink>
                     {service ? (
-                      <AppLink
-                        href={serviceHref(service.slug)}
-                        transitionLabel={service.title}
-                        className="text-label rounded-full border border-line-strong px-4 py-3 text-subtle transition-colors duration-500 hover:border-sky hover:text-sky"
-                      >
+                      <ButtonLink href={serviceHref(service.slug)} variant="line" transitionLabel={service.title}>
                         {service.title}
-                      </AppLink>
+                      </ButtonLink>
                     ) : null}
                   </div>
                 </Reveal>
@@ -248,6 +315,35 @@ export function IndustryView({ lang, industry, index }: IndustryViewProps) {
           <div className="md:col-span-7">
             <Faq items={industry.faq} />
           </div>
+        </section>
+      ) : null}
+
+      {/* The other sectors, so a reader never has to go back to the index to keep browsing. */}
+      {others.length ? (
+        <section className="gutter pb-[clamp(5.5rem,12vw,11rem)]">
+          <SectionHead
+            label={labels.more.label}
+            title={labels.more.title}
+            action={
+              <ButtonLink href="/industries" variant="glass" transitionLabel={copy.meta.pages.industries.title}>
+                {labels.more.all}
+              </ButtonLink>
+            }
+          />
+          <ul className="mt-14 grid gap-x-6 gap-y-12 md:mt-20 md:grid-cols-2 lg:grid-cols-4">
+            {others.map((item) => (
+              <li key={item.slug}>
+                <IndustryCard
+                  industry={item}
+                  index={list.indexOf(item)}
+                  count={fill(labels.projects, { count: String(item.work.length) })}
+                  flag={copy.nav.menus.flagship}
+                  viewLabel={copy.ui.view}
+                  sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
+                />
+              </li>
+            ))}
+          </ul>
         </section>
       ) : null}
 

@@ -2,6 +2,7 @@ import { VersionProvider } from "@/versions/VersionProvider";
 import { LocaleProvider } from "@/i18n/locale-context";
 import type { Locale } from "@/i18n/config";
 import { getCopy } from "@/versions/main/copy";
+import { LocaleCopy } from "@/versions/main/copy-locale";
 import { IntroAnimation } from "@/versions/main/intro/IntroAnimation";
 import { Providers } from "@/versions/main/shell/Providers";
 import { SiteFooter } from "@/versions/main/shell/SiteFooter";
@@ -19,13 +20,16 @@ export function AppShell({ locale, children }: { locale: Locale; children: React
       </a>
       <LocaleProvider locale={locale}>
         <VersionProvider version="main">
-          <Providers>
-            {/* First, so it claims the home hero's mark before the hero builds its entrance (see intro-signal). */}
-            <IntroAnimation />
-            <SiteHeader />
-            <main id="main">{children}</main>
-            <SiteFooter />
-          </Providers>
+          {/* The locale's content for Client Components, as its own chunk (see copy-locale). */}
+          <LocaleCopy locale={locale}>
+            <Providers>
+              {/* First, so it claims the home hero's mark before the hero builds its entrance (see intro-signal). */}
+              <IntroAnimation />
+              <SiteHeader />
+              <main id="main">{children}</main>
+              <SiteFooter />
+            </Providers>
+          </LocaleCopy>
         </VersionProvider>
       </LocaleProvider>
       <div aria-hidden className="grain" />

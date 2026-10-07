@@ -1,6 +1,6 @@
 "use client";
 
-import { formatDate } from "@/versions/main/copy";
+import { formatDate } from "@/versions/main/copy-helpers";
 import { useCopy } from "@/versions/main/use-copy";
 import { ease } from "@/lib/motion";
 import { cn } from "@/lib/utils";

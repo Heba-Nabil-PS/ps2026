@@ -27,7 +27,7 @@ type ProjectCardProps = {
 
 /**
  * Cinematic project card.
- * Layers (outer → inner): magnetic root → reveal frame → scroll parallax → hover shift/scale → media.
+ * Layers (outer → inner): magnetic root → rising link → reveal frame → scroll parallax → hover shift/scale → media.
  * Each layer owns exactly one kind of transform so scroll, hover and reveal never fight.
  */
 export function ProjectCard({ project, layout, preload = false }: ProjectCardProps) {
@@ -52,7 +52,9 @@ export function ProjectCard({ project, layout, preload = false }: ProjectCardPro
 
       const reveal = gsap.timeline({ scrollTrigger: { trigger: root.current, start: "top 90%", once: true } });
       reveal
-        .fromTo(frame.current, { clipPath: "inset(14% 9% 14% 9%)", scale: 0.92, opacity: 0.3 }, { clipPath: "inset(0% 0% 0% 0%)", scale: 1, opacity: 1, duration: 1.5 })
+        // The whole card rises into place as it scrolls in; the frame then opens inside it.
+        .fromTo(q("[data-lift]"), { y: 140, opacity: 0 }, { y: 0, opacity: 1, duration: 1.6 })
+        .fromTo(frame.current, { clipPath: "inset(14% 9% 14% 9%)", scale: 0.92, opacity: 0.3 }, { clipPath: "inset(0% 0% 0% 0%)", scale: 1, opacity: 1, duration: 1.5 }, 0)
         .fromTo(q("[data-media]"), { scale: 1.35 }, { scale: 1, duration: 1.8 }, 0)
         .from(q("[data-line]"), { yPercent: 115, duration: 1.2, stagger: 0.08 }, 0.3)
         .from(q("[data-meta]"), { x: -24 * sign, opacity: 0, duration: 1, stagger: 0.06, ease: "power3.out" }, 0.45);
@@ -132,6 +134,7 @@ export function ProjectCard({ project, layout, preload = false }: ProjectCardPro
     >
       <Link
         href={localize(portfolioHref(project.slug))}
+        data-lift
         data-cursor={t.common.viewProjectCursor}
         onFocus={() => warm(project)}
         onTouchStart={() => warm(project)}
@@ -141,7 +144,7 @@ export function ProjectCard({ project, layout, preload = false }: ProjectCardPro
           open(project, frame.current);
         }}
         className="block outline-offset-8"
-        aria-label={`${project.title} — ${project.category}${project.market ? `, ${project.market}` : ""}`}
+        aria-label={`${project.title}${project.market ? ` — ${project.market}` : ""}`}
       >
         <ViewTransition name={`pf-media-${project.slug}`} share={{ "pf-open": "pf-morph", default: "none" }} default="none">
           <div ref={frame} className={cn("theme-dark relative overflow-hidden rounded-card", layout.aspect)} style={{ backgroundColor: project.color }}>
@@ -164,20 +167,15 @@ export function ProjectCard({ project, layout, preload = false }: ProjectCardPro
               </div>
             </div>
 
-            {/* Legibility scrim + overlay metadata */}
-            <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-bg/75 via-bg/5 to-bg/30" />
+            {/* Overlay metadata */}
             <div className="pointer-events-none absolute inset-0 flex flex-col justify-between p-5 md:p-7">
-              <div className="text-label flex items-start justify-between gap-4 text-fg/85">
-                <span data-meta>{t.common.project} {project.id}</span>
-                <span data-meta className="text-end">
-                  {project.category}
-                  {project.market ? (
-                    <>
-                      <span className="mx-2 text-fg/40">/</span>
-                      {project.market}
-                    </>
-                  ) : null}
-                </span>
+              <div className="text-label flex items-start justify-end gap-4 text-fg/85">
+                {/* Only the market on the image: the services sit as pills under the card. */}
+                {project.market ? (
+                  <span data-meta className="text-end">
+                    {project.market}
+                  </span>
+                ) : null}
               </div>
 
             </div>
@@ -210,8 +208,8 @@ export function ProjectCard({ project, layout, preload = false }: ProjectCardPro
               <ArrowRight strokeWidth={2.25} className="size-[0.85em] rtl:-scale-x-100" />
             </span>
           </div>
-          <ul data-meta className="mt-3 flex flex-wrap gap-2" aria-label={t.common.tags}>
-            {project.tags.slice(0, 3).map((tag) => (
+          <ul data-meta className="mt-3 flex flex-wrap gap-2" aria-label={t.common.services}>
+            {project.services.slice(0, 3).map((tag) => (
               <li key={tag} className="text-label rounded-full border border-line px-3 py-1.5 text-[0.75rem] text-muted md:text-[0.65rem]">
                 {tag}
               </li>

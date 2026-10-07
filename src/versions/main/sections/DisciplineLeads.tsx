@@ -6,8 +6,8 @@ import Image from "next/image";
 
 /**
  * The whole team at once: one portrait grid, every photo cropped to the same
- * head-and-shoulders frame (scripts/team-portraits.mjs) and graded to one navy
- * duotone, so mixed sources read as a set. Hover restores the colour. Every
+ * head-and-shoulders frame (scripts/team-portraits.mjs),
+ * shown in full colour. Every
  * other column drops on wide screens for an editorial rhythm. The header button opens Careers.
  * Shared by About and Team.
  */
@@ -39,14 +39,9 @@ export async function DisciplineLeads() {
                 fill
                 sizes="(min-width: 1024px) 24vw, 48vw"
                 quality={78}
-                className="mono object-cover transition-[filter,transform] duration-[1.2s] ease-expo group-hover:scale-[1.04] group-hover:[filter:none] motion-reduce:transition-none"
+                className="object-cover transition-transform duration-[1.2s] ease-expo group-hover:scale-[1.04] motion-reduce:transition-none"
               />
-              {/* Navy duotone: tint the greyscale image, then cap its highlights at steel so light and dark
-                  backgrounds land in one tonal range. Both layers fade out on hover. Light mode keeps the
-                  pale steel: its own steel token is dark ink and would crush the portraits. */}
-              <span aria-hidden className="absolute inset-0 bg-navy-500 mix-blend-color transition-opacity duration-700 group-hover:opacity-0" />
-              <span aria-hidden className="absolute inset-0 bg-steel mix-blend-multiply transition-opacity light:bg-[#c3d3e2] duration-700 group-hover:opacity-0" />
-              <span aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,transparent_60%,rgb(7_18_31/0.55))]" />            </div>
+                          </div>
             <div className="relative mt-4 border-t border-line pt-4">
               <span aria-hidden className="absolute -top-px start-0 h-px w-0 bg-sky transition-[width] duration-700 ease-expo group-hover:w-full" />
               <h3 className="text-title font-medium">{member.name}</h3>

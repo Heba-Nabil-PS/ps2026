@@ -7,9 +7,7 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 
 /**
- * A case study card. The image is monochrome at rest and turns to colour on
- * hover or keyboard focus (principle P5: the work "comes alive"). The whole
- * card is one link; the cursor opens a "View" lens over it.
+ * A case study card, its image in full colour. The whole card is one link; the cursor opens a "View" lens over it.
  */
 export function WorkCard({
   project,
@@ -20,7 +18,6 @@ export function WorkCard({
   priority,
   image,
   overlay = true,
-  mono = true,
   frame,
 }: {
   project: PortfolioProject;
@@ -33,8 +30,6 @@ export function WorkCard({
   image?: string;
   /** The gradient that darkens the foot of the image at rest. */
   overlay?: boolean;
-  /** Monochrome at rest, colour on hover. Off shows the image in colour throughout. */
-  mono?: boolean;
   /** Wraps the media (e.g. FrameRise). */
   frame?: (media: ReactNode) => ReactNode;
 }) {
@@ -55,12 +50,8 @@ export function WorkCard({
         sizes={sizes}
         priority={priority}
         quality={75}
-        className={cn(
-          "object-cover transition-transform duration-[1.4s] ease-expo group-hover:scale-[1.04]",
-          mono && "mono group-hover:[filter:none] group-focus-visible:[filter:none]",
-        )}
+        className="object-cover transition-transform duration-[1.4s] ease-expo group-hover:scale-[1.04]"
       />
-      {overlay && <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,transparent_55%,rgb(3_7_13/0.55))] transition-opacity duration-700 group-hover:opacity-0" />}
       <span className="text-label absolute start-5 top-5 rounded-full bg-ink-950/60 px-3 py-2 text-paper backdrop-blur-md">{project.category}</span>
     </div>
   );

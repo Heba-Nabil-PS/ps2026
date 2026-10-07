@@ -1,9 +1,8 @@
 "use client";
 
-import { useLocale } from "@/i18n/locale-context";
-import { getCopy } from "./copy";
+import { useCopyContext } from "./copy-context";
 
-/** Copy, company facts, work and roles for the current locale (main design). */
+/** Copy, company facts, work and roles for the current locale (main design, Client Components). */
 export function useCopy() {
-  return getCopy(useLocale());
+  return useCopyContext();
 }

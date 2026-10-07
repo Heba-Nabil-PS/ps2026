@@ -41,9 +41,8 @@ export function IndustryCard({
         fill
         sizes={sizes}
         quality={75}
-        className="mono object-cover transition-transform duration-[1.4s] ease-expo group-hover:scale-[1.04] group-hover:[filter:none] group-focus-visible:[filter:none]"
+        className="object-cover transition-transform duration-[1.4s] ease-expo group-hover:scale-[1.04]"
       />
-      <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,transparent_45%,rgb(3_7_13/0.65))] transition-opacity duration-700 group-hover:opacity-40" />
       <div className="absolute inset-x-5 top-5 flex flex-wrap items-center gap-2">
         <span className="text-label rounded-full bg-ink-950/60 px-3 py-2 text-paper backdrop-blur-md">{count}</span>
         {industry.flagship && flag ? <span className="text-label rounded-full bg-sky px-3 py-2 text-ink-900">{flag}</span> : null}

@@ -1,4 +1,4 @@
-import { fill } from "@/versions/main/copy";
+import { fill } from "@/versions/main/copy-helpers";
 import { getServerCopy } from "@/versions/main/server";
 import { FrameRise } from "@/versions/main/motion/FrameRise";
 import { ClientLogoSection } from "@/versions/main/sections/ClientLogoSection";

@@ -11,7 +11,7 @@ export function NextCase({ project, label, viewLabel }: { project: PortfolioProj
     <section className="gutter pt-[clamp(5rem,11vw,10rem)]">
       <AppLink href={workHref(project.slug)} transitionLabel={project.title} data-cursor={viewLabel} className="theme-dark group relative block overflow-hidden rounded-frame border border-line">
         <div className="relative aspect-[16/9] md:aspect-[21/9]">
-          <Image src={project.heroImage} alt="" fill sizes="100vw" quality={75} className="mono object-cover opacity-60 transition-[filter,opacity,transform] duration-[1.4s] ease-expo group-hover:scale-[1.03] group-hover:opacity-90 group-hover:[filter:none]" />
+          <Image src={project.heroImage} alt="" fill sizes="100vw" quality={75} className="object-cover opacity-60 transition-[opacity,transform] duration-[1.4s] ease-expo group-hover:scale-[1.03] group-hover:opacity-90" />
           <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,rgb(3_7_13/0.1),rgb(3_7_13/0.75))]" />
         </div>
         <div className="absolute inset-x-0 bottom-0 p-[clamp(1.25rem,4vw,3.5rem)]">

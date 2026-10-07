@@ -6,7 +6,7 @@ import { StretchHeading } from "@/versions/main/motion/StretchHeading";
 import { AppLink } from "@/versions/main/ui/AppLink";
 import { Label } from "@/versions/main/ui/Label";
 import { useCopy } from "@/versions/main/use-copy";
-import { fill } from "@/versions/main/copy";
+import { fill } from "@/versions/main/copy-helpers";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, Building2, Check, ChevronDown, MapPin, Search, SlidersHorizontal, X, type LucideIcon } from "lucide-react";

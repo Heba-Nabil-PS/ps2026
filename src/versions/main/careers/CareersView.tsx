@@ -17,7 +17,7 @@ export async function CareersView() {
 
   return (
     <>
-      <PageHero title={page.hero.title} intro={page.hero.intro} image="/images/site/who-we-are.webp">
+      <PageHero title={page.hero.title} intro={page.hero.intro} image="/images/careers/careers-banner.webp" imageClassName="object-[72%_center] md:object-center" raw>
         <div className="flex flex-wrap items-center gap-6">
           <ButtonLink href="#apply">{page.hero.cta}</ButtonLink>
           <p className="text-label text-subtle">

@@ -2,10 +2,13 @@
 
 import { useLocale } from "@/i18n/locale-context";
 import { useCopy } from "@/versions/main/use-copy";
-import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
+import { gsap, useGSAP } from "@/lib/gsap";
 import { motionGate } from "@/versions/main/motion/useMotionGate";
 import { StretchHeading } from "@/versions/main/motion/StretchHeading";
+import { serviceHref } from "@/versions/main/data/routes";
+import { AppLink } from "@/versions/main/ui/AppLink";
 import { ButtonLink } from "@/versions/main/ui/Button";
+import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import { useRef, type CSSProperties } from "react";
 
@@ -16,8 +19,9 @@ const CHAR_EM = { en: 0.86, ar: 0.6 };
  * Six disciplines as glass cards with bold imagery (Peachweb reference).
  * Cards stack as you scroll: the one underneath recedes and dims, the one
  * arriving lights its image from monochrome to colour. Each card is an
- * anchor (/services#branding) and links to the projects in that discipline
- * (/portfolio?service=branding).
+ * anchor (/services#branding); its image and "Explore" button open the
+ * service page (/services/branding) and a text link opens the projects in
+ * that discipline (/portfolio?service=branding).
  */
 export function ServiceStack() {
   const { copy, categories } = useCopy();
@@ -28,22 +32,18 @@ export function ServiceStack() {
   useGSAP(
     () => {
       const cards = gsap.utils.toArray<HTMLElement>("[data-service]", root.current);
-      return motionGate(
-        () => {
-          cards.forEach((card, index) => {
-            ScrollTrigger.create({ trigger: card, start: "top 60%", end: "bottom top", toggleClass: "is-lit" });
-            // Stacking is desktop-only: on phones a card is taller than the screen.
-            const next = cards[index + 1];
-            if (!next || !window.matchMedia("(min-width: 768px)").matches) return;
-            // Dim with an overlay, never the card's own opacity: a see-through card would show the text of the cards stacked under it.
-            gsap
-              .timeline({ defaults: { ease: "none" }, scrollTrigger: { trigger: next, start: "top bottom", end: "top 15%", scrub: 0.6 } })
-              .to(card.querySelector("[data-card]"), { scale: 0.92 }, 0)
-              .to(card.querySelector("[data-dim]"), { opacity: 0.7 }, 0);
-          });
-        },
-        () => cards.forEach((card) => card.classList.add("is-lit")),
-      );
+      return motionGate(() => {
+        cards.forEach((card, index) => {
+          // Stacking is desktop-only: on phones a card is taller than the screen.
+          const next = cards[index + 1];
+          if (!next || !window.matchMedia("(min-width: 768px)").matches) return;
+          // Dim with an overlay, never the card's own opacity: a see-through card would show the text of the cards stacked under it.
+          gsap
+            .timeline({ defaults: { ease: "none" }, scrollTrigger: { trigger: next, start: "top bottom", end: "top 15%", scrub: 0.6 } })
+            .to(card.querySelector("[data-card]"), { scale: 0.92 }, 0)
+            .to(card.querySelector("[data-dim]"), { opacity: 0.7 }, 0);
+        });
+      });
     },
     { scope: root },
   );
@@ -84,20 +84,41 @@ export function ServiceStack() {
                       </li>
                     ))}
                   </ul>
-                  {hasProjects ? (
-                    <div className="mt-6">
-                      <ButtonLink href={`/portfolio?service=${service.slug}`} variant="glass" transitionLabel={service.title}>
+                  {/* The service page is the card's destination; the filtered work index is the quieter second way out. */}
+                  <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
+                    <ButtonLink href={serviceHref(service.slug)} variant="glass" transitionLabel={service.title}>
+                      {labels.explore}
+                    </ButtonLink>
+                    {hasProjects ? (
+                      <AppLink
+                        href={`/portfolio?service=${service.slug}`}
+                        transitionLabel={service.title}
+                        className="group/projects inline-flex min-h-11 items-center gap-2 text-sm font-medium text-sky"
+                      >
                         {labels.projects}
-                      </ButtonLink>
-                    </div>
-                  ) : null}
+                        <ArrowUpRight aria-hidden className="size-4 transition-transform duration-500 ease-expo group-hover/projects:rotate-45 rtl:-scale-x-100" />
+                      </AppLink>
+                    ) : null}
+                  </div>
                 </div>
               </div>
-              {/* Phones lead with the image; from md it sits beside the text. */}
-              <div className="relative min-h-72 overflow-hidden rounded-card max-md:order-first md:col-span-6">
-                <Image src={service.image} alt="" fill sizes="(min-width: 768px) 48vw, 100vw" quality={75} className="mono object-cover" />
-                <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,transparent_50%,rgb(3_7_13/0.5))]" />
-              </div>
+              {/* Phones lead with the image; from md it sits beside the text. The image is a second, larger way into the service page. */}
+              <AppLink
+                href={serviceHref(service.slug)}
+                transitionLabel={service.title}
+                aria-label={`${service.title} — ${labels.explore}`}
+                data-cursor={copy.ui.view}
+                className="group/image relative block min-h-72 overflow-hidden rounded-card focus-visible:outline-offset-4 max-md:order-first md:col-span-6"
+              >
+                <Image
+                  src={service.image}
+                  alt=""
+                  fill
+                  sizes="(min-width: 768px) 48vw, 100vw"
+                  quality={75}
+                  className="object-cover transition-transform duration-[1.4s] ease-expo group-hover/image:scale-[1.04]"
+                />
+              </AppLink>
               {/* Darkens the card as the next one covers it (opacity driven by the stack timeline). */}
               <div aria-hidden data-dim className="pointer-events-none absolute inset-0 z-10 bg-[#050b14] opacity-0" />
             </article>

@@ -31,5 +31,5 @@ export default async function IndustryPage({ params }: PageProps<"/[lang]/indust
   const index = list.findIndex((item) => item.slug === slug);
   if (index === -1) notFound();
 
-  return <IndustryView lang={lang} industry={list[index]} index={index} />;
+  return <IndustryView lang={lang} industry={list[index]} />;
 }

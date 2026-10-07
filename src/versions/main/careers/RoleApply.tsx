@@ -1,6 +1,6 @@
 "use client";
 
-import { fill } from "@/versions/main/copy";
+import { fill } from "@/versions/main/copy-helpers";
 import { useCopy } from "@/versions/main/use-copy";
 import { useState } from "react";
 import { ApplicationForm } from "./ApplicationForm";

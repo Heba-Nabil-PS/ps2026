@@ -135,7 +135,7 @@ export const portfolio: PortfolioProject[] = [
     title: "Texas Chicken",
     category: "Brand · App · Web · Social",
     market: "16 markets — MEA",
-    description: "One bilingual brand system, one regional ordering app, sixteen countries — run through a single agency of record.",
+    description: "One global QSR, reimagined as one connected digital experience.",
     intro:
       "Since partnering with PSdigital, Texas Chicken’s Middle East and Africa business has run through a single agency of record: brand identity, mobile app, e-commerce, loyalty, in-store kiosks, SEO and social, unified across 16 countries under one bilingual brand system.",
     client: "Texas Chicken — Middle East & Africa",
@@ -237,7 +237,7 @@ export const portfolio: PortfolioProject[] = [
     title: "Shark Tank Egypt",
     category: "Social Media · Website",
     market: "Egypt",
-    description: "Accounts built from zero and a bilingual home for the show — episodes, sharks and the pitch application.",
+    description: "Turned a global hit into a home for Egyptian ambition.",
     intro:
       "Shark Tank Egypt’s social accounts were built from zero and grown season after season, alongside a bilingual website where viewers watch episodes, meet the sharks and entrepreneurs apply to pitch.",
     client: "Shark Tank Egypt",
@@ -429,7 +429,7 @@ export const portfolio: PortfolioProject[] = [
     title: "Physiowell",
     category: "Performance Marketing",
     market: "Dubai, UAE",
-    description: "Always-on paid media that turned clinical trust into a measurable lead pipeline — up to 10x ROAS.",
+    description: "Clinical trust, turned into measurable leads.",
     intro:
       "Across Facebook, Instagram and Google, PSdigital’s always-on campaigns for this Dubai physiotherapy and chiropractic clinic turned brand trust into a measurable, ongoing lead pipeline for the business.",
     client: "Physiowell",
@@ -607,7 +607,7 @@ export const portfolio: PortfolioProject[] = [
     title: "Elsewhere Developments",
     category: "Real Estate · Social Media",
     market: "Egypt",
-    description: "One developer, several destinations — Ajaza, The One residences and offices.",
+    description: "Built a destination around the idea of living beyond the expected.",
     intro:
       "Social and campaign content for a developer’s portfolio of destinations — Ajaza coastal living, The One residences and The One offices — each given its own voice inside a single system.",
     client: "Elsewhere Developments",

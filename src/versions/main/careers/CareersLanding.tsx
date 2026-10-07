@@ -14,7 +14,7 @@ export async function CareersLanding() {
 
   return (
     <>
-      <PageHero title={page.hero.title} intro={page.hero.intro} image="/images/site/who-we-are.webp" />
+      <PageHero title={page.hero.title} intro={page.hero.intro} image="/images/careers/careers-banner.webp" imageClassName="object-[72%_center] md:object-center" raw />
 
       <JobsBoard />
 

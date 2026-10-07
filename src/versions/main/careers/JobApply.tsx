@@ -4,7 +4,7 @@ import { useLocale } from "@/i18n/locale-context";
 import { submitApplication, type ApplicationField, type FormState } from "@/lib/forms";
 import { ease } from "@/lib/motion";
 import { cn } from "@/lib/utils";
-import { fill } from "@/versions/main/copy";
+import { fill } from "@/versions/main/copy-helpers";
 import { Button } from "@/versions/main/ui/Button";
 import { Honeypot, TextArea, TextField } from "@/versions/main/ui/Field";
 import { PhoneField } from "@/versions/main/ui/PhoneField";

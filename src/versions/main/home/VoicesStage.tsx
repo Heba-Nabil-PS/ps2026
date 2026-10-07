@@ -5,7 +5,7 @@ import { useDirectionSign } from "@/i18n/locale-context";
 import { cn } from "@/lib/utils";
 import { Counter } from "@/versions/main/motion/Counter";
 import { Reveal } from "@/versions/main/motion/Reveal";
-import type { SiteCopy } from "@/versions/main/copy";
+import type { SiteCopy } from "@/versions/main/copy-build";
 import { ArrowLeft, ArrowRight, Pause, Play } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type FocusEvent, type PointerEvent, type ReactNode } from "react";

@@ -129,7 +129,7 @@ export function ProjectGrid({ projects }: { projects: PortfolioProject[] }) {
         {visible.length} / {projects.length}
       </p>
 
-      <ul className="grid grid-cols-1 gap-y-24 md:grid-cols-12 md:gap-x-8 md:gap-y-40">
+      <ul className="grid grid-cols-1 gap-y-10 md:grid-cols-12 md:gap-x-8 md:gap-y-16">
         {visible.map((project, i) => {
           const layout = rhythm[i % rhythm.length];
           return (

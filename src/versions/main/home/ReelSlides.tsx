@@ -32,7 +32,10 @@ export function ReelSlides({ slides, sizes, className }: { slides: readonly { im
           const next = items[(index + 1) % items.length];
           loop
             .fromTo(item, { scale: 1.12 }, { scale: 1, duration: 3.6, ease: "none" }, index * 3)
-            .set(next, { zIndex: index + 2 }, index * 3 + 2.4)
+            // The next slide goes on top as soon as this one shows, all but invisible, so the browser decodes and renders
+            // its picture in the background now rather than on the first frame of its crossfade (a long frame, mid-scroll,
+            // the first time each slide came round). At zero it would not be rendered until it was needed.
+            .set(next, { zIndex: index + 2, opacity: 0.001 }, index * 3)
             .to(next, { opacity: 1, duration: 0.9, ease: "power2.inOut" }, index * 3 + 2.4)
             .set(item, { opacity: 0, zIndex: 1 }, index * 3 + 3.4);
         });
@@ -44,7 +47,16 @@ export function ReelSlides({ slides, sizes, className }: { slides: readonly { im
           loop.time((gsap.ticker.time - clockStart) % loop.duration()).play();
         };
         // The section, not the frame: a sticky frame's own box would read as gone while it is still pinned on screen.
-        ScrollTrigger.create({ trigger: el.closest("section") ?? el, start: "top bottom", end: "bottom top", onToggle: (self) => (self.isActive ? resume() : loop.pause()) });
+        const section = el.closest("section") ?? el;
+        ScrollTrigger.create({ trigger: section, start: "top bottom", end: "bottom top", onToggle: (self) => (self.isActive ? resume() : loop.pause()) });
+        // Every slide decoded a screen ahead of the section, so no crossfade waits on a decode as the page scrolls
+        // (a screen-wide picture took up to 160 ms to decode on an ordinary laptop: a dropped frame or two, each time).
+        ScrollTrigger.create({
+          trigger: section,
+          start: "top 200%",
+          once: true,
+          onEnter: () => items.forEach((item) => item.querySelector("img")?.decode().catch(() => {})),
+        });
       });
       return () => mm.revert();
     },
